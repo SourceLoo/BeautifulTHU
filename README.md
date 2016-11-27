@@ -41,3 +41,16 @@
 
 陈振寰：部门端前端，逻辑、界面
 
+# API:
+## For Students:
+### Get
+/question/all/PART_NUM : Getting all the question that this user can view by part.
+/response/QUESTION_ID : Getting response of certain question.
+
+### Post
+/auth/login : Get permission to login from backend.
+/question/upload : Upload the several pictures and a suggest
+/like/question/QUESTION_ID : Like certain question
+/like/response/QUESTION_ID : Like certain question
+/dislike/question/RESPONSE_ID : Dislike certain question
+/dislike/response/RESPONSE_ID : Dislike certain question
