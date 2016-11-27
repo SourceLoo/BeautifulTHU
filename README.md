@@ -51,6 +51,6 @@
 /auth/login : Get permission to login from backend.
 /question/upload : Upload the several pictures and a suggest
 /like/question/QUESTION_ID : Like certain question
-/like/response/QUESTION_ID : Like certain question
+/like/response/QUESTION_ID : Like certain response
 /dislike/question/RESPONSE_ID : Dislike certain question
-/dislike/response/RESPONSE_ID : Dislike certain question
+/dislike/response/RESPONSE_ID : Dislike certain response
