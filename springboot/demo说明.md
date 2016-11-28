@@ -10,7 +10,7 @@
    mvn spring:boot run
    ```
 
-4. 在浏览器浏览一下两个路径，可以看到say hello
+4. 在浏览器浏览以下两个路径，可以看到say hello
 
    - localhost:8080
    - localhost:8080/hello
