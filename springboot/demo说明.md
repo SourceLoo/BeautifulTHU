@@ -7,7 +7,7 @@
 3. 切到demo目录，执行运行命令
 
    ```shell
-   mvn spring-boot：run
+   mvn spring:boot run
    ```
 
 4. 在浏览器浏览一下两个路径，可以看到say hello
