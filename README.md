@@ -10,7 +10,7 @@
 （附议=点赞？追加回复）
 ##问题表
 （审核+分类时间超时如何处理？是否保存超时的历史？校办和总办共享还是各自拥有1h？）
-问题id；标题；图片；内容；创建者id；问题类别（牵头部门）；状态（待分类、待解决、已解决、无效）；学生评价；
+问题id；标题；图片；内容；创建者id；问题类别（牵头部门）；状态（待分类、待解决、已解决、无效）；学生评价；问题创建位置；
 问题创建时间；点赞数；ddl；？？？转交时间1；？？？转交时间2；
 
 ##非牵头部门表
@@ -44,8 +44,27 @@
 # API:
 ## For Students:
 ### Get
-/question/all/PART_NUM : Getting all the question that this user can view by part.
-/response/QUESTION_ID : Getting response of certain question.
+/question/all/PART_NUM : Getting all the question that this user can view by part.  
+```json
+{
+  "questionUrlList" : ["/question/QUESTION_ID_1","/question/QUESTION_ID_2"]
+}
+```
+/question/QUESTION_ID : Getting detail of certain question.  
+```json
+{
+  "id" : "",
+  "title" : "",
+  "photo" : "",
+  "text" : "",
+  "creatorUrl" : "",
+  "leaderDepartment" : "",
+  "statu" : "",
+  "createTime" : "",
+  "location" : "",
+  "likeNum" : ""
+}
+```
 
 ### Post
 /auth/login : Get permission to login from backend.  
