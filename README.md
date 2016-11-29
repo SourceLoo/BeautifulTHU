@@ -2,106 +2,123 @@
 
 ## API of School Part:
 
-### Get
-
-```
-/question/all/PART_NUM : Getting all the question that this user can view by part.
-/response/QUESTION_ID : Getting response of certain question.
-```
-
 ### Post
 - Get `'role':'display_name'` pair. one for main-repsonsible, one for related.
+
     /init/get_displayname
     send: none
     receive: [{'role1':'displayname1', ...}, {...}]
 
 - Get permission to login from backend.
+
     /auth/login
     send: {'uname':'', 'passwd':''}
     receive: {'role':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':''}
 
 - Set personal info.
+
     /info/set
     send: {'resp_person':'', 'fixed_phone':'', 'mobile_phone':'', 'passwd':''}
     receive: {'sucess':bool}
+
 *none for not modify*
 
 - Get contact table content, only TuanWei can access uname&passwd.
+
     /contact/get
     send: none
     receive: [{'role':'', 'uname':'', 'resp_person':'', 
         'fixed_phone':'', 'mobile_phone':'', 'passwd':''}]
 
 - Set contact table content, only TuanWei can modify.
+
     /contact/set
     send: {'role':'', 'uname':'', 'resp_person':'', 'fixed_phone':'', 
         'mobile_phone':'', 'passwd':'', 'is_new':bool}
     receive: {'sucess':bool}
 
 - Get questions list. (multi parts?)
+
     /questions/main/get_all
     send: none
     receive: [{'question_id':'', 'created_time':'', 'status':'', 'resp_role':'', 
         'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'', 
         'is_common_top':bool, 'reclassify_reason':''}]
+
 *sort and make delay&reclassify on the top.*
 
 - Get question detail
+
     /question/main/get_detail
     send: {'question_id':''}
     receive: {'created_location':'', 'pic_path':['','']}
 
 - main delay
+
     /question/main/delay
     send: {'question_id':''}
     receive: {'sucess':bool}
+
 *back-end verify status.*
 
 - main classify
+
     /quesiton/main/classify
     send: {'question_id':'', 'leader_role':'', 'other_roles':[], 'deadline':''}
     receive: {'sucess':bool}
+
 *back-end verify status.*
 
 - Get questions list. (multi parts?)
+
     /questions/related/get_all
     send: none
     receive: [{'question_id':'', 'created_time':'', 'deadline':'', 
         'created_location':'', 'status':'', 'content':'', 'likes':number, 
         'is_read':bool, 'is_common':bool, 'is_common_top':bool}]
+
 *sort by deadline?.*
 
 - Get question detail
+
     /question/related/get_detail
     send: {'question_id':''}
     receive: {'message':'', 'pic_path':['',''], 
         'responses':[{'response_id':'', 'response_content':''}]}
+
 *set 'is_read' true.*
 
 - related apply for reclassification
+
     /quesiton/related/reclassify
     send: {'question_id':'', 'reclassify_reason':''}
     receive: {'sucess':bool}
+
 *back-end verify status.*
 
 - related apply for delay
+
     /quesiton/related/delay
     send: {'question_id':'', 'delay_reason':'', 'delay_days':''}
     receive: {'sucess':bool}
+
 *back-end verify status.*
 
 - related response
+
     /quesiton/related/response
     send: {'question_id':'', 'response':''}
     receive: {'sucess':bool}
 
 - related modify response
+
     /quesiton/related/modify_response
     send: {'question_id':'', 'response_id':'', 'response_content':''}
     receive: {'sucess':bool}
 
 - TuanWei, QA, get all questions, same as above
 - TuanWei, QA, set question as common
+
     /qa/add
     send: {'question_id':''}
     receive: {'sucess':bool}
@@ -116,6 +133,7 @@
 *back-end verify question property*
 
 - TODO: data statistics
+
     /statistics/get
     send: none
     receive: {'item1':number, ...}
@@ -154,21 +172,27 @@
 ### Post
 
 - Get permission to login from backend.
+
     /auth/login
 
 - Upload the several pictures and a suggest
+
     /question/upload
 
 - Like certain question
+
     /like/question/QUESTION_ID
 
 - Like certain response
+
     /like/response/QUESTION_ID
 
 - Dislike certain question
+
     /dislike/question/RESPONSE_ID
 
 - Dislike certain response
+
     /dislike/response/RESPONSE_ID
 
 ##分工：
