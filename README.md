@@ -86,7 +86,7 @@ receive: [{'question_id':'', 'created_time':'', 'status':'', 'resp_role':'',
 - Get question detail
 
 ```
-/question/main/get_detail
+/questions/main/get_detail
 send: {'question_id':''}
 receive: {'created_location':'', 'pic_path':['','']}
 ```
@@ -94,7 +94,7 @@ receive: {'created_location':'', 'pic_path':['','']}
 - main delay
 
 ```
-/question/main/delay
+/questions/main/delay
 send: {'question_id':''}
 receive: {'sucess':bool}
 ```
@@ -104,7 +104,7 @@ receive: {'sucess':bool}
 - main classify
 
 ```
-/quesiton/main/classify
+/quesitons/main/classify
 send: {'question_id':'', 'leader_role':'', 'other_roles':[], 'deadline':''}
 receive: {'sucess':bool}
 ```
@@ -126,7 +126,7 @@ receive: [{'question_id':'', 'created_time':'', 'deadline':'',
 - Get question detail
 
 ```
-/question/related/get_detail
+/questions/related/get_detail
 send: {'question_id':''}
 receive: {'message':'', 'pic_path':['',''], 
     'responses':[{'response_id':'', 'response_content':''}]}
@@ -137,7 +137,7 @@ receive: {'message':'', 'pic_path':['',''],
 - related apply for reclassification
 
 ```
-/quesiton/related/reclassify
+/quesitons/related/reclassify
 send: {'question_id':'', 'reclassify_reason':''}
 receive: {'sucess':bool}
 ```
@@ -147,7 +147,7 @@ receive: {'sucess':bool}
 - related apply for delay
 
 ```
-/quesiton/related/delay
+/quesitons/related/delay
 send: {'question_id':'', 'delay_reason':'', 'delay_days':''}
 receive: {'sucess':bool}
 ```
@@ -157,7 +157,7 @@ receive: {'sucess':bool}
 - related response
 
 ```
-/quesiton/related/response
+/quesitons/related/response
 send: {'question_id':'', 'response':''}
 receive: {'sucess':bool}
 ```
@@ -165,7 +165,7 @@ receive: {'sucess':bool}
 - related modify response
 
 ```
-/quesiton/related/modify_response
+/quesitons/related/modify_response
 send: {'question_id':'', 'response_id':'', 'response_content':''}
 receive: {'sucess':bool}
 ```
