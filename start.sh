@@ -5,5 +5,5 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 echo $SCRIPTPATH
 
-(cd $SCRIPTPATH/project exec ./mvnw clean package)
-java -jar $SCRIPTPATH/project/target/beautifulthu-0.1.0.jar --server.address=0.0.0.0
+(cd $SCRIPTPATH/project; exec ./mvnw clean package)
+java -jar $SCRIPTPATH/project/target/beautifulthu-0.1.0.jar --server.address=0.0.0.0 --server.port=8181
