@@ -1,5 +1,29 @@
 # BeautifulTHU
 
+## Usage
+
+- Use spring-boot
+
+```
+cd project
+./mvnw spring-boot:run
+```
+
+- Build and run mannually.
+
+```
+cd project
+./mvnw clean package
+java -jar target/gs-rest-service-0.1.0.jar
+```
+OR
+
+```
+# server.address = 0.0.0.0
+$ ./start.sh
+```
+
+
 ## API of School Part:
 
 ### Post
