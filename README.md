@@ -47,8 +47,8 @@ receive: {'role':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':''}
 
 ```
 /info/set
-send: {'resp_person':'', 'fixed_phone':'', 'mobile_phone':'', 'passwd':''}
-receive: {'sucess':bool}
+send: {'uname':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':'', 'passwd':''}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 *none for not modify*
@@ -58,37 +58,64 @@ receive: {'sucess':bool}
 ```
 /contact/get
 send: none
-receive: [{'role':'', 'uname':'', 'resp_person':'', 
-    'fixed_phone':'', 'mobile_phone':'', 'passwd':''}]
+receive: [{'role':'', 'uname':'', 'resp_person':'',
+    'fixed_phone':'', 'mobile_phone':''}]
 ```
 
 - Set contact table content, only TuanWei can modify.
 
 ```
 /contact/set
-send: {'role':'', 'uname':'', 'resp_person':'', 'fixed_phone':'', 
+send: {'role':'', 'uname':'', 'resp_person':'', 'fixed_phone':'',
     'mobile_phone':'', 'passwd':'', 'is_new':bool}
-    receive: {'sucess':bool}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 - Get questions list. (multi parts?)
 
 ```
 /questions/main/get_all
-send: none
-receive: [{'question_id':'', 'created_time':'', 'status':'', 'resp_role':'', 
-    'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'', 
-    'is_common_top':bool, 'reclassify_reason':''}]
+send: {'start':int, 'number':int}
+receive: [{'question_id':'', 'created_time':'', 'timestamp1':'', 'timestamp2':'',
+    'timestamp3':'' 'status':'', 'resp_role':'',
+    'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'',
+    'is_common_top':bool, 'reclassify_reason':'', 'created_location':'', 'likes':int}]
 ```
-
-*sort and make delay&reclassify on the top.*
 
 - Get question detail
 
 ```
-/questions/main/get_detail
+/questions/related/get_detail
 send: {'question_id':''}
-receive: {'created_location':'', 'pic_path':['','']}
+receive: {'opinion':'', 'pic_path':['',''],
+    'responses':[{'response_id':'', 'response_content':''}]}
+```
+
+
+*sort and make delay&reclassify on the top.*
+
+- main response
+
+```
+/questions/main/response
+send: {'question_id':'', 'response_content':''}
+receive: {'sucess':bool, 'msg':''}
+```
+
+- main reject
+
+```
+/questions/main/reject
+send: {'question_id':'', 'response_content':''}
+receive: {'sucess':bool, 'msg':''}
+```
+
+- main forward
+
+```
+/questions/main/forward
+send: {'question_id':'', 'forward':'role'}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 - main delay
@@ -96,7 +123,7 @@ receive: {'created_location':'', 'pic_path':['','']}
 ```
 /questions/main/delay
 send: {'question_id':''}
-receive: {'sucess':bool}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 *back-end verify status.*
@@ -105,8 +132,8 @@ receive: {'sucess':bool}
 
 ```
 /quesitons/main/classify
-send: {'question_id':'', 'leader_role':'', 'other_roles':[], 'deadline':''}
-receive: {'sucess':bool}
+send: {'question_id':'', 'leader_role':'', 'other_roles':[], 'deadline':'', 'opinion':''}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 *back-end verify status.*
@@ -116,8 +143,8 @@ receive: {'sucess':bool}
 ```
 /questions/related/get_all
 send: none
-receive: [{'question_id':'', 'created_time':'', 'deadline':'', 
-    'created_location':'', 'status':'', 'content':'', 'likes':number, 
+receive: [{'question_id':'', 'created_time':'', 'deadline':'',
+    'created_location':'', 'status':'', 'content':'', 'likes':number,
     'is_read':bool, 'is_common':bool, 'is_common_top':bool}]
 ```
 
@@ -128,7 +155,7 @@ receive: [{'question_id':'', 'created_time':'', 'deadline':'',
 ```
 /questions/related/get_detail
 send: {'question_id':''}
-receive: {'message':'', 'pic_path':['',''], 
+receive: {'opinion':'', 'pic_path':['',''],
     'responses':[{'response_id':'', 'response_content':''}]}
 ```
 
@@ -139,17 +166,17 @@ receive: {'message':'', 'pic_path':['',''],
 ```
 /quesitons/related/reclassify
 send: {'question_id':'', 'reclassify_reason':''}
-receive: {'sucess':bool}
+receive: {'sucess':bool, 'msg':''}
 ```
 
-*back-end verify status.*
+*back-end verify status & question category.*
 
 - related apply for delay
 
 ```
 /quesitons/related/delay
-send: {'question_id':'', 'delay_reason':'', 'delay_days':''}
-receive: {'sucess':bool}
+send: {'question_id':'', 'delay_reason':'', 'delay_days':int}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 *back-end verify status.*
@@ -158,8 +185,8 @@ receive: {'sucess':bool}
 
 ```
 /quesitons/related/response
-send: {'question_id':'', 'response':''}
-receive: {'sucess':bool}
+send: {'question_id':'', 'response_content':''}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 - related modify response
@@ -167,7 +194,7 @@ receive: {'sucess':bool}
 ```
 /quesitons/related/modify_response
 send: {'question_id':'', 'response_id':'', 'response_content':''}
-receive: {'sucess':bool}
+receive: {'sucess':bool, 'msg':''}
 ```
 
 - TuanWei, QA, get all questions, same as above
@@ -176,15 +203,15 @@ receive: {'sucess':bool}
 ```
 /qa/add
 send: {'question_id':''}
-receive: {'sucess':bool}
+receive: {'sucess':bool, 'msg':''}
 
 /qa/del
 send: {'question_id':''}
-receive: {'sucess':bool}
+receive: {'sucess':bool, 'msg':''}
 
 /qa/top
 send: {'question_id':''}
-receive: {'sucess':bool}
+receive: {'sucess':bool, 'msg':''}
 ```
 *back-end verify question property*
 
@@ -283,16 +310,19 @@ receive: {'item1':number, ...}
 
 ### 用户表
 （部门可以多个账号，一个账号只能同时在线一个）
-用户id；用户名；密码；手机号；邮箱；学号；
+用户id；用户名；角色名（英文）；密码；手机号；固定电话；邮箱；学号；
 
 ### 角色表（**非牵头小于等于无关**）
-名字；权限等级；通讯录修改；问题拒绝；问题回复；问题转交；问题分类；延长ddl；回答审核；收到问题总数；按时完成数；超时完成数；拒绝问题数；直接回复数；
+角色名（英文）；显示名字（中文）；通讯录修改；问题拒绝；问题回复；问题转交；问题分类；延长ddl；问题审核；收到问题总数；按时完成数；超时完成数；拒绝问题数；直接回复数；同学满意率；同学不满意率；
 名字包括：学生，三个，其他部门；
 
 ### 问题表
 （审核+分类时间超时如何处理？校办和总办各自拥有1h）
-问题id；标题；图片；内容；创建者id；问题类别（牵头部门）；状态（待审核、待分类、待解决、已解决、无效）；学生评价；问题创建位置；
-问题创建时间；点赞数；ddl；转交时间1；转交时间2；是否是常见问题；是否是常见问题置顶；
+问题id；标题；内容；创建者id；问题类别（牵头部门）；状态（待审核、待分类、待解决、解决中（不可再分类）、审核再分类、审核延期、已解决、无效）；学生满意度；学生评价内容；问题创建位置；
+问题创建时间；点赞数；ddl；处理时间1（校团委）；处理时间2（校办）；处理时间3（总办）；是否是常见问题；是否是常见问题置顶；主管部门意见；
+
+### 问题图片表
+问题id；图片路径；
 
 ### 非牵头部门表
 问题id；一个部门id；
