@@ -85,7 +85,7 @@ receive: [{'question_id':'', 'created_time':'', 'timestamp1':'', 'timestamp2':''
 - Get question detail
 
 ```
-/questions/related/get_detail
+/questions/main/get_detail
 send: {'question_id':''}
 receive: {'opinion':'', 'pic_path':['',''],
     'responses':[{'response_id':'', 'response_content':''}]}
@@ -97,7 +97,7 @@ receive: {'opinion':'', 'pic_path':['',''],
 - main response
 
 ```
-/questions/main/response
+/questions/main/responseq
 send: {'question_id':'', 'response_content':''}
 receive: {'sucess':bool, 'msg':''}
 ```
@@ -142,7 +142,7 @@ receive: {'sucess':bool, 'msg':''}
 
 ```
 /questions/related/get_all
-send: none
+send: {'start':int, 'number':int}
 receive: [{'question_id':'', 'created_time':'', 'deadline':'',
     'created_location':'', 'status':'', 'content':'', 'likes':number,
     'is_read':bool, 'is_common':bool, 'is_common_top':bool}]
