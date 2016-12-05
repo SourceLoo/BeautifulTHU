@@ -40,6 +40,14 @@ receive: [{'role1':'displayname1', ...}, {...}]
 ```
 /auth/login
 send: {'uname':'', 'passwd':''}
+receive: {'sucess':bool, 'msg':''}
+```
+
+- logout.
+
+```
+/auth/logout
+send: none
 receive: {'role':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':''}
 ```
 
