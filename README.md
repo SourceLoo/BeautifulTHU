@@ -235,30 +235,123 @@ receive: {'item1':number, ...}
 
 ### Get
 
-- Getting all the question that this user can view by part.
+- Getting all the question that this user can view by page part.
 
 ```json
-/question/all/PART_NUM
+GET: /question/all/?page_size={PAGE_SIZE}&page_num={PAGE_NUM}&state_condition={STATE_CONDITION}&depart_condition={DEPART_CONDITION}&order_type={ORDER_TYPE}&keywords={KEYWORDS}
 {
-  "questionUrlList" : ["/question/QUESTION_ID_1","/question/QUESTION_ID_2"]
+  "question_list" : [
+    {
+        "question_id" : "QUESTION_ID",
+        "question_title" : "QUESTION_TITLE",
+        "question_content" : "QUESTION_CONTENT",
+        "question_location" : "QUESTION_LOCATION",
+        "like_num" : "like number"
+    }
+    ]
 }
 ```
+
 
 - Getting detail of certain question.
 
 ```json
-/question/QUESTION_ID
+GET: /question/?question_id={QUESTION_ID}
 {
-  "id" : "",
-  "title" : "",
-  "photo" : "",
-  "text" : "",
-  "creatorUrl" : "",
-  "leaderDepartment" : "",
-  "statu" : "",
-  "createTime" : "",
-  "location" : "",
-  "likeNum" : ""
+  "id" : "QUESTION_ID",
+  "title" : "QUESTION_TITLE",
+  "photo" : [
+    {
+        url : "IMG_URL"
+    }
+  ],
+  "question_title" : "QUESTION_TITLE",
+  "question_content" : "QUESTION_CONTENT",
+  "creator_id" : "CREATOR_ID",
+  "leader_department" : "DEPT",
+  "status" : "STATUS",
+  "reply_content" : "REPLY_CONTENT"
+}
+```
+
+- Getting all the Q&A question that this user can view by page part.
+
+```json
+GET: /regular_question/all/?page_size={PAGE_SIZE}&page_num={PAGE_NUM}&state_condition={STATE_CONDITION}&depart_condition={DEPART_CONDITION}&order_type={ORDER_TYPE}&keywords={KEYWORDS}
+{
+  "question_list" : [
+    {
+        "question_id" : "QUESTION_ID",
+        "question_title" : "QUESTION_TITLE",
+        "question_content" : "QUESTION_CONTENT",
+        "question_location" : "QUESTION_LOCATION",
+        "like_num" : "like number"
+    }
+    ]
+}
+```
+
+- Getting progress of certain classified question.
+
+```json
+Get: /new_classify/{QUESTION_ID}
+{
+    "leader_department": "DEPT",
+    "upperbound_month": "MONTH",
+    "upperbound_day": "DAY"
+}
+```
+
+- Getting newly response of certain question.
+
+```json
+Get: /new_response/{QUESTION_ID}
+{
+    "leader_department": "DEPT",
+    "question_title": "QUESTION_TITLE",
+    "question_content": "QUESTION_CONTENT",
+    "response_content": "RESPONSE_CONTENT",
+    "response_id": "RESPONSE_ID"
+}
+```
+
+- Getting append response of certain question.
+
+```json
+Get: /append_response/{QUESTION_ID}
+{
+    "leader_department": "DEPT",
+    "question_title": "QUESTION_TITLE",
+    "question_content": "QUESTION_CONTENT",
+    "response_content": "RESPONSE_CONTENT",
+    "response_id": "RESPONSE_ID"
+}
+```
+
+- Getting all the responses of certain question.
+
+```json
+Get: /append_response/{QUESTION_ID}
+{
+    "leader_department": "DEPT",
+    "question_title": "QUESTION_TITLE",
+    "question_content": "QUESTION_CONTENT",
+    "response_list" : [{
+        "response_content": "RESPONSE_CONTENT",
+        "response_id": "RESPONSE_ID"
+    }]
+}
+```
+
+- Getting all the departments.
+
+```json
+Get: /getDept/all
+{
+    "dept_list" : [{
+        "name" : "DEPT_NAME",
+        "id" : "DEPT_ID"
+    }]
 }
 ```
 
@@ -266,38 +359,61 @@ receive: {'item1':number, ...}
 
 - Get permission to login from backend.
 
-```
-/auth/login
+```json
+POST: /auth/login
 ```
 
-- Upload the several pictures and a suggest
+- Upload the several pictures
 
+```json
+POST: /question/upload_img
 ```
-/question/upload
+
+- Upload a question
+
+```json
+POST: /question/upload
+{
+    question_title: "QUESTION_TITLE",
+    question_content: "QUESTION_CONTENT",
+    location: "LOCATION"
+}
+send back:
+{
+    question_id: "QUESTION_ID",
+    upperbound_month: "UPPER_YEAR",
+    upperbound_day: "UPPER_MONTH"
+}
 ```
 
 - Like certain question
 
-```
-/like/question/QUESTION_ID
-```
-
-- Like certain response
-
-```
-/like/response/QUESTION_ID
+```json
+POST: /like/question/
+{
+    question_id: "QUESTION_ID"
+}
 ```
 
+- Evaluate the response
+
+```json
+POST: /evaluate/{RESPONSE_ID}
+{
+    response_id: "RESPONSE_ID",
+    evaluation: "EVALUATION",
+    detail: "DETAIL"
+}
+```
+
+### DELETE
 - Dislike certain question
 
-```
-/dislike/question/RESPONSE_ID
-```
-
-- Dislike certain response
-
-```
-/dislike/response/RESPONSE_ID
+```json
+DELETE: /dislike/question
+{
+    question_id: "QUESTION_ID"
+}
 ```
 
 ##分工：
