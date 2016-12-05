@@ -1,3 +1,4 @@
 project/target
 project/.idea
 project/beautifulthu.iml
+project/src/main/resources/application.properties
