@@ -1,6 +1,7 @@
 package com.thu.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
@@ -8,7 +9,13 @@ import javax.persistence.Id;
  */
 @Entity
 public class Pic {
+    public Pic(String path) {
+        this.path = path;
+    }
+
+    protected Pic() {}
     @Id
+    @GeneratedValue
     private Long id;
     private String path;
 }

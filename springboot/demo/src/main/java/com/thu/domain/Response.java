@@ -14,6 +14,45 @@ public class Response {
     @ManyToOne
     private User responder;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date respondTime;
-    private Long likes;
+    private Date respondTime = new Date();
+    private Long likes = 0L;
+
+    protected Response() {}
+
+    public Response(String responseContent, User responder) {
+        this.responseContent = responseContent;
+        this.responder = responder;
+    }
+
+    public String getResponseContent() {
+        return responseContent;
+    }
+
+    public void setResponseContent(String responseContent) {
+        this.responseContent = responseContent;
+    }
+
+    public User getResponder() {
+        return responder;
+    }
+
+    public void setResponder(User responder) {
+        this.responder = responder;
+    }
+
+    public Date getRespondTime() {
+        return respondTime;
+    }
+
+    public void setRespondTime(Date respondTime) {
+        this.respondTime = respondTime;
+    }
+
+    public Long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Long likes) {
+        this.likes = likes;
+    }
 }
