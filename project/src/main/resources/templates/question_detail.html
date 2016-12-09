@@ -37,30 +37,18 @@
         <div class="weui-cell__bd">
             <p>当前状态</p>
         </div>
-        <div class="weui-cell__ft">发布中</div>
+        <div class="weui-cell__ft">{状态}</div>
     </div>
 </div>
 <div class="page__bd">
     <article class="weui-article">
         <h1>问题详情</h1>
         <section>
-            <h2 class="title">章标题</h2>
+            <h2 class="title">{问题标题}</h2>
             <section>
-                <h3>1.1 节标题</h3>
+                <h3 class="title">{提问者}{提问时间}{提问地点}</h3>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat.
-                </p>
-            </section>
-            <section>
-                <h3>1.2 节标题</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    {问题内容}
                 </p>
             </section>
         </section>
@@ -69,55 +57,7 @@
 <div class="weui-grids">
     <a href="javascript:;" class="weui-grid">
         <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
-        </div>
-        <p class="weui-grid__label">Grid</p>
-    </a>
-    <a href="javascript:;" class="weui-grid">
-        <div class="weui-grid__icon">
-            <img src="./images/icon_tabbar.png" alt="">
+            <img src={第一张图片相对位置,eg.'../image/xx'} alt="">
         </div>
         <p class="weui-grid__label">Grid</p>
     </a>
@@ -127,32 +67,21 @@
         <div class="weui-cell__bd">
             <p>受理部门</p>
         </div>
-        <div class="weui-cell__ft">校教务</div>
+        <div class="weui-cell__ft">{受理部门}</div>
     </div>
 </div>
 <div class="page__bd">
     <article class="weui-article">
         <h1>回复内容</h1>
         <section>
-            <h2 class="title">章标题</h2>
+            <!--开始循环-->
             <section>
-                <h3>1.1 节标题</h3>
+                <h3>{回复号}{回复时间}{回复部门}</h3>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat.
+                    {回复内容}
                 </p>
             </section>
-            <section>
-                <h3>1.2 节标题</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-            </section>
+            <!--循环结束-->
         </section>
     </article>
 </div>
