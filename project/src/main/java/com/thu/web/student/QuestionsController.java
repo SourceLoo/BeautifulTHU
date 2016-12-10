@@ -4,6 +4,8 @@ import com.thu.domain.Question;
 import com.thu.domain.QuestionRepository;
 import com.thu.domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,9 @@ public class QuestionsController {
     // 得到当前会话
     @Autowired
     HttpSession session;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @GetMapping(value = "/")
     public Object getAQuestion(@RequestParam("question_id") Long questionId)
@@ -50,7 +55,7 @@ public class QuestionsController {
                                @RequestParam("keywords") String searchKey)
     {
         // pageSize 由后台自定义
-        Integer pageSize = 10;
+        Integer pageSize = 1;
         Integer userId = (Integer)session.getAttribute("userId");
 
         /* sql:
@@ -60,9 +65,25 @@ public class QuestionsController {
 
         //System.out.println(pageNum + '\t' + filterType + '\t' + orderType);
 
-        List<Question> questions = new ArrayList<>();
-        questions.add(new Question("标题1", "标题1"));
-        questions.add(new Question("标题2", "内容2"));
+        Page<Question> questionPage = questionRepository.findAll(new PageRequest(pageNum, pageSize));
+
+        //List<Question> questions = questionRepository.findAll();
+
+        List<Question> questions = questionPage.getContent();
+        System.out.println("begin");
+        for (Question question : questions)
+        {
+            System.out.println(question);
+            question.setLeaderRole(null);
+            question.setOtherRoles(null);
+            //question.setPics(null);
+            question.setUser(null);
+        }
+        System.out.println("done");
+
+        //List<Question> questions = new ArrayList<>();
+        //questions.add(new Question("标题1", "标题1"));
+        //questions.add(new Question("标题2", "内容2"));
 
         return questions;
     }

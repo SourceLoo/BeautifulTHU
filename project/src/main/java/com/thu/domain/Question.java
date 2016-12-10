@@ -15,7 +15,7 @@ public class Question {
     private String content;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
-    @OneToOne(optional = false)
+    @OneToOne(optional = true)
     private Role leaderRole;
     @OneToMany
     private List<Role> otherRoles = new ArrayList<Role>();
