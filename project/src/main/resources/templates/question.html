@@ -8,10 +8,135 @@
     <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css"/>
     <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
     <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <!--<link rel="stylesheet" href="/style/weui.css"/>-->
+    <!--<link rel="stylesheet" href="/style/weui2.css"/>-->
+    <!--<link rel="stylesheet" href="/style/weui3.css"/>-->
+    <script src="/script/zepto.min.js"></script>
+    <script src="/script/updown.js"></script>
+    <!--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>-->
     <!-- <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
     <!-- <script src="https://weui.io/weui.min.js"></script> -->
     <!-- <script src="https://weui.io/example.js"></script> -->
+    <script>
+$(function(){
+    var counter = 0;
+    // 每页展示4个
+    var num = 4;
+    var page=1;
+    // dropload
+    $('.weui_panel').dropload({
+        scrollArea : window,
+        autoLoad : true,
+        domDown : {//上拉
+            domClass   : 'dropload-down',
+            domRefresh : '<div class="dropload-refresh f15 "><i class="icon icon-20"></i>上拉加载更多</div>',
+            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>',
+            domNoData  : '<div class="dropload-noData">没有更多数据了</div>'
+        },
+        domUp : {//下拉
+            domClass   : 'dropload-up',
+            domRefresh : '<div class="dropload-refresh"><i class="icon icon-114"></i>上拉加载更多</div>',
+            domUpdate  : '<div class="dropload-load f15"><i class="icon icon-20"></i>释放更新...</div>',
+            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>'
+        },
+        loadUpFn : function(me){//刷新
+            counter = 0
+            pageStart = 0
+            pageEnd = 0
+            page = 1
+            $.ajax({
+                type: 'GET',
+                url: '/question/all/',
+                dataType: 'json',
+                data: {
+                    page_size : num,
+                    page_num : page,
+                    state_condition : $('#status').val(),
+                    depart_condition : $('#dept').val(),
+                    order_type : $('#order').val(),
+                    keywords : ""
+                },
+                success: function(data){
+                    var result = '';
+                    for(var i = 0; i < data.question_list.length; i++){
+                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
+                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
+                                 '<ul class="weui-media-box__info">'
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
+                                 '</ul>'
+                                 '</div>';
+                    }
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        $('.weui_panel_bd').html(result);
+                        // 每次数据加载完，必须重置
+                        me.resetload();
+                        // 重置索引值，重新拼接more.json数据
+                        counter = 0;
+                        // 解锁
+                        me.unlock();
+                        me.noData(false);
+                    },1000);
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                    // 即使加载出错，也得重置
+                    me.resetload();
+                }
+            });
+        },
+        loadDownFn : function(me){//加载更多
+            $.ajax({
+                type: 'GET',
+                url: '/question/all/',
+                dataType: 'json',
+                data: {
+                    page_size : num,
+                    page_num : page,
+                    state_condition : $('#status').val(),
+                    depart_condition : $('#dept').val(),
+                    order_type : $('#order').val(),
+                    keywords : ""
+                },
+                success: function(data){
+                    var result = '';
+                    counter++;
+                    page++;
+                    for(var i = 0; i < data.question_list.length; i++){
+                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
+                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
+                                 '<ul class="weui-media-box__info">'
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
+                                 '</ul>'
+                                 '</div>';
+                    }
+                    if(data.question_list.length == 0) {
+                            // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                    }
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        $('.weui_panel_bd').append(result);
+                        // 每次数据加载完，必须重置
+                        me.resetload();
+                    },1000);
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                    // 即使加载出错，也得重置
+                    me.resetload();
+                }
+            });
+        }
+    });
+});
+</script>
     <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
 .en-markup-crop-options {
     top: 18px !important;
@@ -31,7 +156,7 @@
 }
 </style>
 </head>
-<br ontouchstart>
+<body ontouchstart>
 <div class="page__bd">
     <!-- <a href="javascript:;" class="weui-btn weui-btn_primary">点击展现searchBar</a> -->
     <div class="weui-search-bar" id="searchBar">
@@ -114,72 +239,200 @@
             cancelSearch();
             $searchInput.blur();
         });
+
+        $('#searchInput').on('change', function(){
+            var status = $('#status').val(),
+                dept = $('#dept').val(),
+                order = $('#order').val(),
+                type = $('#type').val(),
+                keyword = $(this).val()
+            var get_url = '';
+            if (type == 'all') {
+                get_url = '/question/all/'
+            } else {
+                get_url = '/regular_question/all/'
+            }
+            $.ajax({
+                type: 'GET',
+                url: '/question/all/',
+                dataType: 'json',
+                data: {
+                    page_size : 4,
+                    page_num : 1,
+                    state_condition : status,
+                    depart_condition : dept,
+                    order_type : order,
+                    keywords : keyword
+                },
+                success: function(data) {
+                    var result = '';
+                    for(var i = 0; i < data.question_list.length; i++) {
+                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
+                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
+                                 '<ul class="weui-media-box__info">'
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
+                                 '</ul>'
+                                 '</div>';
+                   }
+                   $('.weui_panel_bd').append(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+        });
     });</script>
-<br>
 <div class="page__bd page__bd_spacing">
-    <div class="weui-flex">
-        <div class="weui-flex__item">
-            <select class="weui-select" name="select1">
-                <option selected="" value="1">微信号</option>
-                <option value="2">QQ号</option>
-                <option value="3">Email</option>
-            </select>
+    <div class="weui-cells">
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">当前状态</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="status">
+                    <option value="all">所有状态</option>
+                    <option value="waiting">等待受理</option>
+                    <option value="process">受理</option>
+                    <option value="classify">分类</option>
+                    <option value="reply">答复</option>
+                    <option value="append">追答</option>
+                </select>
+            </div>
         </div>
-        <div class="weui-flex__item">
-            <select class="weui-select" name="select1">
-                <option selected="" value="1">微信号</option>
-                <option value="2">QQ号</option>
-                <option value="3">Email</option>
-            </select>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">所属部门</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="dept">
+                    <option value="all">所有部门</option>
+                    <option value="dept1">部门1</option>
+                    <option value="dept2">部门2</option>
+                </select>
+            </div>
         </div>
-        <div class="weui-flex__item">
-            <select class="weui-select" name="select1">
-                <option selected="" value="1">微信号</option>
-                <option value="2">QQ号</option>
-                <option value="3">Email</option>
-            </select>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">排序方式</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="order">
+                    <option value="none">不排序</option>
+                    <option value="likenum">附议数量</option>
+                    <option value="time">提问时间</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">问题类别</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="type">
+                    <option value="all">所有问题</option>
+                    <option value="qa">常见问题Q&A</option>
+                </select>
+            </div>
         </div>
     </div>
 </div>
-<br>
-<div class="weui-panel__bd">
-    <div class="weui-media-box weui-media-box_text">
-        <h4 class="weui-media-box__title">标题一</h4>
-        <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-        <ul class="weui-media-box__info">
-            <li class="weui-media-box__info__meta">文字来源</li>
-            <li class="weui-media-box__info__meta">时间</li>
-            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-        </ul>
-    </div>
-    <div class="weui-media-box weui-media-box_text">
-        <h4 class="weui-media-box__title">标题一</h4>
-        <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-        <ul class="weui-media-box__info">
-            <li class="weui-media-box__info__meta">文字来源</li>
-            <li class="weui-media-box__info__meta">时间</li>
-            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-        </ul>
-    </div>
-    <div class="weui-media-box weui-media-box_text">
-        <h4 class="weui-media-box__title">标题一</h4>
-        <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-        <ul class="weui-media-box__info">
-            <li class="weui-media-box__info__meta">文字来源</li>
-            <li class="weui-media-box__info__meta">时间</li>
-            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-        </ul>
-    </div>
-    <div class="weui-media-box weui-media-box_text">
-        <h4 class="weui-media-box__title">标题一</h4>
-        <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-        <ul class="weui-media-box__info">
-            <li class="weui-media-box__info__meta">文字来源</li>
-            <li class="weui-media-box__info__meta">时间</li>
-            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-        </ul>
+<script type="text/javascript">
+    $(function(){
+        $('select').on('change', function(){
+            var status = $('#status').val(),
+                dept = $('#dept').val(),
+                order = $('#order').val(),
+                type = $('#type').val()
+            var get_url = '';
+            if (type == 'all') {
+                get_url = '/question/all/'
+            } else {
+                get_url = '/regular_question/all/'
+            }
+            $.ajax({
+                type: 'GET',
+                url: '/question/all/',
+                dataType: 'json',
+                data: {
+                    page_size : 4,
+                    page_num : 1,
+                    state_condition : status,
+                    depart_condition : dept,
+                    order_type : order,
+                    keywords : ""
+                },
+                success: function(data) {
+                    var result = '';
+                    for(var i = 0; i < data.question_list.length; i++) {
+                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
+                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
+                                 '<ul class="weui-media-box__info">'
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
+                                 '</ul>'
+                                 '</div>';
+                   }
+                   $('.weui_panel_bd').append(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+        });
+    });</script>
+
+<div class="weui_panel weui_panel_access" >
+    <div class="weui_panel_bd">
+        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
+            <h4 class="weui-media-box__title">标题一</h4>
+            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">文字来源</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
+            </ul>
+        </div>
+        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
+            <h4 class="weui-media-box__title">标题一</h4>
+            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">文字来源</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
+            </ul>
+        </div>
+        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
+            <h4 class="weui-media-box__title">标题一</h4>
+            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">文字来源</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
+            </ul>
+        </div>
+        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
+            <h4 class="weui-media-box__title">标题一</h4>
+            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">文字来源</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
+            </ul>
+        </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(function(){
+        $('#question').on('click', function(){
+            $.ajax({
+                type: 'GET',
+                url: '/question_detail',
+                dataType: 'json',
+                data: {
+                    question_id : $(this).attr("question_id");
+                }
+            });
+        });
+    });</script>
 <!-- 使用 -->
 </body>
 </html>
