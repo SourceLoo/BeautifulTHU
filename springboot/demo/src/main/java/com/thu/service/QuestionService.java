@@ -275,10 +275,16 @@ public class QuestionService {
             return false;
         }
         if (op) {
+            if (user.getLikedQuestions().contains(question)) {
+                return false;
+            }
             question.incrementLikes();
             user.getLikedQuestions().add(question);
         }
         else {
+            if (!user.getLikedQuestions().contains(question)) {
+                return false;
+            }
             question.decrementLikes();
             user.getLikedQuestions().remove(question);
         }

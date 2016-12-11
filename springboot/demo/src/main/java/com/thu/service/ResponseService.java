@@ -47,10 +47,16 @@ public class ResponseService {
             return false;
         }
         if (op) {
+            // vote up
+            if (user.getLikedRespones().contains(response)) {
+                return false;
+            }
             response.incrementLikes();
             user.getLikedRespones().add(response);
         }
         else {
+            // cancel vote
+            if (!user.getLikedRespones().contains(response))
             response.decrementLikes();
             user.getLikedRespones().remove(response);
         }
