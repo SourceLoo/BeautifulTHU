@@ -41,9 +41,11 @@ public class User {
     }
 
     public String getPasswd() {
-        return passwd;
+        return this.passwd;
     }
-
+    public boolean checkPasswd(String passwd){
+        return passwordEncoder.encode(passwd).equals(this.passwd);
+    }
     public void setPasswd(String passwd) {
         this.passwd = passwordEncoder.encode(passwd);
     }
