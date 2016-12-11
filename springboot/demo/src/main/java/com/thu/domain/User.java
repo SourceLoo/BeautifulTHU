@@ -5,7 +5,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -29,6 +31,10 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String idNumber;
+    @OneToMany
+    private List<Question> likedQuestions = new ArrayList<Question>();
+    @OneToMany
+    private List<Response> likedRespones = new ArrayList<Response>();
 
     protected User () {}
 
@@ -88,6 +94,22 @@ public class User {
         this.idNumber = idNumber;
     }
 
+    public List<Question> getLikedQuestions() {
+        return likedQuestions;
+    }
+
+    public void setLikedQuestions(List<Question> likedQuestions) {
+        this.likedQuestions = likedQuestions;
+    }
+
+    public List<Response> getLikedRespones() {
+        return likedRespones;
+    }
+
+    public void setLikedRespones(List<Response> likedRespones) {
+        this.likedRespones = likedRespones;
+    }
+
     public User(String uname, String passwd, Role role, String mobileNumber, String fixedNumber, String email, String idNumber) {
         this.uname = uname;
         setPasswd(passwd);
@@ -97,6 +119,8 @@ public class User {
         this.email = email;
         this.idNumber = idNumber;
     }
+
+
 
 //    public User(String uname, String passwd, String mobileNumber, String fixedNumber, String email, String idNumber) {
 //        PasswordEncoder passwordEncoder;

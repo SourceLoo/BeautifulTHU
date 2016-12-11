@@ -15,14 +15,15 @@ public class Question {
     private String content;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
-    @OneToOne(optional = false)
+    @OneToOne
     private Role leaderRole;
     @OneToMany
     private List<Role> otherRoles = new ArrayList<Role>();
 
     private Status status = Status.UNCLASSIFIED;
-    private Long likes;
-    private String comment;
+    private Long likes = 0L;
+    private EvaluationType evaluationType;
+    private String evaluationDetail;
     private String createdLocation;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
@@ -37,10 +38,10 @@ public class Question {
     private Boolean isCommon;
     private Boolean isCommonTop;
 
-    private Integer delayDays = 0;
-    private String delayReason = null;
-    private String reclassifyReason = null;
-    private String rejectReason = null;
+    private Integer delayDays;
+    private String delayReason;
+    private String reclassifyReason;
+    private String rejectReason;
 
     @ManyToOne
     private Role transferRole;
@@ -53,6 +54,17 @@ public class Question {
     private List<Response> responses = new ArrayList<Response>();
 
     protected Question() {}
+
+    public Question(String title, String content, User user, String createdLocation, List<String> picPaths) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+        this.createdLocation = createdLocation;
+        this.createdTime = new Date();
+        for (String path: picPaths) {
+            pics.add(new Pic(path));
+        }
+    }
 
     public String getTitle() {
         return title;
@@ -102,12 +114,20 @@ public class Question {
         this.likes = likes;
     }
 
-    public String getComment() {
-        return comment;
+    public EvaluationType getEvaluationType() {
+        return evaluationType;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setEvaluationType(EvaluationType evaluationType) {
+        this.evaluationType = evaluationType;
+    }
+
+    public String getEvaluationDetail() {
+        return evaluationDetail;
+    }
+
+    public void setEvaluationDetail(String evaluationDetail) {
+        this.evaluationDetail = evaluationDetail;
     }
 
     public String getCreatedLocation() {
@@ -256,5 +276,15 @@ public class Question {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void incrementLikes() {
+        this.likes += 1;
+    }
+
+    public void decrementLikes() {
+        if (this.likes > 0) {
+            this.likes -= 1;
+        }
     }
 }

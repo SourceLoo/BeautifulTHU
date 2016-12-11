@@ -3,8 +3,10 @@ package com.thu.service;
 import com.thu.domain.Response;
 import com.thu.domain.ResponseRepositiry;
 import com.thu.domain.User;
+import com.thu.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -15,6 +17,8 @@ import java.util.Date;
 public class ResponseService {
     @Autowired
     private ResponseRepositiry responseRepositiry;
+    @Autowired
+    private UserRepository userRepository;
 
     public Response respond(String responseContent, User responder) {
         return new Response(responseContent, responder);
@@ -29,6 +33,30 @@ public class ResponseService {
         response.setRespondTime(new Date());
         try {
             responseRepositiry.save(response);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean modifyResponseLike(User user, Long responseId, boolean op)
+    {
+        Response response = responseRepositiry.findByResponseId(responseId);
+        if (response == null) {
+            return false;
+        }
+        if (op) {
+            response.incrementLikes();
+            user.getLikedRespones().add(response);
+        }
+        else {
+            response.decrementLikes();
+            user.getLikedRespones().remove(response);
+        }
+        try {
+            responseRepositiry.save(response);
+            userRepository.save(user);
             return true;
         } catch (Exception e) {
             return false;

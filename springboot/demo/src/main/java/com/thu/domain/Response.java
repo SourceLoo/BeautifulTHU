@@ -55,4 +55,14 @@ public class Response {
     public void setLikes(Long likes) {
         this.likes = likes;
     }
+
+    public void incrementLikes() {
+        this.likes += 1;
+    }
+
+    public void decrementLikes() {
+        if (this.likes > 0) {
+            this.likes -= 1;
+        }
+    }
 }
