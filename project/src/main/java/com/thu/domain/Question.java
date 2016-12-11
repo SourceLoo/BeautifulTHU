@@ -8,6 +8,10 @@ import java.util.*;
  */
 @Entity
 public class Question {
+    public Long getQuestionId() {
+        return questionId;
+    }
+
     @Id
     @GeneratedValue
     private Long questionId;

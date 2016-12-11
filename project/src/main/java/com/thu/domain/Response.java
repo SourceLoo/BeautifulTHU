@@ -24,6 +24,10 @@ public class Response {
         this.responder = responder;
     }
 
+    public Long getResponseId() {
+        return responseId;
+    }
+
     public String getResponseContent() {
         return responseContent;
     }

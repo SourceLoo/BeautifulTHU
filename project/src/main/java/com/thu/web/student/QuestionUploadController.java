@@ -64,6 +64,7 @@ public class QuestionUploadController {
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + new Random().nextInt()+originalFilename.substring(originalFilename.lastIndexOf("."));
 
 
+                directory = "img";
                 String filepath = Paths.get(directory, fileName).toString();
 
                 // Save the file locally
