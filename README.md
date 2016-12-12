@@ -66,7 +66,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /contact/get
 send: none
-receive: [{'role':'', 'uname':'', 'resp_person':'',
+receive: [{'display_name':'', 'uname':'', 'resp_person':'',
     'fixed_phone':'', 'mobile_phone':''}]
 ```
 
@@ -74,7 +74,7 @@ receive: [{'role':'', 'uname':'', 'resp_person':'',
 
 ```
 /contact/set
-send: {'role':'', 'uname':'', 'resp_person':'', 'fixed_phone':'',
+send: {'display_name':'', 'uname':'', 'resp_person':'', 'fixed_phone':'',
     'mobile_phone':'', 'passwd':'', 'is_new':bool}
 receive: {'sucess':bool, 'msg':''}
 ```
