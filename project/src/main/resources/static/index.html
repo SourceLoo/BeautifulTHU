@@ -1,10 +1,262 @@
-<!DOCTYPE HTML>
-<html>
+<!doctype html>
+<html lang="zh-CN">
+
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Dash Chen" />
+    <title>美丽清华</title>
+    <link rel='shortcut icon' href='images/favicon.ico' type='image/x-icon' />
+    <link type="text/css" href="css/font-awesome.min.css" rel="stylesheet" />
+    <link type="text/css" href="css/application.css" rel="stylesheet" />
 </head>
-<body>
-    <p>Get your greeting <a href="/greeting">here</a></p>
+
+<body class="thu-body thu-dirty">
+
+    <!--Component Part-->
+    <script type="text/x-template" id="error">
+        <div class="thu-tiddler-frame">
+            <div class="thu-tiddler-title">
+                <div class="thu-titlebar">
+                    <span class="thu-tiddler-controls">
+                        <a href="javascript:;"> <i class="fa fa-info-circle" aria-hidden="true"></i> </a>
+                    </span>
+                    <span> <h2 class="thu-title"> 该页面无法访问 </h2> </span>
+                </div>
+            </div>
+            <div class="thu-tiddler-body">
+                <p><strong>请尝试以下操作</strong></p>
+                <p>确保您已获取正确的网址</p>
+                <p>重新登录</p>
+                <p>联络相关技术人员</p>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="introduction">
+        <div class="thu-tiddler-frame">
+            <div class="thu-tiddler-title">
+                <div class="thu-titlebar">
+                    <span class="thu-tiddler-controls">
+                        <a href="javascript:;"> <i class="fa fa-info-circle" aria-hidden="true"></i> </a>
+                    </span>
+                    <span> <h2 class="thu-title"> 使用指南与介绍 </h2> </span>
+                </div>
+                <div class="thu-subtitle">
+                    更新日期：25th July 2016 at 4:48pm
+                </div>
+            </div>
+            <div class="thu-tiddler-body">
+                <p><strong>Have you ever had the feeling that your head is not quite big enough to hold everything you need to remember?</strong></p>
+                <p>Use it to keep your , to plan an , or to organise your wedding. Record every thought that crosses your brain, or build a flexible and responsive website.</p>
+                <p>Unlike conventional online services, lets you choose where to keep your data, guaranteeing that in the decades to come you will still be able to use the notes you take today.</p>
+                <table>
+                    <tr>adsffa</tr>
+                </table>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="questions">
+        <div class="thu-tiddler-frame">
+            <div class="thu-tiddler-title">
+                <div class="thu-titlebar">
+                    <span class="thu-tiddler-controls">
+                        <a href="javascript:;"> <i class="fa fa-info-circle" aria-hidden="true"></i> </a>
+                    </span>
+                    <span> <h2 class="thu-title"> HelloThere </h2> </span>
+                </div>
+                <div class="thu-subtitle">
+                    <a class="thu-link thu-link-missing" href="#">
+                    </a> 25th July 2016 at 4:48pm
+                </div>
+                <div class="thu-tags-wrapper">
+                    <span class="thu-tag-list-item">
+                        <span class="thu-tag-label">
+                            Status
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="thu-tiddler-body">
+                <p><strong>Have you ever had the feeling that your head is not quite big enough to hold everything you need to remember?</strong></p>
+                <p>Use it to keep your , to plan an , or to organise your wedding. Record every thought that crosses your brain, or build a flexible and responsive website.</p>
+                <p>Unlike conventional online services, lets you choose where to keep your data, guaranteeing that in the decades to come you will still be able to use the notes you take today.</p>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="contact">
+        <div class="thu-tiddler-frame">
+            <div class="thu-tiddler-title">
+                <div class="thu-titlebar">
+                    <span class="thu-tiddler-controls">
+                        <a href="javascript:;"> <i class="fa fa-info-circle" aria-hidden="true"></i> </a>
+                    </span>
+                    <span> <h2 class="thu-title"> 通讯录 </h2> </span>
+                </div>
+                <div class="thu-subtitle">
+                    <a class="thu-link thu-link-missing" href="#">
+                    </a> 25th July 2016 at 4:48pm
+                </div>
+                <div class="thu-tags-wrapper">
+                    <span class="thu-tag-list-item">
+                        <span class="thu-tag-label">
+                            Status
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="thu-tiddler-body">
+                <p><strong>Have you ever had the feeling that your head is not quite big enough to hold everything you need to remember?</strong></p>
+                <p>Use it to keep your , to plan an , or to organise your wedding. Record every thought that crosses your brain, or build a flexible and responsive website.</p>
+                <p>Unlike conventional online services, lets you choose where to keep your data, guaranteeing that in the decades to come you will still be able to use the notes you take today.</p>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="qa">
+        <div class="thu-tiddler-frame">
+            <div class="thu-tiddler-title">
+                <div class="thu-titlebar">
+                    <span class="thu-tiddler-controls">
+                        <a href="javascript:;"> <i class="fa fa-info-circle" aria-hidden="true"></i> </a>
+                    </span>
+                    <span> <h2 class="thu-title"> Q&A管理 </h2> </span>
+                </div>
+                <div class="thu-subtitle">
+                    <a class="thu-link thu-link-missing" href="#">
+                    </a> 25th July 2016 at 4:48pm
+                </div>
+                <div class="thu-tags-wrapper">
+                    <span class="thu-tag-list-item">
+                        <span class="thu-tag-label">
+                            Status
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="thu-tiddler-body">
+                <p><strong>Have you ever had the feeling that your head is not quite big enough to hold everything you need to remember?</strong></p>
+                <p>Use it to keep your , to plan an , or to organise your wedding. Record every thought that crosses your brain, or build a flexible and responsive website.</p>
+                <p>Unlike conventional online services, lets you choose where to keep your data, guaranteeing that in the decades to come you will still be able to use the notes you take today.</p>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="statistics">
+        <div class="thu-tiddler-frame">
+            <div class="thu-tiddler-title">
+                <div class="thu-titlebar">
+                    <span class="thu-tiddler-controls">
+                        <a href="javascript:;"> <i class="fa fa-info-circle" aria-hidden="true"></i> </a>
+                    </span>
+                    <span> <h2 class="thu-title"> 运营情况统计 </h2> </span>
+                </div>
+                <div class="thu-subtitle">
+                    <a class="thu-link thu-link-missing" href="#">
+                    </a> 25th July 2016 at 4:48pm
+                </div>
+                <div class="thu-tags-wrapper">
+                    <span class="thu-tag-list-item">
+                        <span class="thu-tag-label">
+                            Status
+                        </span>
+                    </span>
+                </div>
+            </div>
+            <div class="thu-tiddler-body">
+                <p><strong>Have you ever had the feeling that your head is not quite big enough to hold everything you need to remember?</strong></p>
+                <p>Use it to keep your , to plan an , or to organise your wedding. Record every thought that crosses your brain, or build a flexible and responsive website.</p>
+                <p>Unlike conventional online services, lets you choose where to keep your data, guaranteeing that in the decades to come you will still be able to use the notes you take today.</p>
+            </div>
+        </div>
+    </script>
+
+    <!--Main Part-->
+    <div class="thu-page-container thu-page-view-classic " id="app">
+
+        <div class="thu-dropzone">
+            <span class="thu-topbar thu-topbar-left">
+                <a>
+                    <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+            <input class="form-control" type="text" placeholder="Username"></input>
+            </a>
+            <a>
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input class="form-control" type="password" placeholder="Password"></input>
+            </a>
+            <a href="#">登录</a>
+            </span>
+            <span class="thu-topbar thu-topbar-right">
+                <a href="javascript:;"> <i aria-hidden="true" class="fa fa-angle-double-right fa-2x"></i> </a>
+            </span>
+        </div>
+        <div class="thu-sidebar-scrollable" style="overflow: auto;">
+            <div class="thu-sidebar-header">
+                <div style="height: auto; transition: none;">
+                    <h1 class="thu-site-title">美丽清华</h1>
+                    <div class="thu-site-subtitle">一个很厉害的网站，不管你信不信，反正我是信了</div>
+                </div>
+            </div>
+            <div class="thu-sidebar-lists">
+                <div class="thu-search">
+                    <input type="search" class="thu-popup-handle">
+                    <a href="javascript:;"><i class="fa fa-search" aria-hidden="true"></i></a>
+                </div>
+                <div class="thu-tab-set">
+                    <div class="thu-tab-content ">
+                        <div class="thu-table-of-contents">
+                            <ol class="thu-toc toc-selective-expandable">
+                                <li class="toc-item-selected">
+                                    <router-link to="/introduction">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>使用指南与介绍</span>
+                                    </router-link>
+                                </li>
+                                <li class="toc-item-selected">
+                                    <router-link to="/questions">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>问题管理</span>
+                                    </router-link>
+                                </li>
+                                <li class="toc-item-selected">
+                                    <router-link to="/qa">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>Q&A管理</span>
+                                    </router-link>
+                                </li>
+                                <li class="toc-item-selected">
+                                    <router-link to="/contact">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>通讯录</span>
+                                    </router-link>
+                                </li>
+                                <li class="toc-item-selected">
+                                    <router-link to="/statistics">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>运营情况统计</span>
+                                    </router-link>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="thu-story-river">
+            <router-view></router-view>
+            <!--<component :is="current_view"></component>-->
+        </section>
+
+    </div>
+    <!--<script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script>-->
 </body>
+
+<script src="js/vue.js"></script>
+<script src="js/vue-router.js"></script>
+<script src="js/index.js"></script>
+
 </html>
