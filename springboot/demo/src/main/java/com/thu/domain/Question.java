@@ -1,6 +1,7 @@
 package com.thu.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -25,16 +26,11 @@ public class Question {
     private EvaluationType evaluationType;
     private String evaluationDetail;
     private String createdLocation;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdTime;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date ddl;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp1;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp2;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp3;
+    private LocalDateTime createdTime = LocalDateTime.now();
+    private LocalDateTime ddl;
+    private LocalDateTime timestamp1;
+    private LocalDateTime timestamp2;
+    private LocalDateTime timestamp3;
     private Boolean isCommon;
     private Boolean isCommonTop;
 
@@ -60,7 +56,6 @@ public class Question {
         this.content = content;
         this.user = user;
         this.createdLocation = createdLocation;
-        this.createdTime = new Date();
         for (String path: picPaths) {
             pics.add(new Pic(path));
         }
@@ -138,43 +133,43 @@ public class Question {
         this.createdLocation = createdLocation;
     }
 
-    public Date getCreatedTime() {
+    public LocalDateTime getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
     }
 
-    public Date getDdl() {
+    public LocalDateTime getDdl() {
         return ddl;
     }
 
-    public void setDdl(Date ddl) {
+    public void setDdl(LocalDateTime ddl) {
         this.ddl = ddl;
     }
 
-    public Date getTimestamp1() {
+    public LocalDateTime getTimestamp1() {
         return timestamp1;
     }
 
-    public void setTimestamp1(Date timestamp1) {
+    public void setTimestamp1(LocalDateTime timestamp1) {
         this.timestamp1 = timestamp1;
     }
 
-    public Date getTimestamp2() {
+    public LocalDateTime getTimestamp2() {
         return timestamp2;
     }
 
-    public void setTimestamp2(Date timestamp2) {
+    public void setTimestamp2(LocalDateTime timestamp2) {
         this.timestamp2 = timestamp2;
     }
 
-    public Date getTimestamp3() {
+    public LocalDateTime getTimestamp3() {
         return timestamp3;
     }
 
-    public void setTimestamp3(Date timestamp3) {
+    public void setTimestamp3(LocalDateTime timestamp3) {
         this.timestamp3 = timestamp3;
     }
 

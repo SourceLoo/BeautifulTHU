@@ -296,5 +296,21 @@ public class QuestionService {
             return false;
         }
     }
+
+    @Transactional
+    public boolean mergeDelay(Long questionId) {
+        Question question = findById(questionId);
+        if (question == null || question.getDdl() == null || question.getDelayDays() == null) {
+            return false;
+        }
+        question.setDdl(question.getDdl().plusDays(question.getDelayDays()));
+        question.setDelayDays(0);
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
 

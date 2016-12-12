@@ -20,6 +20,10 @@ public class UserService {
         return userRepository.findByUname(name);
     }
 
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
     public List<User> findUserByRole(Role role) {
         return userRepository.findByRole(role);
     }

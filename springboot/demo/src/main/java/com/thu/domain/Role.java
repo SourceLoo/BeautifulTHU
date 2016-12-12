@@ -25,6 +25,7 @@ public class Role {
     private Long directRespondNumber = 0L;
     private Float goodRate = 0f;
     private Float badRate = 0f;
+    private Boolean byZongban = false;
 
     protected Role() {}
 

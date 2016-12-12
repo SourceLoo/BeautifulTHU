@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -30,7 +31,7 @@ public class ResponseService {
             return false;
         }
         response.setResponseContent(content);
-        response.setRespondTime(new Date());
+        response.setRespondTime(LocalDateTime.now());
         try {
             responseRepositiry.save(response);
             return true;
