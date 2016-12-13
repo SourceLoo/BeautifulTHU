@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -305,6 +306,29 @@ public class QuestionService {
         }
         question.setDdl(question.getDdl().plusDays(question.getDelayDays()));
         question.setDelayDays(0);
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean updateTimestamp(Long questionId, LocalDateTime timestamp1, LocalDateTime timestamp2, LocalDateTime timestamp3) {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        if (timestamp1 != null) {
+            question.setTimestamp1(timestamp1);
+        }
+        if (timestamp2 != null) {
+            question.setTimestamp2(timestamp2);
+        }
+        if (timestamp3 != null) {
+            question.setTimestamp3(timestamp3);
+        }
         try {
             questionRepository.save(question);
             return true;

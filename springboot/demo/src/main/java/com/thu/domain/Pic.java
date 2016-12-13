@@ -18,4 +18,12 @@ public class Pic {
     @GeneratedValue
     private Long id;
     private String path;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getPath() {
+        return path;
+    }
 }

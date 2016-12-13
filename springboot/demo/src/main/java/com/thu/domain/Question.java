@@ -61,6 +61,10 @@ public class Question {
         }
     }
 
+    public Long getQuestionId() {
+        return questionId;
+    }
+
     public String getTitle() {
         return title;
     }

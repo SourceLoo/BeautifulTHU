@@ -4,6 +4,7 @@ import com.thu.domain.Role;
 import com.thu.domain.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -80,4 +81,31 @@ public class RoleService {
             return null;
         }
     }
+
+    @Transactional
+    public boolean updateNumber(String role, Long receivedNumber, Long ontimeNumber, Long overtimeNumber, Long directRespondNumber) {
+        Role r = findByRole(role);
+        if (r == null) {
+            return false;
+        }
+        if (receivedNumber != null) {
+            r.setReceivedNumber(r.getReceivedNumber() + receivedNumber);
+        }
+        if (ontimeNumber != null) {
+            r.setOntimeNumber(r.getOntimeNumber() + ontimeNumber);
+        }
+        if (overtimeNumber != null) {
+            r.setOvertimeNumber(r.getOvertimeNumber() + overtimeNumber);
+        }
+        if (directRespondNumber != null) {
+            r.setDirectRespondNumber(r.getDirectRespondNumber() + directRespondNumber);
+        }
+        try {
+            roleRepository.save(r);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }

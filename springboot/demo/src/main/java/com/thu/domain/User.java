@@ -36,6 +36,10 @@ public class User {
 
     protected User () {}
 
+    public Long getId() {
+        return id;
+    }
+
     public String getUname() {
         return uname;
     }
@@ -131,6 +135,8 @@ public class User {
 //        this.email = email;
 //        this.idNumber = idNumber;
 //    }
+
+
 
 }
 

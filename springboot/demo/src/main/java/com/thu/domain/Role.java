@@ -163,6 +163,14 @@ public class Role {
         this.badRate = badRate;
     }
 
+    public Boolean getByZongban() {
+        return byZongban;
+    }
+
+    public void setByZongban(Boolean byZongban) {
+        this.byZongban = byZongban;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -178,5 +186,7 @@ public class Role {
     public int hashCode() {
         return getRole().hashCode();
     }
+
+
 
 }
