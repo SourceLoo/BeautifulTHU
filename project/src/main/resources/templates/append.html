@@ -40,26 +40,43 @@
         <div class="weui-cell__ft">{部门}</div>
     </div>
 </div>
-<div class="page__bd">
+<div class="page__bd" response_id={response_id}>
     <div class="weui-panel weui-panel_access">
         <div class="weui-panel__bd">
             <div class="weui-media-box weui-media-box_text">
                 <h4 class="weui-media-box__title">答复流程</h4>
                 <p class="weui-media-box__desc">
-                    <img src="/image/classify_progress.jpg" width="100%;height=21px">
+                    <img src="/image/append_progress.jpg" width="100%;height=21px">
                 </p>
+            </div>
+            <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title">问题</h4>
+                <p id="question_content"  class="weui-media-box__desc">{问题内容}</p>
+            </div>
+            <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title">追答</h4>
+                <p id="reply_content"  class="weui-media-box__desc">{追答内容}</p>
             </div>
         </div>
     </div>
 </div>
-<div class="weui-cells">
-    <div class="weui-cell">
-        <div class="weui-cell__bd">
-            <p>最迟答复时间</p>
-        </div>
-        <div class="weui-cell__ft">{答复时间}</div>
-    </div>
-</div>
-
+<script type="text/javascript" class="tabbar js_show">
+    $(function(){
+        $('#question_content').on('click', function () {
+            if($(this).hasClass('weui-media-box__desc')) {
+                $(this).removeClass('weui-media-box__desc');
+            } else {
+                $(this).addClass('weui-media-box__desc');
+            }
+        });
+        $('#reply_content').on('click', function () {
+            if($(this).hasClass('weui-media-box__desc')) {
+                $(this).removeClass('weui-media-box__desc');
+            } else {
+                $(this).addClass('weui-media-box__desc');
+            }
+        });
+    });</script>
+<!-- 使用 -->
 </body>
 </html>

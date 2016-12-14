@@ -2,6 +2,7 @@ package com.thu.web.student;
 
 import com.thu.domain.*;
 import com.thu.service.QuestionService;
+import com.thu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -37,8 +38,7 @@ public class QuestionUploadController {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private PicRepository picRepository;
+
     @Autowired
     private QuestionService questionService;
 
@@ -51,7 +51,8 @@ public class QuestionUploadController {
             @RequestParam(name="location", required=false, defaultValue="清华大学") String location,
             HttpServletRequest request)
     {
-        List<Pic> pics = new ArrayList<>();
+//        List<Pic> pics = new ArrayList<>();
+        List<String> paths = new ArrayList<>();
 
         // 拷贝到本地
         System.out.println("Begin to upload...");
@@ -73,9 +74,10 @@ public class QuestionUploadController {
 
                 System.out.println(originalFilename + "\t" + filepath);
 
-                Pic pic = new Pic(env.getProperty("image.webpath") + "/" + fileName);
-                pics.add(pic);
-                picRepository.save(pic);
+                //Pic pic = new Pic();
+                paths.add(env.getProperty("image.webpath") + "/" + fileName);
+//                pics.add(pic);
+//                picRepository.save(pic);
 
             }
             catch (Exception e)
@@ -89,14 +91,15 @@ public class QuestionUploadController {
 
 
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1024);
+        userId = new Long(1);
         User user = userRepository.findById(userId);
 
         //public boolean insertQuestion(String title, String content, User user, String createdLocation, Date createdTime, List<Pic> pics) {
 
         System.out.println(title);
         System.out.println(content);
-        questionService.insertQuestion(title, content, user, location, new Date(), pics);
+        // questionService.insertQuestion(title, content, user, location, new Date(), pics);
+        questionService.saveQuestion(user, title, content, location, paths);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

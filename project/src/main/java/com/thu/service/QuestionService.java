@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Question> getAllQuestions() {
         List<Sort.Order> orders = new ArrayList<Sort.Order>();
@@ -182,63 +185,65 @@ public class QuestionService {
         }
     }
 
-    public Page<Question> findByState(Integer pageNum, Integer pageSize, Status state, String orderType, String searchKey, boolean isCommon)
-    {
-        // TODO: orderType validation:
-        QQuestion question = QQuestion.question;
-        BooleanBuilder booleanBuilder = new BooleanBuilder(question.status.eq(state));
 
+    private Pageable makeBuilderAndPageable(BooleanBuilder booleanBuilder, String searchKey, boolean isCommon, int pageNum, int pageSize, String orderType) {
+        QQuestion question = QQuestion.question;
         if (isCommon) {
             booleanBuilder.and(question.isCommon.eq(Boolean.TRUE));
-//            predicate = question.status.eq(state).and();
         }
-
         if (!searchKey.isEmpty()) {
-            Predicate searchPredict = question.title.contains(searchKey).or(question.content.contains(searchKey));
-            booleanBuilder.and(searchPredict);
+            booleanBuilder.and(question.title.contains(searchKey).or(question.content.contains(searchKey)));
         }
+        // TODO: 16/12/10 orderType validation
         Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, orderType));
-        Pageable pageable = new PageRequest(pageNum, pageSize, sort);
+        return new PageRequest(pageNum, pageSize, sort);
+    }
+
+    public Page<Question> findByState(Integer pageNum, Integer pageSize, Status state, String orderType, String searchKey, boolean isCommon)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.status.eq(state));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
         return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
-    List<Question> findByDepart(Integer pageNum, Integer pageSize, String Depart, String orderType, String searchKey, boolean isCommon)
+    public Page<Question> findByDepart(Integer pageNum, Integer pageSize, String Depart, String orderType, String searchKey, boolean isCommon)
     {
-        //判断是否是QAA
-        // 按牵头部分查询，按orderType排序{提问时间 或 附议数量}，在问题内容与标题内匹配searchKey 允许空
-        return  null;
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.leaderRole.role.eq(Depart));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
-    List<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, String orderType, String searchKey, boolean isCommon)
+    public Page<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, String orderType, String searchKey, boolean isCommon)
     {
-        //判断是否是QAA
-        // 查询当前用户所有提问，按orderType排序{提问时间 或 附议数量}，在问题内容与标题内匹配searchKey 允许空
-        return  null;
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.user.id.eq(userId));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
-    List<Question> findAll(Integer pageNum, Integer pageSize, String orderType, String searchKey, boolean isCommon)
+    public Page<Question> findAll(Integer pageNum, Integer pageSize, String orderType, String searchKey, boolean isCommon)
     {
-        // 判断是否是QAA
-        // 查询所有问题，按orderType排序{提问时间 或 附议数量}，在问题内容与标题内匹配searchKey 允许空
-        return  null;
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
 
-    Question findById(Long questionId)
+    public Question findById(Long questionId)
     {
-        // 得到问题
-        return null;
+        return questionRepository.findByQuestionId(questionId);
     }
 
 //    public List<Question> lala() {
 //        return questionRepository.lala();
 //    }
 
-//    protected QuestionService() {}
-
-    public boolean insertQuestion(String title, String content, User user, String createdLocation, Date createdTime, List<Pic> pics) {
-
-        Question question = new Question(title, content, user, createdLocation, createdTime, pics);
+    @Transactional
+    public boolean saveQuestion(User user, String title, String content, String location, List<String> paths) {
+        Question question = new Question(title, content, user, location, paths);
         try {
             questionRepository.save(question);
             return true;
@@ -247,4 +252,89 @@ public class QuestionService {
         }
     }
 
+    public boolean saveStudentResponse(Long questionId, EvaluationType evaluationType, String evaluationDetail)
+    {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        question.setEvaluationType(evaluationType);
+        question.setEvaluationDetail(evaluationDetail);
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean modifyQuestionLike(User user, Long questionId, boolean op)
+    {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        if (op) {
+            if (user.getLikedQuestions().contains(question)) {
+                return false;
+            }
+            question.incrementLikes();
+            user.getLikedQuestions().add(question);
+        }
+        else {
+            if (!user.getLikedQuestions().contains(question)) {
+                return false;
+            }
+            question.decrementLikes();
+            user.getLikedQuestions().remove(question);
+        }
+        try {
+            questionRepository.save(question);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean mergeDelay(Long questionId) {
+        Question question = findById(questionId);
+        if (question == null || question.getDdl() == null || question.getDelayDays() == null) {
+            return false;
+        }
+        question.setDdl(question.getDdl().plusDays(question.getDelayDays()));
+        question.setDelayDays(0);
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean updateTimestamp(Long questionId, LocalDateTime timestamp1, LocalDateTime timestamp2, LocalDateTime timestamp3) {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        if (timestamp1 != null) {
+            question.setTimestamp1(timestamp1);
+        }
+        if (timestamp2 != null) {
+            question.setTimestamp2(timestamp2);
+        }
+        if (timestamp3 != null) {
+            question.setTimestamp3(timestamp3);
+        }
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
+

@@ -21,5 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long>, QueryDslPredi
     User findById(Long id);
     List<User> findByRole(Role role);
     long countByUname(String name);
+    List<User> findAll();
 
 }

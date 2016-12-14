@@ -63,7 +63,13 @@ public class QuestionsController {
         model.addAttribute("uname", question.getUser().getUname());
 
         model.addAttribute("pics", question.getPics());
-        model.addAttribute("leaderRole", question.getLeaderRole().getRole());
+
+        String leaderRole = "未分配";
+        if(question.getLeaderRole() != null)
+        {
+            leaderRole = question.getLeaderRole().getRole();
+        }
+        model.addAttribute("leaderRole", leaderRole);
 
         model.addAttribute("responses", question.getResponses());
 
