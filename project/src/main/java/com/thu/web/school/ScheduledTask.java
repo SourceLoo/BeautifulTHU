@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 public class ScheduledTask {
     TokenMap tokenMap = new TokenMap();
 
-    @Scheduled(fixedRate = 5000)
-    //@Scheduled(cron = "0 0 2 * * ?")
+    //@Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "0 0 2 * * ?")
     public void reportCurrentTime(){
         //for (Map.Entry<String, Date> map:token_time.)
         //tokenMap.clear();

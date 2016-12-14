@@ -49,7 +49,7 @@ public class User {
     }
 
     public boolean checkPasswd(String passwd){
-        return passwordEncoder.encode(passwd).equals(passwd);
+        return passwordEncoder.matches(passwd , this.passwd);
     }
 
     public String getPasswd() {
