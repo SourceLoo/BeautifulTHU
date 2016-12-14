@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>WeUI</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css"/>
+    <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
+    <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <!-- <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
+    <!-- <script src="https://weui.io/weui.min.js"></script> -->
+    <!-- <script src="https://weui.io/example.js"></script> -->
+    <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+.en-markup-crop-options {
+    top: 18px !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    width: 200px !important;
+    border: 2px rgba(255,255,255,.38) solid !important;
+    border-radius: 4px !important;
+}
+
+.en-markup-crop-options div div:first-of-type {
+    margin-left: 0px !important;
+}
+
+.page, body {
+    background-color: #f8f8f8;
+}
+</style>
+</head>
+<body ontouchstart>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>受理部门</p>
+        </div>
+        <div class="weui-cell__ft">校团委</div>
+    </div>
+</div>
+<div class="page__bd">
+    <div class="weui-panel weui-panel_access">
+        <div class="weui-panel__bd">
+            <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title">答复流程</h4>
+                <p class="weui-media-box__desc">
+                    <img src="/image/reply_progress.jpg" width="100%;height=21px">
+                </p>
+            </div>
+            <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title">问题</h4>
+                <p id="question_content"  class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。由各种物质组成的巨型球状天体，叫做星球。</p>
+            </div>
+            <div class="weui-media-box weui-media-box_text">
+                <h4 class="weui-media-box__title">答复</h4>
+                <p id="reply_content"  class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。由各种物质组成的巨型球状天体，叫做星球。</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" class="tabbar js_show">
+    $(function(){
+        $('#question_content').on('click', function () {
+            if($(this).hasClass('weui-media-box__desc')) {
+                $(this).removeClass('weui-media-box__desc');
+            } else {
+                $(this).addClass('weui-media-box__desc');
+            }
+        });
+        $('#reply_content').on('click', function () {
+            if($(this).hasClass('weui-media-box__desc')) {
+                $(this).removeClass('weui-media-box__desc');
+            } else {
+                $(this).addClass('weui-media-box__desc');
+            }
+        });
+    });</script>
+<div class="weui-cells">
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd">
+            <label for="" class="weui-label">评价</label>
+        </div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" name="select2">
+                <option value="1">无评价</option>
+                <option value="2">满意</option>
+                <option value="3">不满意</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <textarea class="weui-textarea" placeholder="请输入评价" rows="3"></textarea>
+            <div class="weui-textarea-counter"><span>0</span>/200</div>
+        </div>
+    </div>
+</div>
+<div class="weui-btn-area">
+    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+</div>
+<!-- 使用 -->
+</body>
+</html>

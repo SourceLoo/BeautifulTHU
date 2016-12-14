@@ -40,7 +40,7 @@ receive: [{'role1':'displayname1', ...}, {...}]
 ```
 /auth/login
 send: {'uname':'', 'passwd':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 - logout.
@@ -56,7 +56,7 @@ receive: {'role':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':''}
 ```
 /info/set
 send: {'uname':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':'', 'passwd':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 *none for not modify*
@@ -76,7 +76,7 @@ receive: [{'display_name':'', 'uname':'', 'resp_person':'',
 /contact/set
 send: {'display_name':'', 'uname':'', 'resp_person':'', 'fixed_phone':'',
     'mobile_phone':'', 'passwd':'', 'is_new':bool}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 - Get questions list. (multi parts?)
@@ -107,7 +107,7 @@ receive: {'opinion':'', 'pic_path':['',''],
 ```
 /questions/main/responseq
 send: {'question_id':'', 'response_content':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 - main reject
@@ -115,7 +115,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /questions/main/reject
 send: {'question_id':'', 'response_content':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 - main forward
@@ -123,7 +123,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /questions/main/forward
 send: {'question_id':'', 'forward':'role'}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 - main delay
@@ -131,7 +131,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /questions/main/delay
 send: {'question_id':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 *back-end verify status.*
@@ -141,7 +141,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /quesitons/main/classify
 send: {'question_id':'', 'leader_role':'', 'other_roles':[], 'deadline':'', 'opinion':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 *back-end verify status.*
@@ -174,7 +174,7 @@ receive: {'opinion':'', 'pic_path':['',''],
 ```
 /quesitons/related/reclassify
 send: {'question_id':'', 'reclassify_reason':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 *back-end verify status & question category.*
@@ -184,7 +184,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /quesitons/related/delay
 send: {'question_id':'', 'delay_reason':'', 'delay_days':int}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 *back-end verify status.*
@@ -194,7 +194,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /quesitons/related/response
 send: {'question_id':'', 'response_content':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 - related modify response
@@ -202,7 +202,7 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /quesitons/related/modify_response
 send: {'question_id':'', 'response_id':'', 'response_content':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 
 - TuanWei, QA, get all questions, same as above
@@ -211,15 +211,15 @@ receive: {'sucess':bool, 'msg':''}
 ```
 /qa/add
 send: {'question_id':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 
 /qa/del
 send: {'question_id':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 
 /qa/top
 send: {'question_id':''}
-receive: {'sucess':bool, 'msg':''}
+receive: {'success':bool, 'msg':''}
 ```
 *back-end verify question property*
 
