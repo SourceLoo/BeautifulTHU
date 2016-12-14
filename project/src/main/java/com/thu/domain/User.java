@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -29,8 +29,16 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String idNumber;
+    @OneToMany
+    private Set<Question> likedQuestions = new HashSet<Question>();
+    @OneToMany
+    private Set<Response> likedRespones = new HashSet<Response>();
 
     protected User () {}
+
+    public Long getId() {
+        return id;
+    }
 
     public String getUname() {
         return uname;
@@ -40,12 +48,14 @@ public class User {
         this.uname = uname;
     }
 
-    public String getPasswd() {
-        return this.passwd;
-    }
     public boolean checkPasswd(String passwd){
-        return passwordEncoder.encode(passwd).equals(this.passwd);
+        return passwordEncoder.encode(passwd).equals(passwd);
     }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
     public void setPasswd(String passwd) {
         this.passwd = passwordEncoder.encode(passwd);
     }
@@ -90,6 +100,22 @@ public class User {
         this.idNumber = idNumber;
     }
 
+    public Set<Question> getLikedQuestions() {
+        return likedQuestions;
+    }
+
+    public void setLikedQuestions(Set<Question> likedQuestions) {
+        this.likedQuestions = likedQuestions;
+    }
+
+    public Set<Response> getLikedRespones() {
+        return likedRespones;
+    }
+
+    public void setLikedRespones(Set<Response> likedRespones) {
+        this.likedRespones = likedRespones;
+    }
+
     public User(String uname, String passwd, Role role, String mobileNumber, String fixedNumber, String email, String idNumber) {
         this.uname = uname;
         setPasswd(passwd);
@@ -99,6 +125,8 @@ public class User {
         this.email = email;
         this.idNumber = idNumber;
     }
+
+
 
 //    public User(String uname, String passwd, String mobileNumber, String fixedNumber, String email, String idNumber) {
 //        PasswordEncoder passwordEncoder;
@@ -111,6 +139,8 @@ public class User {
 //        this.email = email;
 //        this.idNumber = idNumber;
 //    }
+
+
 
 }
 

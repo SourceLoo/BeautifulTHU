@@ -1,6 +1,7 @@
 package com.thu.domain;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -8,10 +9,6 @@ import java.util.*;
  */
 @Entity
 public class Question {
-    public Long getQuestionId() {
-        return questionId;
-    }
-
     @Id
     @GeneratedValue
     private Long questionId;
@@ -19,32 +16,28 @@ public class Question {
     private String content;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
-    @OneToOne(optional = true)
+    @OneToOne
     private Role leaderRole;
     @OneToMany
     private List<Role> otherRoles = new ArrayList<Role>();
 
     private Status status = Status.UNCLASSIFIED;
-    private Long likes;
-    private String comment;
+    private Long likes = 0L;
+    private EvaluationType evaluationType;
+    private String evaluationDetail;
     private String createdLocation;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdTime;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date ddl;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp1;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp2;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp3;
+    private LocalDateTime createdTime = LocalDateTime.now();
+    private LocalDateTime ddl;
+    private LocalDateTime timestamp1;
+    private LocalDateTime timestamp2;
+    private LocalDateTime timestamp3;
     private Boolean isCommon;
     private Boolean isCommonTop;
 
-    private Integer delayDays = 0;
-    private String delayReason = null;
-    private String reclassifyReason = null;
-    private String rejectReason = null;
+    private Integer delayDays;
+    private String delayReason;
+    private String reclassifyReason;
+    private String rejectReason;
 
     @ManyToOne
     private Role transferRole;
@@ -57,6 +50,20 @@ public class Question {
     private List<Response> responses = new ArrayList<Response>();
 
     protected Question() {}
+
+    public Question(String title, String content, User user, String createdLocation, List<String> picPaths) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+        this.createdLocation = createdLocation;
+        for (String path: picPaths) {
+            pics.add(new Pic(path));
+        }
+    }
+
+    public Long getQuestionId() {
+        return questionId;
+    }
 
     public String getTitle() {
         return title;
@@ -106,12 +113,20 @@ public class Question {
         this.likes = likes;
     }
 
-    public String getComment() {
-        return comment;
+    public EvaluationType getEvaluationType() {
+        return evaluationType;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setEvaluationType(EvaluationType evaluationType) {
+        this.evaluationType = evaluationType;
+    }
+
+    public String getEvaluationDetail() {
+        return evaluationDetail;
+    }
+
+    public void setEvaluationDetail(String evaluationDetail) {
+        this.evaluationDetail = evaluationDetail;
     }
 
     public String getCreatedLocation() {
@@ -122,43 +137,43 @@ public class Question {
         this.createdLocation = createdLocation;
     }
 
-    public Date getCreatedTime() {
+    public LocalDateTime getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
+    public void setCreatedTime(LocalDateTime createdTime) {
         this.createdTime = createdTime;
     }
 
-    public Date getDdl() {
+    public LocalDateTime getDdl() {
         return ddl;
     }
 
-    public void setDdl(Date ddl) {
+    public void setDdl(LocalDateTime ddl) {
         this.ddl = ddl;
     }
 
-    public Date getTimestamp1() {
+    public LocalDateTime getTimestamp1() {
         return timestamp1;
     }
 
-    public void setTimestamp1(Date timestamp1) {
+    public void setTimestamp1(LocalDateTime timestamp1) {
         this.timestamp1 = timestamp1;
     }
 
-    public Date getTimestamp2() {
+    public LocalDateTime getTimestamp2() {
         return timestamp2;
     }
 
-    public void setTimestamp2(Date timestamp2) {
+    public void setTimestamp2(LocalDateTime timestamp2) {
         this.timestamp2 = timestamp2;
     }
 
-    public Date getTimestamp3() {
+    public LocalDateTime getTimestamp3() {
         return timestamp3;
     }
 
-    public void setTimestamp3(Date timestamp3) {
+    public void setTimestamp3(LocalDateTime timestamp3) {
         this.timestamp3 = timestamp3;
     }
 
@@ -262,17 +277,13 @@ public class Question {
         this.status = status;
     }
 
-    public Question(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void incrementLikes() {
+        this.likes += 1;
     }
 
-    public Question(String title, String content, User user, String createdLocation, Date createdTime, List<Pic> pics) {
-        this.title = title;
-        this.content = content;
-        this.user = user;
-        this.createdLocation = createdLocation;
-        this.createdTime = createdTime;
-        this.pics = pics;
+    public void decrementLikes() {
+        if (this.likes > 0) {
+            this.likes -= 1;
+        }
     }
 }

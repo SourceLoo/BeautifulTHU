@@ -25,6 +25,7 @@ public class Role {
     private Long directRespondNumber = 0L;
     private Float goodRate = 0f;
     private Float badRate = 0f;
+    private Boolean byZongban = false;
 
     protected Role() {}
 
@@ -162,6 +163,14 @@ public class Role {
         this.badRate = badRate;
     }
 
+    public Boolean getByZongban() {
+        return byZongban;
+    }
+
+    public void setByZongban(Boolean byZongban) {
+        this.byZongban = byZongban;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -177,5 +186,7 @@ public class Role {
     public int hashCode() {
         return getRole().hashCode();
     }
+
+
 
 }

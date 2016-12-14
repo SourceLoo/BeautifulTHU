@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import net.sf.json.JSONException;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,7 @@ import com.thu.service.RoleService;
 import com.thu.service.UserService;
 import com.thu.web.school.Jwt;
 
+import java.util.List;
 import java.util.Date;
 
 
@@ -94,23 +96,22 @@ public class SchoolController{
 
     /*
     *
+    *
     * */
-    /*@RequestMapping(value = "/init/get_displayname", method = RequestMethod.GET)
+    @RequestMapping(value = "/init/get_displayname", method = RequestMethod.GET)
     @ResponseBody
     public String getDisplayname() throws JSONException{
         List<Role> mainRoleList = roleService.findMain();
         List<Role> relatedRoleList = roleService.findRelated();
         JSONObject[] result = new JSONObject[2];
-        result[0] = new JSONObject();
         for (Role role:mainRoleList){
             result[0].put(role.getRole(), role.getDisplayName());
         }
-        result[1] = new JSONObject();
         for (Role role:relatedRoleList){
             result[1].put(role.getRole(), role.getDisplayName());
         }
         return result.toString();
-    }*/
+    }
 
     /*  done
     * Get Permission to login from backend
@@ -230,7 +231,7 @@ public class SchoolController{
     * no param
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
-/*
+
    @RequestMapping(value = "/contact/get", method = RequestMethod.GET)
     @ResponseBody
     public String getContact(@RequestParam("token") String token) throws JSONException{
@@ -240,7 +241,7 @@ public class SchoolController{
         JSONArray jsonArray = JSONArray.fromObject(userList);
         return jsonArray.toString();
     }
-*/
+
 
     /*  done
     * only Tuanwei set contact
@@ -283,20 +284,20 @@ public class SchoolController{
     * param question_id
     * return {success, msg}
     * */
-/*    @RequestMapping(value = "/questions/main/delay", method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/delay", method = RequestMethod.POST)
     @ResponseBody
     public String setDelay(@RequestParam("token") String token,
                             @RequestParam("question_id") String question_id) throws JSONException{
         if (!checkPermissionWithoutName(token, roleTW))
             return invalidTokenMsg;
-        boolean success = questionService.mergeDelay(question_id);
+        boolean success = questionService.mergeDelay(Long.parseLong(question_id));
         if (success){
             return successMsg;
         }else {
             return errorMsg;
         }
     }
-*/
+
 
     /*
     * only related department can set delay
@@ -390,22 +391,23 @@ public class SchoolController{
     * no param
     * return msg
     * ***/
-/*   @RequestMapping(value = "/statistics/get/{token}", method = RequestMethod.GET)
+   @RequestMapping(value = "/statistics/get", method = RequestMethod.GET)
     @ResponseBody
-    public String getStatistics(@PathVariable("token") String token){
-        if (!checkPermissionWithoutName(token, roleXB) && !checkPermissionWithoutName(token, roleZB))throw JSONException{
+    public String getStatistics(@RequestParam("token") String token) throws JSONException{
+        if (!checkPermissionWithoutName(token, roleXB) && !checkPermissionWithoutName(token, roleZB)){
             return invalidTokenMsg;
         }
         String tokenRole;
         try{
-            Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
+            Claims claims = jwtService.parseToken(token);
             tokenRole = claims.get("role").toString();
         }
-        catch (final SignatureException e){
+        catch (final Exception e){
             return invalidTokenMsg;
         }
-        List<Role> roleList = roleService.findFellowRole(tokenRole);
+        Role role = roleService.findByRole(tokenRole);
+        List<Role> roleList = roleService.findFellowRole(role);
         JSONArray jsonArray = JSONArray.fromObject(roleList);
         return jsonArray.toString();
-    }*/
+    }
 }
