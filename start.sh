@@ -6,4 +6,4 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 echo $SCRIPTPATH
 
 (cd $SCRIPTPATH/project; exec ./mvnw clean package)
-java -jar $SCRIPTPATH/project/target/demo-0.1.0.war --server.address=0.0.0.0 --server.port=8181
+java -jar $SCRIPTPATH/project/target/demo-0.0.1-SNAPSHOT.war --server.address=0.0.0.0 --server.port=8181
