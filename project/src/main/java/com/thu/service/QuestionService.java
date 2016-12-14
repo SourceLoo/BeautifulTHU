@@ -65,6 +65,7 @@ public class QuestionService {
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

@@ -67,4 +67,9 @@ public class HelloController {
     {
         return "upload_success";
     }
+
+    @GetMapping("/append")
+    public String getAppend() {
+        return "append";
+    }
 }

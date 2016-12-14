@@ -65,7 +65,7 @@ public class Question {
         for (String path: picPaths) {
             pics.add(new Pic(path));
         }
-        //responses.add(new Response("回复1"));
+        //this.responses.add(new Response("回复1"));
     }
 
     public Long getQuestionId() {
@@ -273,7 +273,7 @@ public class Question {
     }
 
     public void addResponse(Response response) {
-        this.responses.add(response);
+        this.getResponses().add(response);
     }
 
     public Status getStatus() {

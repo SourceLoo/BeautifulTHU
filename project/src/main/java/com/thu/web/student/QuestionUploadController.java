@@ -98,6 +98,7 @@ public class QuestionUploadController {
 
         System.out.println(title);
         System.out.println(content);
+        System.out.println(location);
         // questionService.insertQuestion(title, content, user, location, new Date(), pics);
         questionService.saveQuestion(user, title, content, location, paths);
 

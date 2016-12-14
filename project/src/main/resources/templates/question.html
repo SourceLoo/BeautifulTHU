@@ -6,18 +6,27 @@
     <title>WeUI</title>
     <!-- 引入 WeUI -->
     <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css"/>
-    <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
-    <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
-    <!--<link rel="stylesheet" href="/style/weui.css"/>-->
-    <!--<link rel="stylesheet" href="/style/weui2.css"/>-->
-    <!--<link rel="stylesheet" href="/style/weui3.css"/>-->
     <script src="/script/zepto.min.js"></script>
     <script src="/script/updown.js"></script>
-    <!--<script src="http://code.jquery.com/jquery-1.10.2.js"></script>-->
-    <!-- <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
-    <!-- <script src="https://weui.io/weui.min.js"></script> -->
-    <!-- <script src="https://weui.io/example.js"></script> -->
     <script>
+//    $(document).ready(function(){
+//        $.ajax({
+//                type: 'GET',
+//                url: '/getDept/all/',
+//                dataType: 'json',
+//                data: {},
+//                success: function(data){
+//                    var result = '';
+//                    for(var i = 0; i < data.dept_list.length; i++){
+//                        result+='<option value="'+data[i].name+'">'+data[i].name+'</option>';
+//                    }
+//                    $('#dept').html(result);
+//                },
+//                error: function(xhr, type){
+//                    alert('Ajax error!');
+//                }
+//            });
+//    });
 $(function(){
     var counter = 0;
     // 每页展示4个
@@ -58,6 +67,7 @@ $(function(){
                 },
                 success: function(data){
                     var result = '';
+                    alert("success1")
                     for(var i = 0; i < data.question_list.length; i++){
                         result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
                                  '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
@@ -69,6 +79,7 @@ $(function(){
                                  '</div>';
                     }
                     // 为了测试，延迟1秒加载
+                    alert("success")
                     setTimeout(function(){
                         $('.weui_panel_bd').html(result);
                         // 每次数据加载完，必须重置
@@ -101,31 +112,30 @@ $(function(){
                     keywords : ""
                 },
                 success: function(data){
-                    var result = '';
                     counter++;
                     page++;
+                    var result = ''
                     for(var i = 0; i < data.question_list.length; i++){
-                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
-                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
-                                 '<ul class="weui-media-box__info">'
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
-                                 '</ul>'
+                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'+
+                                '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'+
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'+
+                                 '<ul class="weui-media-box__info">'+
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'+
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'+
+                                 '</ul>'+
                                  '</div>';
                     }
-                    if(data.question_list.length == 0) {
-                            // 锁定
-                            me.lock();
-                            // 无数据
-                            me.noData();
-                    }
+                    alert(result)
+//                    if(data.question_list.length == 0) {
+//                            // 锁定
+//                            me.lock();
+//                            // 无数据
+//                            me.noData();
+//                    }
                     // 为了测试，延迟1秒加载
-                    setTimeout(function(){
-                        $('.weui_panel_bd').append(result);
-                        // 每次数据加载完，必须重置
-                        me.resetload();
-                    },1000);
+                    $('.weui_panel_bd').append(result);
+                    // 每次数据加载完，必须重置
+                    me.resetload();
                 },
                 error: function(xhr, type){
                     alert('Ajax error!');
@@ -308,8 +318,6 @@ $(function(){
             <div class="weui-cell__bd">
                 <select class="weui-select" id="dept">
                     <option value="all">所有部门</option>
-                    <option value="dept1">部门1</option>
-                    <option value="dept2">部门2</option>
                 </select>
             </div>
         </div>
@@ -353,7 +361,7 @@ $(function(){
             }
             $.ajax({
                 type: 'GET',
-                url: '/question/all/',
+                url: get_url,
                 dataType: 'json',
                 data: {
                     page_size : 4,
@@ -386,38 +394,7 @@ $(function(){
 
 <div class="weui_panel weui_panel_access" >
     <div class="weui_panel_bd">
-        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
-            <h4 class="weui-media-box__title">标题一</h4>
-            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-            <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">文字来源</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-            </ul>
-        </div>
-        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
-            <h4 class="weui-media-box__title">标题一</h4>
-            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-            <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">文字来源</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-            </ul>
-        </div>
-        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
-            <h4 class="weui-media-box__title">标题一</h4>
-            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-            <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">文字来源</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-            </ul>
-        </div>
-        <div id="question" class="weui-media-box weui-media-box_text" question_id="ID">
-            <h4 class="weui-media-box__title">标题一</h4>
-            <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-            <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">文字来源</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-            </ul>
-        </div>
+
     </div>
 </div>
 <script type="text/javascript">
@@ -428,11 +405,12 @@ $(function(){
                 url: '/question_detail',
                 dataType: 'json',
                 data: {
-                    question_id : $(this).attr("question_id");
+                    question_id : $(this).attr("question_id")
                 }
             });
         });
-    });</script>
+    });
+</script>
 <!-- 使用 -->
 </body>
 </html>

@@ -37,10 +37,10 @@
         <div class="weui-cell__bd">
             <p>受理部门</p>
         </div>
-        <div class="weui-cell__ft">校团委</div>
+        <div class="weui-cell__ft">{部门}</div>
     </div>
 </div>
-<div class="page__bd">
+<div class="page__bd" response_id={response_id}>
     <div class="weui-panel weui-panel_access">
         <div class="weui-panel__bd">
             <div class="weui-media-box weui-media-box_text">
@@ -51,11 +51,11 @@
             </div>
             <div class="weui-media-box weui-media-box_text">
                 <h4 class="weui-media-box__title">问题</h4>
-                <p id="question_content"  class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。由各种物质组成的巨型球状天体，叫做星球。</p>
+                <p id="question_content"  class="weui-media-box__desc">{问题内容}</p>
             </div>
             <div class="weui-media-box weui-media-box_text">
                 <h4 class="weui-media-box__title">答复</h4>
-                <p id="reply_content"  class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。由各种物质组成的巨型球状天体，叫做星球。</p>
+                <p id="reply_content"  class="weui-media-box__desc">{答复内容}</p>
             </div>
         </div>
     </div>
@@ -83,10 +83,10 @@
             <label for="" class="weui-label">评价</label>
         </div>
         <div class="weui-cell__bd">
-            <select class="weui-select" name="select2">
-                <option value="1">无评价</option>
-                <option value="2">满意</option>
-                <option value="3">不满意</option>
+            <select class="weui-select" id="evaluation">
+                <option value="无评价">无评价</option>
+                <option value="满意">满意</option>
+                <option value="不满意">不满意</option>
             </select>
         </div>
     </div>
@@ -94,7 +94,7 @@
 <div class="weui-cells weui-cells_form">
     <div class="weui-cell">
         <div class="weui-cell__bd">
-            <textarea class="weui-textarea" placeholder="请输入评价" rows="3"></textarea>
+            <textarea class="weui-textarea" placeholder="请输入评价" rows="3" id="detail"></textarea>
             <div class="weui-textarea-counter"><span>0</span>/200</div>
         </div>
     </div>
@@ -102,6 +102,37 @@
 <div class="weui-btn-area">
     <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
 </div>
+<script type="text/javascript">
+    $("#showTooltips").click(function(){
+        $.ajax({
+                type: 'GET',
+                url: '/evaluation/',
+                dataType: 'json',
+                data: {
+                    response_id: $(".page__bd").attr("response_id"),
+                    evaluation: $("#evaluation").val(),
+                    detail: $("textarea").val()
+                },
+                success: function(data) {
+                    var result = '';
+                    for(var i = 0; i < data.question_list.length; i++) {
+                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
+                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
+                                 '<ul class="weui-media-box__info">'
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
+                                 '</ul>'
+                                 '</div>';
+                   }
+                   $('.weui_panel_bd').append(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+     });
+</script>
 <!-- 使用 -->
 </body>
 </html>

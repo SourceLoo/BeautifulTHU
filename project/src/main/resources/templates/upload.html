@@ -13,23 +13,76 @@
     <!-- <script src="https://weui.io/weui.min.js"></script> -->
     <!-- <script src="https://weui.io/example.js"></script> -->
     <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
-.en-markup-crop-options {
-    top: 18px !important;
-    left: 50% !important;
-    margin-left: -100px !important;
-    width: 200px !important;
-    border: 2px rgba(255,255,255,.38) solid !important;
-    border-radius: 4px !important;
-}
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
 
-.en-markup-crop-options div div:first-of-type {
-    margin-left: 0px !important;
-}
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
 
-.page, body {
-    background-color: #f8f8f8;
-}
-</style>
+        .page, body {
+            background-color: #f8f8f8;
+        }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+    <script type="text/javascript" class="uploader js_show">
+        var loc
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(showPosition);
+            }
+            else {
+                x.innerHTML="Geolocation is not supported by this browser.";
+                }
+            }
+        function showPosition(position) {
+            window.latitude = position.coords.latitude
+            window.longitude = position.coords.longitude
+            var myGeo = new BMap.Geocoder();
+            // 根据坐标得到地址描述
+            myGeo.getLocation(new BMap.Point(window.longitude, window.latitude), function(result){
+                loc = result.address
+                $("#position").empty()
+                $("#position").append('<option value="'+loc+'">'+loc+'</option>')
+                surround = result.surround_poi
+                for (pos in surround) {
+                    $("#position").append('<option value="'+pos+'">'+pos+'</option>')
+                }
+            });
+        }
+        function getLocation2() {
+            var geolocation = new BMap.Geolocation();
+            geolocation.getCurrentPosition(function(r){
+                if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                    var myGeo = new BMap.Geocoder();
+                    // 根据坐标得到地址描述
+                    myGeo.getLocation(new BMap.Point(r.point.lng, r.point.lat), function(result){
+
+                        var loc = result.address
+                        $("#position").empty()
+                        $("#position").append('<option value="'+loc+'">'+loc+'</option>')
+                        var surround = result.surroundingPois
+                        for (i=0;i<surround.length;i++) {
+                            $("#position").append('<option value="'+surround[i].title+'">'+surround[i].title+'</option>')
+                        }
+                    });
+                }
+                else {
+                    alert('failed'+this.getStatus());
+                }
+            });
+        }
+        $(document).ready(function(){
+           getLocation2()
+        });
+
+    </script>
 </head>
 <body ontouchstart>
 <div class="page__bd">
@@ -48,21 +101,21 @@
                 <div class="weui-uploader">
                     <div class="weui-uploader__hd">
                         <p class="weui-uploader__title">图片上传</p>
-                        <div class="weui-uploader__info">0/2</div>
+                        <!--<div class="weui-uploader__info">0/2</div>-->
                     </div>
                     <div class="weui-uploader__bd">
                         <ul class="weui-uploader__files" id="uploaderFiles">
-                            <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
-                            <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
-                            <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
-                            <li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">
-                                <div class="weui-uploader__file-content">
-                                    <i class="weui-icon-warn"></i>
-                                </div>
-                            </li>
-                            <li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">
-                                <div class="weui-uploader__file-content">50%</div>
-                            </li>
+                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
+                                <!--<div class="weui-uploader__file-content">-->
+                                    <!--<i class="weui-icon-warn"></i>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
+                                <!--<div class="weui-uploader__file-content">50%</div>-->
+                            <!--</li>-->
                         </ul>
                         <div class="weui-uploader__input-box">
                             <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="multiple">
@@ -94,12 +147,17 @@
                 </div>
             </div>
 
+            <div class="weui-cell weui-cell_select weui-cell_select-after">
+                <div class="weui-cell__hd">
+                    <label for="" class="weui-label">当前定位</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select" id="position" name="position">
+                        <option value="none">没有位置信息</option>
+                    </select>
+                </div>
+            </div>
 
-            <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">文字来源</li>
-                <li class="weui-media-box__info__meta">时间</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
-            </ul>
         </div>
 
     </div>
@@ -160,6 +218,7 @@
             }
             fd.append("title", $("#title").val())
             fd.append("content", $("#content").val())
+            fd.append("location", $("#position option:selected").val())
 
             xhr = new XMLHttpRequest();
             xhr.upload.addEventListener("progress", uploadProgress, false);
@@ -200,6 +259,7 @@
         function uploadComplete(e) {
             console.log(e);
             alert('上传成功');
+            window.location.href="/upload_success"
         }
 
         function uploadFailed(e) {
