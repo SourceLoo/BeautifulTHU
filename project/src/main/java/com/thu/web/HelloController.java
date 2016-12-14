@@ -3,6 +3,8 @@ package com.thu.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by source on 12/2/16.
  */
@@ -11,8 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HelloController {
 
     @GetMapping(value = "/lyqtest")
-    public String getMyTest()
+    public String getMyTest(HttpServletRequest request)
     {
+        System.out.println(request.getSession().getServletContext().getRealPath("/image"));
         return "lyqtest";
     }
 

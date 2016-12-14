@@ -48,8 +48,8 @@ public class QuestionUploadController {
             @RequestParam("uploadfiles") MultipartFile[] uploadfiles,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
-            @RequestParam(name="location", required=false, defaultValue="清华大学") String location
-            )
+            @RequestParam(name="location", required=false, defaultValue="清华大学") String location,
+            HttpServletRequest request)
     {
         List<Pic> pics = new ArrayList<>();
 
@@ -59,12 +59,11 @@ public class QuestionUploadController {
         {
             try
             {
-                String directory = env.getProperty("BeautifulTHU.uploadedImgs");
+                String directory = env.getProperty("image.localpath");
                 String originalFilename = uploadfile.getOriginalFilename();
-                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + new Random().nextInt()+originalFilename.substring(originalFilename.lastIndexOf("."));
+                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + Math.abs(new Random().nextInt())+originalFilename.substring(originalFilename.lastIndexOf("."));
 
 
-                directory = "img";
                 String filepath = Paths.get(directory, fileName).toString();
 
                 // Save the file locally
@@ -74,7 +73,7 @@ public class QuestionUploadController {
 
                 System.out.println(originalFilename + "\t" + filepath);
 
-                Pic pic = new Pic(filepath);
+                Pic pic = new Pic(env.getProperty("image.webpath") + "/" + fileName);
                 pics.add(pic);
                 picRepository.save(pic);
 
