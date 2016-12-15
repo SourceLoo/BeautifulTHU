@@ -39,16 +39,31 @@ public class RoleService {
         return roleRepository.findAll();
     }
 
-    public boolean updateRole(String role, String respPerson) {
+    public boolean updateRole(String role, String respPerson, String displayName) {
         Role r = roleRepository.findByRole(role);
         if (r == null) {
             return false;
         }
         r.setRespPerson(respPerson);
+        r.setDisplayName(displayName);
         try {
             roleRepository.save(r);
             return true;
         } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean insertRole(String role, String respPerson, String displayName){
+        Role r = roleRepository.findByRole(role);
+        if (null != r){
+            return false;
+        }
+        r = new Role(role , displayName , respPerson);
+        try{
+            roleRepository.save(r);
+            return true;
+        } catch (Exception e){
             return false;
         }
     }

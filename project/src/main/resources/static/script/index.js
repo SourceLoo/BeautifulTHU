@@ -29,6 +29,10 @@ var router = new VueRouter({
     }, {
         path: '/introduction',
         component: introduction,
+        beforeEnter: function(to, from, next) {
+            this.app.set_current_view('introduction');
+            next();
+        }
     }, {
         path: '/questions',
         component: questions,
@@ -129,9 +133,9 @@ var app = new Vue({
             localStorage.setItem('token', '')
             this.is_login = false;
         }
-        this.$http.post('/init/get_displayname').then(function(res) {
+        this.$http.get('/init/get_displayname').then(function(res) {
             //console.log('get_displayname: ', res);
-            this.display_name = res.data;
+            this.display_name = res.data;//JSON.parse(res.data);
         });
     },
     router: router,
@@ -161,7 +165,7 @@ var app = new Vue({
                 if (res.data.success === false) {
                     alert(res.data.msg);
                 } else {
-                    localStorage.setItem('token', res.data);
+                    localStorage.setItem('token', res.data.token);
                     localStorage.setItem('uname', this.uname);
                     this.is_login = true;
                     alert('登录成功');

@@ -48,6 +48,10 @@ public class User {
         this.uname = uname;
     }
 
+    public boolean checkPasswd(String passwd){
+        return passwordEncoder.matches(passwd , this.passwd);
+    }
+
     public String getPasswd() {
         return passwd;
     }

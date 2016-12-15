@@ -826,11 +826,12 @@ table td {
     padding: 0 7px 0 7px;
     border-top: 1px solid #dddddd;
     border-left: 1px solid #dddddd;
+    background-color: #f0f0f0;
 }
 
 table thead tr td,
 table th {
-    background-color: #f0f0f0;
+    background-color: #a8a8a8;
     font-weight: bold;
 }
 
