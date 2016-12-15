@@ -1,6 +1,7 @@
 package com.thu.web.student;
 
 import com.thu.domain.*;
+import com.thu.service.QuestionService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,18 +33,12 @@ public class QuestionsController {
     @Autowired
     private QuestionRepository questionRepository;
 
-//    @Autowired
-//    private UserRepository userRepository;
+    @Autowired
+    private QuestionService questionService;
 
     @GetMapping(value = "/")
     public Object getAQuestion(@RequestParam("question_id") Long questionId, Model model, HttpServletRequest request)
     {
-        //model.addAttribute("base", request.getContextPath());
-        //System.out.println("base=" + request.getContextPath());
-
-        // sql: 按questionId 得到question对象
-
-        System.out.println(questionId);
         Question question = questionRepository.findByQuestionId(questionId);
         //question.setUser(null);
         model.addAttribute(question);
@@ -83,15 +79,50 @@ public class QuestionsController {
     public Object getQuestions(@RequestParam(name = "page_num") Integer pageNum,
                                @RequestParam(name = "state_condition", required = false) String state,
                                @RequestParam(name = "depart_condition", required = false) String depart,
-                               @RequestParam(name = "order_type" , required = false) String orderType,
-                               @RequestParam(name = "keywords" , required = false) String searchKey)
+                               @RequestParam(name = "order_type" , required = false, defaultValue = "createdTime") String orderType,
+                               @RequestParam(name = "keywords" , required = false) String searchKey,
+                               @RequestParam(name = "isCommon" , required = false, defaultValue = "false") boolean isCommon)
     {
         // pageSize 由后台自定义
         Integer pageSize = 2;
-        //Integer userId = (Integer)session.getAttribute("userId");
 
-        Page<Question> questionPage = questionRepository.findAll(new PageRequest(pageNum, pageSize));
+        System.out.println("state="+state);
+        // Status: UNAPPROVED, UNCLASSIFIED, UNSOLVED, SOLVING, RECLASSIFY, DELAY, SOLVED, INVALID
 
+        System.out.println("depart="+depart);
+        // Role.role
+
+        System.out.println("orderType="+orderType);
+        // createdTime likes 创建时间即创建的ID
+        List<String> orders = new ArrayList<>();
+        if("likes".equals(orderType))
+        {
+            orders.add(orderType);
+        }
+        orders.add("questionId");
+
+
+        System.out.println("searchKey="+searchKey);
+        // all
+
+        System.out.println("isCommon="+isCommon);
+
+        searchKey = "内容";
+        isCommon = true;
+        depart = "zongban";
+        Status status = Status.UNCLASSIFIED;
+        Long userId = (Long) session.getAttribute("userId");
+        userId = 0L;
+
+
+        Page<Question> questionPage = null;
+        // 注意 缺失值 则设置为null
+//        status = null;
+//        depart = null;
+//        searchKey = null;
+//        isCommon = false;
+
+        questionPage = questionService.filterQuestions(pageNum, pageSize, status, depart, searchKey, isCommon, userId, orders);
 
         List<Question> questions = questionPage.getContent();
         System.out.println("begin");
@@ -103,11 +134,6 @@ public class QuestionsController {
 
         for (Question question : questions)
         {
-            //System.out.println(question);
-            //question.setLeaderRole(null);
-            //question.setOtherRoles(null);
-            //question.setPics(null);
-            //question.setUser(null);
             JSONObject tmp = new JSONObject();
             tmp.put("question_id", question.getQuestionId());
             tmp.put("question_title", question.getTitle());

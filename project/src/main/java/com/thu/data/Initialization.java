@@ -24,6 +24,9 @@ public class Initialization implements CommandLineRunner {
     @Autowired
     private ResponseRepositiry responseRepositiry;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
     private final QuestionService questionService;
     private final ResponseService responseService;
     private final RoleService roleService;
@@ -58,12 +61,21 @@ public class Initialization implements CommandLineRunner {
         paths.add("/upload/image/20161214194625_1617113213.jpg");
 
         questionService.saveQuestion(lyq, "这是标题1", "这是内容1\n\n啦 啦啦", "这是清华大学", paths);
-        questionService.saveQuestion(lyq, "这是标题2", "这是内容2", "这是清华大学", paths.subList(0,2));
+        questionService.saveQuestion(lyq, "这是标-题2", "这是内x容2", "这是清华大学", paths.subList(0,2));
         questionService.saveQuestion(lyq, "这是标题3", "这是内容3", "这是清华大学", paths.subList(0,1));
+        Question question = questionService.findById(3L);
+        question.setLeaderRole(new Role("zongban", "zongbanname", "xiaozhang"));
+        questionRepository.save(question);
 
-        questionService.saveQuestion(lyq, "这是标题4", "这是内容4", "这是清华大学", paths.subList(0,1));
+
+        questionService.saveQuestion(lyq, "这是标s题4", "这是内容4", "这是清华大学", paths.subList(0,1));
         questionService.saveQuestion(lyq, "这是标题5", "这是内容5", "这是清华大学", paths.subList(0,1));
-        questionService.saveQuestion(lyq, "这是标题6", "这是内容6", "这是清华大学", paths.subList(0,1));
+        question = questionService.findById(5L);
+        question.setCommon(true);
+        question.setLeaderRole(new Role("zongban", "zongbanname", "xiaozhang"));
+        questionRepository.save(question);
+
+        questionService.saveQuestion(lyq, "这是标题6", "这是内s容6", "这是清华大学", paths.subList(0,1));
 
         System.out.println(questionService.findById(1L).getCreatedTime().toLocalDate());
 

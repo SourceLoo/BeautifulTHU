@@ -32,7 +32,7 @@ public class othersController {
         for(Role role: roles)
         {
             JSONObject tmp = new JSONObject();
-            tmp.put("name", role.getDisplayName());
+            tmp.put("name", role.getRole());
 
             jsonArray.put(tmp);
         }
