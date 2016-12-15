@@ -70,13 +70,13 @@ $(function(){
                     var result = '';
                     // alert("success1")
                     for(var i = 0; i < data.question_list.length; i++){
-                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
-                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
-                                 '<ul class="weui-media-box__info">'
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
-                                 '</ul>'
+                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'+
+                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'+
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'+
+                                 '<ul class="weui-media-box__info">'+
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'+
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'+
+                                 '</ul>'+
                                  '</div>';
                     }
                     // 为了测试，延迟1秒加载
@@ -146,6 +146,51 @@ $(function(){
             });
         }
     });
+    $('#searchInput').on('change', function(){
+            var status = $('#status').val(),
+                dept = $('#dept').val(),
+                order = $('#order').val(),
+                type = $('#type').val(),
+                keyword = $(this).val()
+            var get_url = '';
+            page = 1
+            if (type == 'all') {
+                get_url = '/question/all/'
+            } else {
+                get_url = '/regular_question/all/'
+            }
+            $.ajax({
+                type: 'GET',
+                url: '/question/all/',
+                dataType: 'json',
+                data: {
+                    page_size : 4,
+                    page_num : 1,
+                    state_condition : status,
+                    depart_condition : dept,
+                    order_type : order,
+                    keywords : keyword
+                },
+                success: function(data) {
+                    page += 1
+                    var result = '';
+                    for(var i = 0; i < data.question_list.length; i++) {
+                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'+
+                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'+
+                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'+
+                                 '<ul class="weui-media-box__info">'+
+                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'+
+                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'+
+                                 '</ul>'+
+                                 '</div>';
+                   }
+                   $('.weui_panel_bd').html(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+        });
 });
 </script>
     <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
@@ -250,44 +295,15 @@ $(function(){
             cancelSearch();
             $searchInput.blur();
         });
-
-        $('#searchInput').on('change', function(){
-            var status = $('#status').val(),
-                dept = $('#dept').val(),
-                order = $('#order').val(),
-                type = $('#type').val(),
-                keyword = $(this).val()
-            var get_url = '';
-            if (type == 'all') {
-                get_url = '/question/all/'
-            } else {
-                get_url = '/regular_question/all/'
-            }
+        
+        $('#question').click(function(){
+            var id = $(this).attr('question_id')
             $.ajax({
                 type: 'GET',
-                url: '/question/all/',
+                url: '/question/',
                 dataType: 'json',
                 data: {
-                    page_size : 4,
-                    page_num : 1,
-                    state_condition : status,
-                    depart_condition : dept,
-                    order_type : order,
-                    keywords : keyword
-                },
-                success: function(data) {
-                    var result = '';
-                    for(var i = 0; i < data.question_list.length; i++) {
-                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
-                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
-                                 '<ul class="weui-media-box__info">'
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
-                                 '</ul>'
-                                 '</div>';
-                   }
-                   $('.weui_panel_bd').append(result);
+                    question_id: id
                 },
                 error: function(xhr, type) {
                     alert('Ajax error!');
