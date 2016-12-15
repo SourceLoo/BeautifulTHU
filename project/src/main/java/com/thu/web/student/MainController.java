@@ -1,4 +1,4 @@
-package com.thu.web;
+package com.thu.web.student;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,32 +10,39 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Controller
-public class HelloController {
+public class MainController {
 
     @GetMapping(value = "/lyqtest")
     public String getMyTest(HttpServletRequest request)
     {
-        System.out.println(request.getSession().getServletContext().getRealPath("/image"));
+        // System.out.println(request.getSession().getServletContext().getRealPath("/image"));
         return "lyqtest";
     }
 
-    @GetMapping("/greeting")
-    public String getGreeting()
+    @GetMapping(value = "/status")
+    public String getNewestStatus()
     {
-        return "greeting";
+        return "redirect:/lyqtest";
     }
 
+    // 问题的若干状态
     @GetMapping("/classify_renew")
-    public String getClassify_renew()
+    public String getClassify()
     {
         return "classify_renew";
     }
 
-    @GetMapping("/homepage")
-    public String getHomepage()
+    @GetMapping("/reply_detail")
+    public String getReplydetail()
     {
-        return "homepage";
+        return "reply_detail";
     }
+
+    @GetMapping("/append")
+    public String getAppend() {
+        return "append";
+    }
+
 
     @GetMapping("/question")
     public String getQuestion()
@@ -43,18 +50,8 @@ public class HelloController {
         return "question";
     }
 
-    @GetMapping("/question_detail")
-    public String getQuestiondetail()
-    {
-        return "question_detail";
-    }
 
 
-    @GetMapping("/reply_detail")
-    public String getReplydetail()
-    {
-        return "reply_detail";
-    }
 
     @GetMapping("/upload")
     public String getUpload()
@@ -68,8 +65,5 @@ public class HelloController {
         return "upload_success";
     }
 
-    @GetMapping("/append")
-    public String getAppend() {
-        return "append";
-    }
+
 }

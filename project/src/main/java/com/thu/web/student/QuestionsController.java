@@ -113,6 +113,7 @@ public class QuestionsController {
             tmp.put("question_title", question.getTitle());
             tmp.put("question_content", question.getContent());
             tmp.put("question_location", question.getCreatedLocation());
+            //question.setLikes(1024L);
             tmp.put("like_num", question.getLikes());
 
             jsonArray.put(tmp);
