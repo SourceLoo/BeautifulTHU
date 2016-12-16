@@ -19,6 +19,7 @@ import com.thu.service.RoleService;
 import com.thu.service.UserService;
 import com.thu.web.school.Jwt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
@@ -94,23 +95,32 @@ public class SchoolController{
     }
 
 
-    /*
+    /* done
     *
     *
     * */
     @RequestMapping(value = "/init/get_displayname", method = RequestMethod.GET)
     @ResponseBody
     public String getDisplayname() throws JSONException{
+
         List<Role> mainRoleList = roleService.findMain();
         List<Role> relatedRoleList = roleService.findRelated();
-        JSONObject[] result = new JSONObject[2];
+
+    //    ArrayList<JSONObject> result0=new ArrayList<>();
+
+        System.out.println(mainRoleList.size());
+        JSONObject resultMain = new JSONObject();
+        JSONObject resultRelated = new JSONObject();
         for (Role role:mainRoleList){
-            result[0].put(role.getRole(), role.getDisplayName());
+            System.out.println(role.getRole());
+            System.out.println(role.getDisplayName());
+            resultMain.put(role.getRole(), role.getDisplayName());
+//        result.add(new JSONObject().put(role.getRole(), role.getDisplayName()));
         }
         for (Role role:relatedRoleList){
-            result[1].put(role.getRole(), role.getDisplayName());
+            resultRelated.put(role.getRole(), role.getDisplayName());
         }
-        return result.toString();
+        return '[' + resultMain.toString() +','+ resultRelated.toString() +']';
     }
 
     /*  done
@@ -122,20 +132,23 @@ public class SchoolController{
     @ResponseBody
     public String login(@RequestParam("uname") String uname,
                         @RequestParam("passwd") String passwd) throws JSONException{
-        System.out.print("user is coming");
-        roleService.insertRole("zyf","zyf","ZYF");
-        roleService.insertRole("tuanwei", "THU","清华");
-        Role _rol = roleService.findByRole("zyf");
-        //Role _rol = new Role("student" , "xuesheng" , "zyf");
-        userService.insertUser("tuanwei" , "110","112","01","aaa",roleService.findByRole("tuanwei"),"123");
-        userService.insertUser("zyf","123456","600113","130225","aaaa",_rol,"123456");
-
+//        System.out.print("user is coming");
+//        roleService.insertRole("zyf","zyf","ZYF");
+//        roleService.updateRole("xiaoban", "THU","清华");
+//        Role _rol = roleService.findByRole("xiaoban");
+//        //Role _rol = new Role("student" , "xuesheng" , "zyf");
+//        userService.insertUser("tuanwei" , "110","112","01","aaa",roleService.findByRole("tuanwei"),"123");
+//        boolean flag = userService.updateUser("xiaoban","123456","600113",_rol,"123");
+        //System.out.println(us)
         if (uname.equals("") || ! userService.containsUname(uname))
             return loginErrorMsg;
-
+//        System.out.println(flag);
         User usr = userService.findUser(uname);
-        if (usr.checkPasswd(passwd))
+//        System.out.println(usr.getUname());
+//        System.out.println(usr.getFixedNumber());
+        if (!usr.checkPasswd(passwd))
             return loginErrorMsg;
+//        System.out.println(usr.getFixedNumber());
         String rol = usr.getRole().getRole();
         String token;
         try {
@@ -226,20 +239,36 @@ public class SchoolController{
         }
     }
 
-    /*
+    /* done
     * only TuanWei get contact
     * no param
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
 
-   @RequestMapping(value = "/contact/get", method = RequestMethod.GET)
+   @RequestMapping(value = "/contact/get", method = RequestMethod.POST)
     @ResponseBody
     public String getContact(@RequestParam("token") String token) throws JSONException{
        if (!checkPermissionWithoutName(token, roleTW))
            return invalidTokenMsg;
         List<User> userList = userService.findAll();
-        JSONArray jsonArray = JSONArray.fromObject(userList);
-        return jsonArray.toString();
+        String result = "[";
+        boolean flag = true;
+        for (User usr:userList) {
+            JSONObject mem = new JSONObject();
+            mem.put("role", usr.getRole().getRole());
+            mem.put("uname", usr.getUname());
+            mem.put("resp_person", usr.getRole().getRespPerson());
+            mem.put("fixed_phone", usr.getFixedNumber());
+            mem.put("mobile_phone", usr.getMobileNumber());
+            if (flag) {
+                flag = false;
+                result = result + mem.toString();
+            }else{
+                result = result + ',' + mem.toString();
+            }
+        }
+        result = result + "]";
+        return result;
     }
 
 
@@ -386,12 +415,12 @@ public class SchoolController{
         }
     }
 
-    /*
+    /* done
     * only xiaoban & zongban can get
     * no param
     * return msg
     * ***/
-   @RequestMapping(value = "/statistics/get", method = RequestMethod.GET)
+   @RequestMapping(value = "/statistics/get", method = RequestMethod.POST)
     @ResponseBody
     public String getStatistics(@RequestParam("token") String token) throws JSONException{
         if (!checkPermissionWithoutName(token, roleXB) && !checkPermissionWithoutName(token, roleZB)){
