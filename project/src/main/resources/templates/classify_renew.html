@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
@@ -37,7 +38,7 @@
         <div class="weui-cell__bd">
             <p>受理部门</p>
         </div>
-        <div class="weui-cell__ft">{部门}</div>
+        <div class="weui-cell__ft" th:text="${question.leaderRole.displayName}">{部门}</div>
     </div>
 </div>
 <div class="page__bd">
@@ -57,7 +58,7 @@
         <div class="weui-cell__bd">
             <p>最迟答复时间</p>
         </div>
-        <div class="weui-cell__ft">{答复时间}</div>
+        <div class="weui-cell__ft" th:text="${#temporals.format(question.ddl, 'yyyy-MM-dd')}">{答复时间}</div>
     </div>
 </div>
 

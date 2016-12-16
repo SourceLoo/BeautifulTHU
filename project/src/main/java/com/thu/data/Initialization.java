@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,11 +61,19 @@ public class Initialization implements CommandLineRunner {
         paths.add("/upload/image/20161214194625_622259729.png");
         paths.add("/upload/image/20161214194625_1617113213.jpg");
 
+
+        Question question;
+
         questionService.saveQuestion(lyq, "这是标题1", "这是内容1\n\n啦 啦啦", "这是清华大学", paths);
+        question = questionService.findById(1L);
+        question.setLeaderRole(new Role("zongban", "zongbanname", "xiaozhang"));
+        questionRepository.save(question);
+
         questionService.saveQuestion(lyq, "这是标-题2", "这是内x容2", "这是清华大学", paths.subList(0,2));
         questionService.saveQuestion(lyq, "这是标题3", "这是内容3", "这是清华大学", paths.subList(0,1));
-        Question question = questionService.findById(3L);
+        question = questionService.findById(3L);
         question.setLeaderRole(new Role("zongban", "zongbanname", "xiaozhang"));
+        question.setDdl(LocalDateTime.now().plusDays(2));
         questionRepository.save(question);
 
 
@@ -79,7 +88,7 @@ public class Initialization implements CommandLineRunner {
 
         System.out.println(questionService.findById(1L).getCreatedTime().toLocalDate());
 
-        Response response1= new Response("校长回复1", xz);
+        Response response1= new Response("校长回复1\n\n校长回复 的", xz);
         //responseRepositiry.save(response1);
 
         Response response2= new Response("校长回复2", xz);

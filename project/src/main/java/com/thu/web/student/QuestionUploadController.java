@@ -51,11 +51,9 @@ public class QuestionUploadController {
             @RequestParam(name="location", required=false, defaultValue="清华大学") String location,
             HttpServletRequest request)
     {
-//        List<Pic> pics = new ArrayList<>();
         List<String> paths = new ArrayList<>();
 
         // 拷贝到本地
-        System.out.println("Begin to upload...");
         for (MultipartFile uploadfile : uploadfiles)
         {
             try
@@ -74,10 +72,7 @@ public class QuestionUploadController {
 
                 System.out.println(originalFilename + "\t" + filepath);
 
-                //Pic pic = new Pic();
                 paths.add(env.getProperty("image.webpath") + "/" + fileName);
-//                pics.add(pic);
-//                picRepository.save(pic);
 
             }
             catch (Exception e)
@@ -87,7 +82,6 @@ public class QuestionUploadController {
             }
 
         }
-        System.out.println("Uploading done.");
 
 
         Long userId = (Long) session.getAttribute("userId");
@@ -99,7 +93,6 @@ public class QuestionUploadController {
         System.out.println(title);
         System.out.println(content);
         System.out.println(location);
-        // questionService.insertQuestion(title, content, user, location, new Date(), pics);
         questionService.saveQuestion(user, title, content, location, paths);
 
         return new ResponseEntity<>(HttpStatus.OK);

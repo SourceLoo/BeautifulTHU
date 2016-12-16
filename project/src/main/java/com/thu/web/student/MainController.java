@@ -12,46 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class MainController {
 
-    @GetMapping(value = "/lyqtest")
-    public String getMyTest(HttpServletRequest request)
-    {
-        // System.out.println(request.getSession().getServletContext().getRealPath("/image"));
-        return "lyqtest";
-    }
-
-    @GetMapping(value = "/status")
-    public String getNewestStatus()
-    {
-        return "redirect:/lyqtest";
-    }
-
-    // 问题的若干状态
-    @GetMapping("/classify_renew")
-    public String getClassify()
-    {
-        return "classify_renew";
-    }
-
-    @GetMapping("/reply_detail")
-    public String getReplydetail()
-    {
-        return "reply_detail";
-    }
-
-    @GetMapping("/append")
-    public String getAppend() {
-        return "append";
-    }
-
+//    @GetMapping(value = "/lyqtest")
+//    public String getMyTest(HttpServletRequest request)
+//    {
+//        // System.out.println(request.getSession().getServletContext().getRealPath("/image"));
+//        return "lyqtest";
+//    }
 
     @GetMapping("/question")
     public String getQuestion()
     {
         return "question";
     }
-
-
-
 
     @GetMapping("/upload")
     public String getUpload()

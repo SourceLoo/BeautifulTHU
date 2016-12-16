@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
@@ -37,7 +38,7 @@
         <div class="weui-cell__bd">
             <p>受理部门</p>
         </div>
-        <div class="weui-cell__ft">{部门}</div>
+        <div class="weui-cell__ft" th:text="${question.leaderRole.displayName}">{部门}</div>
     </div>
 </div>
 <div class="page__bd" response_id={response_id}>
@@ -51,11 +52,13 @@
             </div>
             <div class="weui-media-box weui-media-box_text">
                 <h4 class="weui-media-box__title">问题</h4>
-                <p id="question_content"  class="weui-media-box__desc">{问题内容}</p>
+                <p id="question_content"  class="weui-media-box__desc" th:text="${question.content}">{问题内容}</p>
             </div>
-            <div class="weui-media-box weui-media-box_text">
+            <div class="weui-media-box weui-media-box_text" th:each="response: ${question.responses}">
                 <h4 class="weui-media-box__title">答复</h4>
-                <p id="reply_content"  class="weui-media-box__desc">{答复内容}</p>
+                <p id="reply_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                    {答复内容}
+                </p>
             </div>
         </div>
     </div>
