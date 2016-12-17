@@ -108,32 +108,21 @@
 <script type="text/javascript">
     $("#showTooltips").click(function(){
         $.ajax({
-                type: 'GET',
-                url: '/evaluation/',
-                dataType: 'json',
-                data: {
-                    response_id: $(".page__bd").attr("response_id"),
-                    evaluation: $("#evaluation").val(),
-                    detail: $("textarea").val()
-                },
-                success: function(data) {
-                    var result = '';
-                    for(var i = 0; i < data.question_list.length; i++) {
-                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'
-                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'
-                                 '<ul class="weui-media-box__info">'
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'
-                                 '</ul>'
-                                 '</div>';
-                   }
-                   $('.weui_panel_bd').append(result);
-                },
-                error: function(xhr, type) {
-                    alert('Ajax error!');
-                }
-            });
+            type: 'POST',
+            url: '/evaluation/',
+            dataType: 'json',
+            data: {
+                response_id: $(".page__bd").attr("response_id"),
+                evaluation: $("#evaluation").val(),
+                detail: $("textarea").val()
+            },
+            success: function(data) {
+                window.location("/evaluate_success/")
+            },
+            error: function(xhr, type) {
+                alert('Ajax error!');
+            }
+        });
      });
 </script>
 <!-- 使用 -->
