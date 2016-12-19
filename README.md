@@ -32,7 +32,7 @@ $ ./start.sh
 ```
 /init/get_displayname
 send: none
-receive: [{'role1':'displayname1', ...}, {...}]
+receive: [[{'role':'role1','label':'displayname1'}, ...{}], [{}...{}]
 ```
 
 - Get permission to login from backend.
@@ -40,7 +40,7 @@ receive: [{'role1':'displayname1', ...}, {...}]
 ```
 /auth/login
 send: {'uname':'', 'passwd':''}
-receive: {'success':bool, 'msg':''}
+receive: {'token':'', 'role':''}
 ```
 
 - logout.
@@ -48,7 +48,15 @@ receive: {'success':bool, 'msg':''}
 ```
 /auth/logout
 send: none
-receive: {'role':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':''}
+receive: {'success':bool, 'msg':''}
+```
+
+- Get personal info from **token**.
+
+```
+/info/get
+send: none
+receive: {'display_name':'', 'uname':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':''}
 ```
 
 - Set personal info.
@@ -58,8 +66,6 @@ receive: {'role':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':''}
 send: {'uname':'', 'resp_person':'', 'fixed_phone':'', 'mobile_phone':'', 'passwd':''}
 receive: {'success':bool, 'msg':''}
 ```
-
-*none for not modify*
 
 - Get contact table content, only TuanWei can access uname&passwd.
 
@@ -79,13 +85,21 @@ send: {'display_name':'', 'uname':'', 'resp_person':'', 'fixed_phone':'',
 receive: {'success':bool, 'msg':''}
 ```
 
+- Delete contact table content, only TuanWei can modify.
+
+```
+/contact/del
+send: 'tuanwei'(the value of uname)
+receive: {'success':bool, 'msg':''}
+```
+
 - Get questions list. (multi parts?)
 
 ```
 /questions/main/get_all
 send: {'start':int, 'number':int}
 receive: [{'question_id':'', 'created_time':'', 'timestamp1':'', 'timestamp2':'',
-    'timestamp3':'' 'status':'', 'resp_role':'',
+    'timestamp3':'' 'status':int, 'resp_role':'', 'resp_role_name':'', 'pic_path':['',''],
     'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'',
     'is_common_top':bool, 'reclassify_reason':'', 'created_location':'', 'likes':int}]
 ```
@@ -95,8 +109,7 @@ receive: [{'question_id':'', 'created_time':'', 'timestamp1':'', 'timestamp2':''
 ```
 /questions/main/get_detail
 send: {'question_id':''}
-receive: {'opinion':'', 'pic_path':['',''],
-    'responses':[{'response_id':'', 'response_content':''}]}
+receive: {'opinion':'', 'responses':[{'response_id':'', 'response_content':''}]}
 ```
 
 
