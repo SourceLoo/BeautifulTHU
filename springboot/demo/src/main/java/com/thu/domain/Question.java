@@ -266,7 +266,7 @@ public class Question {
     }
 
     public void addResponse(Response response) {
-        this.responses.add(response);
+        this.getResponses().add(response);
     }
 
     public Status getStatus() {
