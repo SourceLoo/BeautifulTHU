@@ -292,6 +292,7 @@ template {
  */
 
 a {
+    color: #333;
     background: transparent;
     text-decoration: none;
 }
@@ -702,8 +703,7 @@ html button {
 */
 
 html {
-    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "DejaVu Sans",
-        "微软雅黑", "华文细黑", STXihei, "Microsoft YaHei", sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "DejaVu Sans", "微软雅黑", "华文细黑", STXihei, "Microsoft YaHei", sans-serif;
     text-rendering: optimizeLegibility;
     /* Enables kerning and ligatures etc. */
     -webkit-font-smoothing: antialiased;
@@ -818,15 +818,19 @@ table {
     max-width: 100%;
     caption-side: bottom;
     margin-top: 1em;
-    margin-bottom: 1em;
 }
 
 table th,
 table td {
-    padding: 0 7px 0 7px;
+    padding: 7px;
     border-top: 1px solid #dddddd;
     border-left: 1px solid #dddddd;
     background-color: #f0f0f0;
+}
+
+table td input {
+    width: 100%;
+    /*margin: 7px 0 7px 0;*/
 }
 
 table thead tr td,
@@ -969,7 +973,7 @@ a i,
 button img,
 label svg,
 label img {
-    vertical-align: middle;
+    vertical-align: baseline;
 }
 
 .thu-btn-invisible {
@@ -1225,7 +1229,7 @@ button.thu-untagged-label {
 }
 
 .thu-topbar-left {
-    left: 29px;
+    left: 16px;
     padding: 10px 0;
 }
 
@@ -1317,7 +1321,7 @@ button.thu-untagged-label {
         padding: 14px;
         margin-top: 0px;
     }
-    .thu-sidebar-lists .{
+    .thu-sidebar-lists . {
         min-height: 32px;
     }
     .thu-story-river {
@@ -1347,7 +1351,7 @@ button.thu-untagged-label {
         left: 0px;
         top: 0px;
         width: 70%;
-        padding: 42px 42px 42px 42px;
+        padding: 42px 42px 42px 160px;
     }
 }
 
@@ -1424,7 +1428,7 @@ button.thu-untagged-label {
 
 @media (min-width: 750px) {
     .thu-tiddler-frame {
-        padding: 28px 42px 42px 42px;
+        padding: 28px 28px 28px 28px;
         width: 686px;
         border-radius: 2px;
     }
@@ -1445,7 +1449,6 @@ button.thu-untagged-label {
 .thu-sidebar-scrollable {
     font-family: "楷体", KaiTi;
 }
-
 
 .thu-site-title {
     padding: 10px 0;
@@ -1499,20 +1502,30 @@ button.thu-untagged-label {
     font-size: 1em;
 }
 
-.thu-tiddler-controls>span>button {
+.thu-tiddler-controls a,
+.thu-search a {
+    color: #cccccc;
+}
+
+.thu-tiddler-controls a {
+    font-size: 20px;
+    font-family: "楷体", KaiTi;
     vertical-align: baseline;
-    margin-left: 5px;
 }
 
 .thu-tiddler-controls a i,
 .thu-search a i {
     height: 0.75em;
-    color: #cccccc;
+    margin-left: 5px;
 }
 
-.thu-tiddler-controls a:hover i,
-.thu-search a:hover i {
+.thu-tiddler-controls a:hover,
+.thu-search a:hover {
     color: #888888;
+}
+
+.thu-tiddler-controls .small {
+    font-size: 16px;
 }
 
 @media print {
@@ -1610,16 +1623,19 @@ html body.thu-body.thu-single-tiddler-window {
 */
 
 .thu-editor-toolbar {
-    margin-top: 8px;
+    width: 100%;
 }
 
 .thu-editor-toolbar a {
+    display: inline-block;
     vertical-align: middle;
     background-color: #cccccc;
-    fill: #444444;
+    color: #333;
     border-radius: 4px;
     padding: 3px;
-    margin: 2px 0 2px 4px;
+    width: 32%;
+    text-align: center;
+    margin: 0 2px;
 }
 
 .thu-editor-toolbar a.thu-text-editor-toolbar-item-adjunct {
@@ -1637,7 +1653,6 @@ html body.thu-body.thu-single-tiddler-window {
 }
 
 .thu-editor-toolbar a i {
-    width: 1.6em;
     height: 1.2em;
 }
 
@@ -1797,47 +1812,40 @@ html body.thu-body.thu-single-tiddler-window {
 .thu-edit-fields tr,
 .thu-edit-fields td {
     border: none;
-    padding: 4px;
+    padding: 7px;
 }
 
-.thu-edit-fields>tbody>.thu-edit-field:nth-child(odd) {
-    background-color: #f0f4f0;
-}
-
-.thu-edit-fields>tbody>.thu-edit-field:nth-child(even) {
-    background-color: #e0e8e0;
+.thu-edit-fields>tbody>.thu-edit-field {
+    border-bottom: solid 15px #fff;
 }
 
 .thu-edit-field-name {
     text-align: right;
+    width: 120px;
 }
 
-.thu-edit-field-value input {
+.thu-edit-field-value>* {
     width: 100%;
+    margin-top: 5px;
 }
 
-.thu-edit-field-remove {}
-
-.thu-edit-field-remove svg {
-    height: 1em;
-    width: 1em;
-    fill: #bbb;
-    vertical-align: middle;
-}
-
-.thu-edit-field-add-name {
+.thu-edit-field-value div input {
     display: inline-block;
-    width: 15%;
+    text-align: right;
+    float: right;
+    width: 100px;
 }
-
-.thu-edit-field-add-value {
-    display: inline-block;
-    width: 40%;
+.thu-edit-field-value .thu-student-score {
+    text-align: center;
+    width: 33%;
+    margin-bottom: 10px;
+    padding: 5px;
+    float: left;
+    border-bottom: solid #fff;
 }
-
-.thu-edit-field-add-button {
-    display: inline-block;
-    width: 10%;
+.thu-edit-field-submit {
+    text-align: right;
+    width: 68px;
 }
 
 
@@ -2564,7 +2572,7 @@ a.thu-link.thu-plugin-info:hover .thu-plugin-info>.thu-plugin-info-chunk>svg {
     padding: 10px 0;
 }
 
-.thu-table-of-contents .active {
+.active {
     color: red!important;
 }
 
@@ -2736,7 +2744,8 @@ body.thu-dirty span.thu-dirty-indicator svg {
 }
 
 .thu-improvement-banner {
-    font-size: 0.7em;
+    font-size: 16px;
+    color: red;
     background: #fcc;
     padding-left: 5px;
     margin-top: 6px;
@@ -2752,8 +2761,9 @@ body.thu-dirty span.thu-dirty-indicator svg {
 
 @media (min-width: 750px) {
     .thu-improvement-banner {
-        margin-right: -53px;
-        margin-left: -53px;
+        margin-right: -39px;
+        margin-left: -39px;
+        padding: 6px;
     }
     .thu-improvement-banner:before {
         display: block;
@@ -2761,8 +2771,8 @@ body.thu-dirty span.thu-dirty-indicator svg {
         width: 0;
         height: 0;
         content: " ";
-        margin-left: -5px;
-        margin-top: -10px;
+        margin-left: -6px;
+        margin-top: -16px;
         border-top: 5px solid transparent;
         border-left: 5px solid transparent;
         border-right: 5px solid #C07E7E;
@@ -2770,7 +2780,8 @@ body.thu-dirty span.thu-dirty-indicator svg {
     }
 }
 
-.thu-improvement-banner svg {
+.thu-improvement-banner i {
+    color: red;
     width: 1em;
     height: 1em;
 }

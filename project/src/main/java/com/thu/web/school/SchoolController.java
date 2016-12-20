@@ -234,7 +234,7 @@ public class SchoolController{
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
 
-   @RequestMapping(value = "/contact/get", method = RequestMethod.GET)
+   @RequestMapping(value = "/contact/get", method = RequestMethod.POST)
     @ResponseBody
     public String getContact(@RequestParam("token") String token) throws JSONException{
        if (!checkPermissionWithoutName(token, roleTW))
@@ -393,7 +393,7 @@ public class SchoolController{
     * no param
     * return msg
     * ***/
-   @RequestMapping(value = "/statistics/get", method = RequestMethod.GET)
+   @RequestMapping(value = "/statistics/get", method = RequestMethod.POST)
     @ResponseBody
     public String getStatistics(@RequestParam("token") String token) throws JSONException{
         if (!checkPermissionWithoutName(token, roleXB) && !checkPermissionWithoutName(token, roleZB)){
