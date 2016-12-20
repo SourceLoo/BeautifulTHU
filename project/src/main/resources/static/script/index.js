@@ -1,5 +1,5 @@
-const common_props = ['curr', 'data', 'is_tuanwei', 'is_xiaoban', 'is_zongban'];
-const display_status = ['待审核', '待分类', '待解决', '解决中', '申请再分类', '申请延期', '已解决', '无效']
+const common_props = ['curr', 'data', 'is_tuanwei', 'is_xiaoban', 'is_zongban', 'is_main'];
+const display_status = ['待审核', '待分类', '待解决', '解决中', '申请重分类', '申请延期', '已解决', '无效']
 const introduction = {
     name: 'introduction',
     template: '#introduction',
@@ -62,6 +62,12 @@ const questions = {
         },
         question_status: function(status) {
             return display_status[status];
+        },
+        question_for_main: function(status) {
+            return (status==0 && this.is_tuanwei) || (status==1 && (this.is_xiaoban || this.is_zongban));
+        },
+        question_for_related: function(status) {
+            return ([2,3,4,5,6].indexOf(status) != -1);
         },
         question_is_show: function(status, is_common, role) {
             return (this.curr.question_filter == -1 || this.curr.question_filter == status) && (!this.filter_common || is_common) && (this.filter_statistics == '' || role.indexOf(this.filter_statistics) != -1);
@@ -218,11 +224,6 @@ const questions = {
         },
     }
 };
-const qa = {
-    name: 'qa',
-    template: '#qa',
-    props: [].concat(common_props),
-};
 const contact = {
     name: 'contact',
     template: '#contact',
@@ -255,11 +256,6 @@ const contact = {
             this.curr.contact_modify = -1;
         },
     }
-};
-const statistics = {
-    name: 'statistics',
-    template: '#statistics',
-    props: [].concat(common_props),
 };
 const error = {
     name: 'error',
@@ -308,40 +304,12 @@ var router = new VueRouter({
             next();
         },
     }, {
-        path: '/qa',
-        component: qa,
-        beforeEnter: function(to, from, next) {
-            this.app.update_questions().then(function(result) {
-                next(result);
-            });
-        },
-    }, {
         path: '/contact',
         component: contact,
         beforeEnter: function(to, from, next) {
             this.app.update_contact().then(function(result) {
                 next(result);
             });
-        },
-    }, {
-        path: '/statistics',
-        component: statistics,
-        beforeEnter: function(to, from, next) {
-            if (this.app.data.statistics.length != 0) {
-                this.app.set_curr_view('statistics');
-                next();
-            } else {
-                this.app.$http.post('/statistics/get/' + localStorage.token).then(function(res) {
-                    if (res.data.success === false) {
-                        alert(res.data.msg);
-                        next(false);
-                    } else {
-                        this.data.statistics = res.data;
-                        this.set_curr_view('statistics');
-                        next();
-                    }
-                })
-            }
         },
     }, {
         path: '*',
@@ -378,9 +346,7 @@ var app = new Vue({
         introduction: introduction,
         info: info,
         questions: questions,
-        qa: qa,
         contact: contact,
-        statistics: statistics,
     },
     data: {
         curr: {
@@ -413,6 +379,9 @@ var app = new Vue({
         },
         is_zongban: function() {
             return this.curr.role == 'zongban';
+        },
+        is_main: function() {
+            return this.is_tuanwei || this.is_xiaoban || this.is_zongban;
         },
     },
     methods: {

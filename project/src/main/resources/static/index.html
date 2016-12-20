@@ -162,15 +162,15 @@
                             </a>
                             <a href="javascript:;" @click="question_filter(4)" class="small" :class="question_filter_used(4)">
                                 <i class="fa fa-filter" aria-hidden="true"></i>
-                                <span>申请重分类</span>
+                                <span>重分类</span>
                             </a>
                             <a href="javascript:;" @click="question_filter(5)" class="small" :class="question_filter_used(5)">
                                 <i class="fa fa-filter" aria-hidden="true"></i>
-                                <span>申请延期</span>
+                                <span>延期</span>
                             </a>
                             <a href="javascript:;" @click="filter_common=!filter_common" class="small" :class="filter_common?'active':''">
                                 <i class="fa fa-filter" aria-hidden="true"></i>
-                                <span>常见问题</span>
+                                <span>常见</span>
                             </a>
                         </div>
                         <div>
@@ -211,31 +211,31 @@
             <div class="thu-tiddler-frame" v-for="(question, index) in data.questions" v-show="question_is_show(question.status, question.is_common, question.resp_role)">
                 <div class="thu-tiddler-title">
                     <div class="thu-titlebar" v-if="curr.question_modify!=index">
-                        <div class="thu-tiddler-controls">
-                            <a href="javascript:;" @click="question_reclassify(question.question_id, true)" class="small" v-if="question.status==4">
+                        <div class="thu-tiddler-controls" v-if="question.status!=7">
+                            <a href="javascript:;" @click="question_reclassify(question.question_id, true)" class="small" v-if="question.status==4 && is_tuanwei">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>同意重分类</span>
                             </a>
-                            <a href="javascript:;" @click="question_reclassify(question.question_id, false)" class="small" v-if="question.status==4">
+                            <a href="javascript:;" @click="question_reclassify(question.question_id, false)" class="small" v-if="question.status==4 && is_tuanwei">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>拒绝</span>
                             </a>
-                            <a href="javascript:;" @click="question_delay(question.question_id, true)" class="small" v-if="question.status==5">
+                            <a href="javascript:;" @click="question_delay(question.question_id, true)" class="small" v-if="question.status==5 && is_tuanwei">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>同意延期</span>
                             </a>
-                            <a href="javascript:;" @click="question_delay(question.question_id, false)" class="small" v-if="question.status==5">
+                            <a href="javascript:;" @click="question_delay(question.question_id, false)" class="small" v-if="question.status==5 && is_tuanwei">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>拒绝</span>
                             </a>
                             <a href="javascript:;" @click="question_common(question.question_id, question.is_common)" class="small" v-if="is_tuanwei">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
-                                <span v-if="question.is_common">设为常见</span>
+                                <span v-if="!question.is_common">设为常见</span>
                                 <span v-else>取消常见</span>
                             </a>
-                            <a href="javascript:;" @click="question_common_top(question.question_id, question.is_common_top)" class="small" v-if="is_tuanwei">
+                            <a href="javascript:;" @click="question_common_top(question.question_id, question.is_common_top)" class="small" v-if="is_tuanwei && question.is_common">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
-                                <span v-if="question.is_common_top">常见置顶</span>
+                                <span v-if="!question.is_common_top">常见置顶</span>
                                 <span v-else>取消置顶</span>
                             </a>
                             <a href="javascript:;" @click="question_modify(index)" class="small">
@@ -258,7 +258,7 @@
                             <h2 class="thu-title" style="font-size:20px"> 查看详情：{{question.title}} </h2>
                         </div>
                     </div>
-                    <div class="thu-improvement-banner">
+                    <div class="thu-improvement-banner" v-if="[6,7].indexOf(question.status) == -1">
                         <a class="thu-image-star-filled thu-image-button" width="22pt" height="22pt" viewBox="0 0 128 128">
                             <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                         </a>
@@ -276,7 +276,7 @@
                         <span class="thu-tag-label">
                             负责：{{question.resp_role_name.join(',')}}
                         </span>
-                        <span class="thu-tag-label">
+                        <span class="thu-tag-label" v-if="question.status != 7">
                             附议：{{question.likes}}
                         </span>
                         <span class="thu-tag-label" style="background-color:red" v-if="question.is_common">
@@ -286,205 +286,182 @@
                     </div>
                 </div>
 
-
-
-                <div class="thu-tiddler-body" v-if="curr.question_modify!=index">
+                <div class="thu-tiddler-body">
                     <p> {{question.content}} </p>
-                    <template v-if="question.status==4">
-                        <div class="thu-edit-fields">
-                            <table class="thu-edit-fields">
-                                <tbody>
-                                    <tr class="thu-edit-field">
-                                        <td class="thu-edit-field-name">
-                                            申请重新分类：
-                                        </td>
-                                        <td class="thu-edit-field-value" colspan="2">
-                                            <span>原因：{{question.reclassify_reason}}</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </template>
-                    <template v-if="question.status==5">
-                        <div class="thu-edit-fields">
-                            <table class="thu-edit-fields">
-                                <tbody>
-                                    <tr class="thu-edit-field">
-                                        <td class="thu-edit-field-name">
-                                            申请延期{{question.delay_days}}天：
-                                        </td>
-                                        <td class="thu-edit-field-value" colspan="2">
-                                            <span>原因：{{question.delay_reason}}</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </template>
-                </div>
-
-                <div class="thu-tiddler-body tc-editor-toolbar" v-else>
-                    <p> {{question.content}} </p>
-                    <!--classify-->
-                    <template v-if="is_tuanwei || is_zongban || is_xiaoban">
-                        <div class="thu-edit-fields">
-                            <table class="thu-edit-fields">
-                                <tbody>
-                                    <tr class="thu-edit-field" v-if="question.status==0 && is_tuanwei">
-                                        <td class="thu-edit-field-name">
-                                            直接回复处理：
-                                        </td>
-                                        <td class="thu-edit-field-value">
-                                            <textarea placeholder="回复内容" v-model="response_text"></textarea>
-                                        </td>
-                                        <td class="thu-edit-field-submit">
-                                            <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_response(question.question_id)">
-                                                <i class="fa fa-reply" aria-hidden="true"></i> 确认
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr class="thu-edit-field">
-                                        <td class="thu-edit-field-name">
-                                            选取受理部门：
-                                        </td>
-                                        <td class="thu-edit-field-value">
-                                            牵头部门：
-                                            <select v-model="selected_leader">
-                                              <option v-for="option in options" :value="option.role">
-                                                {{ option.display_name }}
-                                              </option>
-                                            </select>
-                                            <br>
-                                            关联部门：
-                                            <select v-model="selected_ones" multiple>
-                                              <option v-for="option in options" :value="option.role" v-show="option.role!=selected_leader">
-                                                {{ option.display_name }}
-                                              </option>
-                                            </select>
-                                            截止日期：
-                                            <input type="date" v-model="selected_ddl">
-                                            办理意见：
-                                            <input type="text" v-model="selected_opinion">
-                                            <!--<multiselect :selected="selected_ones" :options="options" @update="updateSelected"> </multiselect>-->
-                                        </td>
-                                        <td class="thu-edit-field-submit">
-                                            <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_classify(question.question_id)">
-                                                <i class="fa fa-reply" aria-hidden="true"></i> 确认
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="thu-editor-toolbar">
-                            <a href="javascript:;" v-if="is_tuanwei" @click="question_forward(question.question_id,'xiaoban')">
-                                <i class="fa fa-mail-forward fa-fw" aria-hidden="true"></i> 转交校办处理
-                            </a>
-                            <a href="javascript:;" v-if="!is_zongban" @click="question_forward(question.question_id,'zongban')" :style="is_xiaoban?'display:block;margin:0 auto;':''">
-                                <i class="fa fa-mail-forward fa-fw" aria-hidden="true"></i> 转交总办处理
-                            </a>
-                            <a href="javascript:;" v-if="is_tuanwei" @click="question_reject(question.question_id)"  style="color:red">
-                                <i class="fa fa-trash fa-fw" aria-hidden="true"></i> 拒绝
-                            </a>
-                        </div>
-                    </template>
-                    <!--related-->
-                    <template v-if="!is_xiaoban && !is_zongban">
-                        <div class="thu-edit-fields">
-                            <table class="thu-edit-fields">
-                                <tbody>
-                                    <tr class="thu-edit-field">
-                                        <td class="thu-edit-field-name">
-                                            主责部门意见：
-                                        </td>
-                                        <td class="thu-edit-field-value" colspan="2">
-                                            <span>{{question.opinion}}</span>
-                                        </td>
-                                    </tr>
-                                    <tr class="thu-edit-field" v-for="(response, index_res) in question.responses">
-                                        <td class="thu-edit-field-name">
-                                            回复{{index_res+1}}：
-                                        </td>
-                                        <td class="thu-edit-field-value">
-                                            <span v-if="response_modify!=response.id">{{response.content}}</span>
-                                            <input v-else type="text" v-model="response.content">
-                                        </td>
-                                        <td class="thu-edit-field-submit" v-if="question.status==3 && !is_tuanwei">
-                                            <a href="javasrcipt:;" v-if="response_modify!=response.id" @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
-                                                <i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> 修改
-                                            </a>
-                                            <a href="javasrcipt:;" v-else @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
-                                                <i class="fa fa-save fa-fw" aria-hidden="true"></i> 保存
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr class="thu-edit-field" v-if="question.status==2 && !is_tuanwei">
-                                        <td class="thu-edit-field-name">
-                                            添加回复：
-                                        </td>
-                                        <td class="thu-edit-field-value">
-                                            <textarea placeholder="回复内容" v-model="response_text"></textarea>
-                                        </td>
-                                        <td class="thu-edit-field-submit">
-                                            <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_response(question.question_id)">
-                                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr class="thu-edit-field" v-if="question.status==2 && !is_tuanwei">
-                                        <td class="thu-edit-field-name">
-                                            申请重新分类：
-                                        </td>
-                                        <td class="thu-edit-field-value">
-                                            <textarea placeholder="申请原因" v-model="reclassify_reason"></textarea>
-                                        </td>
-                                        <td class="thu-edit-field-submit">
-                                            <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_reclassify(question.question_id)">
-                                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr class="thu-edit-field" v-if="(question.status==2 || question.status==3) && !is_tuanwei">
-                                        <td class="thu-edit-field-name">
-                                            申请延长日期：
-                                        </td>
-                                        <td class="thu-edit-field-value">
-                                            <div>延长天数：<input type="number" v-model="delay_days" style="display:inline-block; width:100px; float:right"></div>
-                                            <textarea placeholder="申请原因" v-model="delay_reason"></textarea>
-                                        </td>
-                                        <td class="thu-edit-field-submit">
-                                            <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_delay(question.question_id)">
-                                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr class="thu-edit-field" v-if="question.status==6">
-                                        <td class="thu-edit-field-name">
-                                            学生评价：
-                                        </td>
-                                        <td class="thu-edit-field-value" colspan="2">
-                                            <div class="thu-student-score" :class="question.student_score==1?'active':''">
-                                                <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
-                                                <span>满意</span>
-                                            </div>
-                                            <div class="thu-student-score" :class="question.student_score==-1?'active':''">
-                                                <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
-                                                <span>不满意</span>
-                                            </div>
-                                            <div class="thu-student-score" :class="question.student_score==0?'active':''">
-                                                <i class="fa fa-meh-o fa-fw" aria-hidden="true"></i>
-                                                <span>无评价</span>
-                                            </div>
-                                            <div v-if="question.student_score!=0">
-                                                <span>学生评价：{{question.student_comment}}</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </template>
+                    <div class="thu-edit-fields">
+                        <table class="thu-edit-fields">
+                            <tbody>
+                                <!--modify&non-modify-->
+                                <tr class="thu-edit-field" v-if="question.status==4">
+                                    <td class="thu-edit-field-name">
+                                        申请重新分类：
+                                    </td>
+                                    <td class="thu-edit-field-value" colspan="2">
+                                        <span>原因：{{question.reclassify_reason}}</span>
+                                    </td>
+                                </tr>
+                                <tr class="thu-edit-field" v-if="question.status==5">
+                                    <td class="thu-edit-field-name">
+                                        申请延期{{question.delay_days}}天：
+                                    </td>
+                                    <td class="thu-edit-field-value" colspan="2">
+                                        <span>原因：{{question.delay_reason}}</span>
+                                    </td>
+                                </tr>
+                                <!--modify-only-->
+                                <template v-if="curr.question_modify==index">
+                                    <!--main-->
+                                    <template v-if="question_for_main(question.status)">
+                                        <tr class="thu-edit-field" v-if="is_tuanwei">
+                                            <td class="thu-edit-field-name">
+                                                直接回复处理：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <textarea placeholder="回复内容" v-model="response_text"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_response(question.question_id)">
+                                                    <i class="fa fa-reply" aria-hidden="true"></i> 确认
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field">
+                                            <td class="thu-edit-field-name">
+                                                选取受理部门：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                牵头部门：
+                                                <select v-model="selected_leader">
+                                                  <option v-for="option in options" :value="option.role">
+                                                    {{ option.display_name }}
+                                                  </option>
+                                                </select>
+                                                <br>
+                                                关联部门：
+                                                <select v-model="selected_ones" multiple>
+                                                  <option v-for="option in options" :value="option.role" v-show="option.role!=selected_leader">
+                                                    {{ option.display_name }}
+                                                  </option>
+                                                </select>
+                                                截止日期：
+                                                <input type="date" v-model="selected_ddl">
+                                                办理意见：
+                                                <input type="text" v-model="selected_opinion">
+                                                <!--<multiselect :selected="selected_ones" :options="options" @update="updateSelected"> </multiselect>-->
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_classify(question.question_id)">
+                                                    <i class="fa fa-reply" aria-hidden="true"></i> 确认
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <!--related-->
+                                    <template v-if="question_for_related(question.status)">
+                                        <tr class="thu-edit-field">
+                                            <td class="thu-edit-field-name">
+                                                主责部门意见：
+                                            </td>
+                                            <td class="thu-edit-field-value" colspan="2">
+                                                <span>{{question.opinion}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-for="(response, index_res) in question.responses">
+                                            <td class="thu-edit-field-name">
+                                                回复{{index_res+1}}：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <span v-if="response_modify!=response.id">{{response.content}}</span>
+                                                <input v-else type="text" v-model="response.content">
+                                            </td>
+                                            <td class="thu-edit-field-submit" v-if="!is_main && question.status==3">
+                                                <a href="javasrcipt:;" v-if="response_modify!=response.id" @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
+                                                    <i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> 修改
+                                                </a>
+                                                <a href="javasrcipt:;" v-else @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
+                                                    <i class="fa fa-save fa-fw" aria-hidden="true"></i> 保存
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-if="!is_main && ([2,3,6].indexOf(question.status) != -1)">
+                                            <td class="thu-edit-field-name">
+                                                添加回复：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <textarea placeholder="回复内容" v-model="response_text"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_response(question.question_id)">
+                                                    <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-if="!is_main && question.status==2">
+                                            <td class="thu-edit-field-name">
+                                                申请重新分类：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <textarea placeholder="申请原因" v-model="reclassify_reason"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_reclassify(question.question_id)">
+                                                    <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-if="!is_main && question.status==2">
+                                            <td class="thu-edit-field-name">
+                                                申请延长日期：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <div>延长天数：<input type="number" v-model="delay_days" style="display:inline-block; width:100px; float:right"></div>
+                                                <textarea placeholder="申请原因" v-model="delay_reason"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_delay(question.question_id)">
+                                                    <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-if="question.status==6">
+                                            <td class="thu-edit-field-name">
+                                                学生评价：
+                                            </td>
+                                            <td class="thu-edit-field-value" colspan="2">
+                                                <div class="thu-student-score" :class="question.student_score==1?'active':''">
+                                                    <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
+                                                    <span>满意</span>
+                                                </div>
+                                                <div class="thu-student-score" :class="question.student_score==-1?'active':''">
+                                                    <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
+                                                    <span>不满意</span>
+                                                </div>
+                                                <div class="thu-student-score" :class="question.student_score==0?'active':''">
+                                                    <i class="fa fa-meh-o fa-fw" aria-hidden="true"></i>
+                                                    <span>无评价</span>
+                                                </div>
+                                                <div v-if="question.student_score!=0">
+                                                    <span>学生评价：{{question.student_comment}}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--modify-only-->
+                    <div class="thu-editor-toolbar" v-if="curr.question_modify==index && question_for_main(question.status)">
+                        <a href="javascript:;" v-if="is_tuanwei" @click="question_forward(question.question_id,'xiaoban')">
+                            <i class="fa fa-mail-forward fa-fw" aria-hidden="true"></i> 转交校办处理
+                        </a>
+                        <a href="javascript:;" v-if="!is_zongban" @click="question_forward(question.question_id,'zongban')" :style="is_xiaoban?'display:block;margin:0 auto;':''">
+                            <i class="fa fa-mail-forward fa-fw" aria-hidden="true"></i> 转交总办处理
+                        </a>
+                        <a href="javascript:;" v-if="is_tuanwei" @click="question_reject(question.question_id)"  style="color:red">
+                            <i class="fa fa-trash fa-fw" aria-hidden="true"></i> 拒绝
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -556,23 +533,6 @@
         </section>
     </script>
 
-    <script type="text/x-template" id="statistics">
-        <section class="thu-story-river">
-            <div class="thu-tiddler-frame">
-                <div class="thu-tiddler-title">
-                    <div class="thu-titlebar">
-                        <div>
-                            <h2 class="thu-title"> 运营情况统计 </h2>
-                        </div>
-                    </div>
-                    <div class="thu-subtitle">
-                        更新时间：25th July 2016 at 4:48pm
-                    </div>
-                </div>
-            </div>
-        </section>
-    </script>
-
     <!--Main Part-->
     <div class="thu-page-container thu-page-view-classic" id="app">
 
@@ -626,24 +586,12 @@
                                         <span>问题管理</span>
                                     </router-link>
                                 </li>
-                                <!--<li class="toc-item-selected" v-if="is_tuanwei">-->
-                                    <!--<router-link to="/qa" :class="{active:curr.view=='qa'}">-->
-                                        <!--<i class="fa fa-angle-right" aria-hidden="true"></i>-->
-                                        <!--<span>Q&A管理</span>-->
-                                    <!--</router-link>-->
-                                <!--</li>-->
                                 <li class="toc-item-selected">
                                     <router-link to="/contact" :class="{active:curr.view=='contact'}">
                                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         <span>通讯录</span>
                                     </router-link>
                                 </li>
-                                <!--<li class="toc-item-selected" v-if="is_xiaoban || is_zongban">-->
-                                    <!--<router-link to="/statistics" :class="{active:curr.view=='statistics'}">-->
-                                        <!--<i class="fa fa-angle-right" aria-hidden="true"></i>-->
-                                        <!--<span>运营情况统计</span>-->
-                                    <!--</router-link>-->
-                                <!--</li>-->
                             </ol>
                         </div>
                     </div>
@@ -651,7 +599,7 @@
             </div>
         </div>
 
-        <router-view :curr="curr" :data="data" :is_tuanwei="is_tuanwei" :is_xiaoban="is_xiaoban" :is_zongban="is_zongban"></router-view>
+        <router-view :curr="curr" :data="data" :is_tuanwei="is_tuanwei" :is_xiaoban="is_xiaoban" :is_zongban="is_zongban" :is_main="is_main"></router-view>
 
     </div>
 </body>
@@ -659,7 +607,6 @@
 <script src="script/vue.js"></script>
 <script src="script/vue-router.js"></script>
 <script src="script/vue-resource.min.js"></script>
-<script src="script/vue-multiselect.min.js"></script>
 <script src="script/index.js"></script>
 
 </html>
