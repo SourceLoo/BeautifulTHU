@@ -96,29 +96,192 @@ receive: {'success':bool, 'msg':''}
 - Get questions list. (multi parts?)
 
 ```
-/questions/main/get_all
+/questions/get_all
 send: {'start':int, 'number':int}
-receive: [{'question_id':'', 'created_time':'', 'timestamp1':'', 'timestamp2':'',
-    'timestamp3':'' 'status':int, 'resp_role':'', 'resp_role_name':'', 'pic_path':['',''],
-    'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'',
-    'is_common_top':bool, 'reclassify_reason':'', 'created_location':'', 'likes':int}]
+receive: [{'question_id':'', 'created_time':'', 'created_location':'',
+    'timestamp1':'', 'timestamp2':'', 'timestamp3':'', 'status':int,
+    'resp_role':[''], 'resp_role_name':[''], 'pic_path':['',''],
+    'title':'', 'content':'', 'pic_path':['',''], 'deadline':'',
+    'is_common':bool, 'is_common_top':bool, 'likes':int,
+    'reclassify_reason':'', 'delay_days':number, 'delay_reason':'',
+    'opinion':'', 'responses':[{'id':'', 'content':''}],
+    'student_score':1/-1/0, 'student_comment':'',
+}]
 ```
 
-- Get question detail
+*sort and make reclassify&delay on the top. some pairs should be hidden if not exist.*
+
+- example for each status:
 
 ```
-/questions/main/get_detail
-send: {'question_id':''}
-receive: {'opinion':'', 'responses':[{'response_id':'', 'response_content':''}]}
+var questions_list = [{
+    'question_id': '0',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': 'FIT楼3-125',
+    'status': 0, //UNAPPROVED
+    'resp_role': ['tuanwei'],
+    'resp_role_name': ['校团委'],
+    'title': '问题0',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'is_common': false,
+    'is_common_top': false,
+    'likes': 5,
+}, {
+    'question_id': '1',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '六教6C300',
+    'timestamp1': '',
+    'status': 1, //UNCLASSIFIED
+    'resp_role': ['xiaoban'],
+    'resp_role_name': ['校办'],
+    'title': '问题1',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'is_common': false,
+    'is_common_top': false,
+    'likes': 15,
+}, {
+    'question_id': '2',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '六教6C300',
+    'timestamp1': '',
+    'timestamp2': '',
+    'status': 1, //UNCLASSIFIED
+    'resp_role': ['zongban'],
+    'resp_role_name': ['总办'],
+    'title': '问题2',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'is_common': false,
+    'is_common_top': false,
+    'likes': 15,
+}, {
+    'question_id': '3',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '大礼堂',
+    'timestamp1': '',
+    'timestamp2': '',
+    'timestamp3': '',
+    'status': 2, //UNSOLVED
+    'resp_role': ['related3', 'related1'],
+    'resp_role_name': ['相关部门3', '相关部门1'],
+    'title': '问题3',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'deadline': '12/22/2016',
+    'is_common': false,
+    'is_common_top': false,
+    'likes': 25,
+    'opinion': '意见opinion',
+}, {
+    'question_id': '4',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '大礼堂',
+    'timestamp1': '',
+    'timestamp2': '',
+    'timestamp3': '',
+    'status': 3, //SOLVING
+    'resp_role': ['related3'],
+    'resp_role_name': ['相关部门3'],
+    'title': '问题4',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'deadline': '12/22/2016',
+    'is_common': false,
+    'is_common_top': false,
+    'likes': 25,
+    'opinion': '意见opinion',
+    'responses': [{ 'id': '1', 'content': '回复回复1' }, ...]
+}, {
+    'question_id': '5',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '大礼堂',
+    'timestamp1': '',
+    'timestamp2': '',
+    'timestamp3': '',
+    'status': 4, //RECLASSIFY
+    'resp_role': ['tuanwei', 'related3'],
+    'resp_role_name': ['校团委', '相关部门3'],
+    'title': '问题5',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'deadline': '12/22/2016',
+    'is_common': true,
+    'is_common_top': false,
+    'reclassify_reason': '申请重新分类的理由，因为所以，科学道理',
+    'likes': 25,
+    'opinion': '意见opinion',
+}, {
+    'question_id': '6',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '大礼堂',
+    'timestamp1': '',
+    'timestamp2': '',
+    'timestamp3': '',
+    'status': 5, //DELAY
+    'resp_role': ['tuanwei', 'related3'],
+    'resp_role_name': ['校团委', '相关部门3'],
+    'title': '问题6',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'deadline': '12/22/2016',
+    'delay_days': 5,
+    'delay_reason': '申请延期的理由，因为所以，科学道理',
+    'is_common': true,
+    'is_common_top': false,
+    'likes': 25,
+    'opinion': '意见opinion',
+    'responses': [{ 'id': '1', 'content': '回复回复1' }, ...]
+}, {
+    'question_id': '7',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '大礼堂',
+    'timestamp1': '',
+    'timestamp2': '',
+    'timestamp3': '',
+    'status': 6, //SOLVED
+    'resp_role': ['related3'],
+    'resp_role_name': ['相关部门3'],
+    'title': '问题7',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'is_common': true,
+    'is_common_top': true,
+    'likes': 25,
+    'opinion': '意见opinion',
+    'responses': [{
+        'id': '1',
+        'content': '回复回复1'
+    }, {
+        'id': '2',
+        'content': '回复回复2'
+    }],
+    'student_score': 1,
+    'student_comment': '满意满意满意'
+}, {
+    'question_id': '8',
+    'created_time': 'Dec 11 2016 14:04:23',
+    'created_location': '大礼堂',
+    'timestamp1': '',
+    'timestamp2': '',
+    'timestamp3': '',
+    'status': 7, //INVALID
+    'resp_role': ['tuanwei'],
+    'resp_role_name': ['校团委'],
+    'title': '问题8',
+    'content': '这是一个问题',
+    'pic_path': ['', ''],
+    'is_common': false,
+    'is_common_top': false,
+    'likes': 25,
+}];
 ```
-
-
-*sort and make delay&reclassify on the top.*
 
 - main response
 
 ```
-/questions/main/responseq
+/questions/main/response
 send: {'question_id':'', 'response_content':''}
 receive: {'success':bool, 'msg':''}
 ```
@@ -127,7 +290,7 @@ receive: {'success':bool, 'msg':''}
 
 ```
 /questions/main/reject
-send: {'question_id':'', 'response_content':''}
+send: {'question_id':''}
 receive: {'success':bool, 'msg':''}
 ```
 
@@ -139,11 +302,20 @@ send: {'question_id':'', 'forward':'role'}
 receive: {'success':bool, 'msg':''}
 ```
 
+- main reclassify
+
+```
+/quesitons/main/reclassify
+send: {'question_id':'', 'agree':bool}
+receive: {'success':bool, 'msg':''}
+```
+
+
 - main delay
 
 ```
 /questions/main/delay
-send: {'question_id':''}
+send: {'question_id':'', 'agree':bool}
 receive: {'success':bool, 'msg':''}
 ```
 
@@ -158,29 +330,6 @@ receive: {'success':bool, 'msg':''}
 ```
 
 *back-end verify status.*
-
-- Get questions list. (multi parts?)
-
-```
-/questions/related/get_all
-send: {'start':int, 'number':int}
-receive: [{'question_id':'', 'created_time':'', 'deadline':'',
-    'created_location':'', 'status':'', 'content':'', 'likes':number,
-    'is_read':bool, 'is_common':bool, 'is_common_top':bool}]
-```
-
-*sort by deadline?.*
-
-- Get question detail
-
-```
-/questions/related/get_detail
-send: {'question_id':''}
-receive: {'opinion':'', 'pic_path':['',''],
-    'responses':[{'response_id':'', 'response_content':''}]}
-```
-
-*set 'is_read' true.*
 
 - related apply for reclassification
 
@@ -233,15 +382,46 @@ receive: {'success':bool, 'msg':''}
 /qa/top
 send: {'question_id':''}
 receive: {'success':bool, 'msg':''}
+
+/qa/notop
+send: {'question_id':''}
+receive: {'success':bool, 'msg':''}
 ```
 *back-end verify question property*
 
-- TODO: data statistics
+- data statistics
 
 ```
 /statistics/get
 send: none
-receive: {'item1':number, ...}
+receive:
+    var statistics_list = [{
+        'role': 'tuanwei',
+        'display_name': '校团委',
+        'question_num': 10,
+        'intime_num': 5,
+        'outdate_num': 5,
+        'reject_num': 1,
+        'response_num': 2,
+    }, {
+        'role': 'xiaoban',
+        'display_name': '校办',
+        'question_num': 10,
+        'intime_num': 5,
+        'outdate_num': 5,
+    }, {
+        'role': 'zongban',
+        'display_name': '总办',
+        'question_num': 10,
+        'intime_num': 5,
+        'outdate_num': 5,
+    }, {
+        'role': 'related3',
+        'display_name': '相关部门3',
+        'question_num': 10,
+        'intime_num': 5,
+        'outdate_num': 5,
+    }, ...];
 ```
 
 ## API of Student Part:
@@ -447,16 +627,18 @@ DELETE: /dislike/question
 
 ### 用户表
 （部门可以多个账号，一个账号只能同时在线一个）
+
 用户id；用户名；角色名（英文）；密码；手机号；固定电话；邮箱；学号；
 
 ### 角色表（**非牵头小于等于无关**）
 角色名（英文）；显示名字（中文）；通讯录修改；问题拒绝；问题回复；问题转交；问题分类；延长ddl；问题审核；收到问题总数；按时完成数；超时完成数；拒绝问题数；直接回复数；同学满意率；同学不满意率；
+
 名字包括：学生，三个，其他部门；
 
 ### 问题表
 （审核+分类时间超时如何处理？校办和总办各自拥有1h）
-问题id；标题；内容；创建者id；问题类别（牵头部门）；状态（待审核、待分类、待解决、解决中（不可再分类）、审核再分类、审核延期、已解决、无效）；学生满意度；学生评价内容；问题创建位置；
-问题创建时间；点赞数；ddl；处理时间1（校团委）；处理时间2（校办）；处理时间3（总办）；是否是常见问题；是否是常见问题置顶；主管部门意见；
+
+问题id；标题；内容；创建者id；负责部门列表（牵头部门第一个）；状态（待审核、待分类、待解决、解决中（不可再分类）、审核再分类、审核延期、已解决、无效）；学生满意度；学生评价内容；问题创建位置；问题创建时间；点赞数；ddl；处理时间1（校团委）；处理时间2（校办）；处理时间3（总办）；是否是常见问题；是否是常见问题置顶；主管部门意见；
 
 ### 问题图片表
 问题id；图片路径；
