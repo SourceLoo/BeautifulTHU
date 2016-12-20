@@ -4,6 +4,19 @@ $(function(){
     var num = 4;
     var page = 0;
     // dropload
+    var question_entry = function(question_id, question_title, question_content, question_location, like_num) {
+            return
+                ('<div id="question" class="weui-media-box weui-media-box_text" question_id="' + question_id + '">' +
+                '<h4 class="weui-media-box__title">' + question_title + '</h4>' +
+                '<p class="weui-media-box__desc">' + question_content + '</p>' +
+                '<ul class="weui-media-box__info">' +
+                '<li class="weui-media-box__info__meta">' + question_location + '</li>' +
+                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + like_num + '</li>' +
+                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/question/?question_id='+question_id+'">点此查看详情</a></li>' +
+                '</ul>' +
+                '</div>') ;
+        }
+
     $('.weui_panel').dropload({
         scrollArea : window,
         autoLoad : true,
@@ -41,14 +54,16 @@ $(function(){
                     page += 1
                     // alert("success1")
                     for(var i = 0; i < data.question_list.length; i++){
-                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'+
-                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'+
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'+
-                                 '<ul class="weui-media-box__info">'+
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'+
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'+
-                                 '</ul>'+
-                                 '</div>';
+                        var q = data.question_list[i]
+                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
+                                  '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
+                                  '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
+                                  '<ul class="weui-media-box__info">' +
+                                  '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
+                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + q.like_num + '</li>' +
+                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
+                                  '</ul>' +
+                                  '</div>'
                     }
                     // 为了测试，延迟1秒加载
                     // alert("success")
@@ -88,14 +103,16 @@ $(function(){
                     page++;
                     var result = ''
                     for(var i = 0; i < data.question_list.length; i++){
-                        result+='<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'+
-                                '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'+
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'+
-                                 '<ul class="weui-media-box__info">'+
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'+
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'+
-                                 '</ul>'+
-                                 '</div>';
+                        q = data.question_list[i]
+                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
+                                '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
+                                '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
+                                '<ul class="weui-media-box__info">' +
+                                '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + q.like_num + '</li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
+                                '</ul>' +
+                                '</div>'
                     }
                     // alert(result)
                     if(data.question_list.length == 0) {
@@ -143,19 +160,8 @@ $(function(){
                     keywords : keyword
                 },
                 success: function(data) {
-                    page += 1
                     var result = '';
-                    for(var i = 0; i < data.question_list.length; i++) {
-                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'+
-                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'+
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'+
-                                 '<ul class="weui-media-box__info">'+
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'+
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'+
-                                 '</ul>'+
-                                 '</div>';
-                   }
-                   $('.weui_panel_bd').html(result);
+                    $('.weui_panel_bd').html(result);
                 },
                 error: function(xhr, type) {
                     alert('Ajax error!');
@@ -187,26 +193,11 @@ $(function(){
                 },
                 success: function(data) {
                     var result = '';
-                    page += 1;
-                    for(var i = 0; i < data.question_list.length; i++) {
-                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="'+data.question_list[i].question_id+'">'+
-                                 '<h4 class="weui-media-box__title">'+data.question_list[i].question_title+'</h4>'+
-                                 '<p class="weui-media-box__desc">'+data.question_list[i].question_content+'</p>'+
-                                 '<ul class="weui-media-box__info">'+
-                                 '<li class="weui-media-box__info__meta">'+data.question_list[i].question_location+'</li>'+
-                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">'+data.question_list[i].like_num+'</li>'+
-                                 '</ul>'+
-                                 '</div>';
-                   }
-                   $('.weui_panel_bd').html(result);
+                    $('.weui_panel_bd').html(result);
                 },
                 error: function(xhr, type) {
                     alert('Ajax error!');
                 }
             });
-        });
-        $(document).on('click touchend', '#question', function () {
-            var id = $(this).attr('question_id')
-            window.location.href="/question/?question_id="+id
         });
 });

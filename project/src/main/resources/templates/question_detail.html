@@ -58,14 +58,9 @@
 </div>
 
 <div class="weui-grids">
-    <!---->
     <a href="javascript:;" class="weui-grid" th:each="pic: ${question.pics}">
-        <div class="weui-grid__icon" >
-            <img th:src="${pic.path}" alt="">
-        </div>
-        <!--<p class="weui-grid__label">Grid</p>-->
+            <img style="width:100%;height:100%" th:src="${pic.path}" alt="">
     </a>
-    <!---->
 </div>
 
 
