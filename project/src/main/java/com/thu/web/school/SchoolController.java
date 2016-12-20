@@ -2,6 +2,7 @@ package com.thu.web.school;
 
 import com.thu.domain.Role;
 import com.thu.domain.User;
+import com.thu.domain.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,6 +20,7 @@ import com.thu.service.RoleService;
 import com.thu.service.UserService;
 import com.thu.web.school.Jwt;
 
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -51,6 +53,8 @@ public class SchoolController{
     @Autowired
     QuestionService questionService;
 
+    @Autowired
+    UserRepository userRepository;
 
     TokenMap tokenMap = new TokenMap();
 
@@ -106,21 +110,27 @@ public class SchoolController{
         List<Role> mainRoleList = roleService.findMain();
         List<Role> relatedRoleList = roleService.findRelated();
 
-    //    ArrayList<JSONObject> result0=new ArrayList<>();
 
-        System.out.println(mainRoleList.size());
+        String ansMain = "";
+        String ansRelated = "";
         JSONObject resultMain = new JSONObject();
         JSONObject resultRelated = new JSONObject();
         for (Role role:mainRoleList){
-            System.out.println(role.getRole());
-            System.out.println(role.getDisplayName());
-            resultMain.put(role.getRole(), role.getDisplayName());
-//        result.add(new JSONObject().put(role.getRole(), role.getDisplayName()));
+            resultMain = new JSONObject();
+
+            resultMain.put("role",role.getRole());
+            resultMain.put("label",role.getDisplayName());
+            ansMain = ansMain + resultMain.toString();
+
         }
         for (Role role:relatedRoleList){
-            resultRelated.put(role.getRole(), role.getDisplayName());
+            resultRelated = new JSONObject();
+            resultRelated.put("role",role.getRole());
+            resultRelated.put("label", role.getDisplayName());
+            ansRelated = ansRelated + resultRelated.toString();
+            //resultRelated.put(role.getRole(), role.getDisplayName());
         }
-        return '[' + resultMain.toString() +','+ resultRelated.toString() +']';
+        return "[[" + ansMain +"],["+ ansRelated +"]]";
     }
 
     /*  done
@@ -132,23 +142,13 @@ public class SchoolController{
     @ResponseBody
     public String login(@RequestParam("uname") String uname,
                         @RequestParam("passwd") String passwd) throws JSONException{
-//        System.out.print("user is coming");
-//        roleService.insertRole("zyf","zyf","ZYF");
-//        roleService.updateRole("xiaoban", "THU","清华");
-//        Role _rol = roleService.findByRole("xiaoban");
-//        //Role _rol = new Role("student" , "xuesheng" , "zyf");
-//        userService.insertUser("tuanwei" , "110","112","01","aaa",roleService.findByRole("tuanwei"),"123");
-//        boolean flag = userService.updateUser("xiaoban","123456","600113",_rol,"123");
-        //System.out.println(us)
+
         if (uname.equals("") || ! userService.containsUname(uname))
             return loginErrorMsg;
-//        System.out.println(flag);
         User usr = userService.findUser(uname);
-//        System.out.println(usr.getUname());
-//        System.out.println(usr.getFixedNumber());
+
         if (!usr.checkPasswd(passwd))
             return loginErrorMsg;
-//        System.out.println(usr.getFixedNumber());
         String rol = usr.getRole().getRole();
         String token;
         try {
@@ -203,6 +203,31 @@ public class SchoolController{
             return userNotLogMsg;
     }
 
+    @RequestMapping(value ="/info/get", method = RequestMethod.POST)
+    @ResponseBody
+    public String getInfo(@RequestParam("token") String token) throws JSONException{
+        String tokenName , tokenRole;
+        if (!checkPermissionWithoutName(token, roleALL)){
+            return invalidTokenMsg;
+        }
+        try{
+            Claims claims = jwtService.parseToken(token);
+            tokenName = claims.get("uname").toString();
+            tokenRole = claims.get("role").toString();
+        }
+        catch (Exception e){
+            return invalidTokenMsg;
+        }
+        JSONObject result = new JSONObject();
+        User usr = userService.findUser(tokenName);
+        result.put("uname", tokenName);
+        result.put("resp_person", usr.getRole().getRespPerson());
+        result.put("display_name", usr.getRole().getDisplayName());
+        result.put("fixed_phone", usr.getFixedNumber());
+        result.put("mobile_phone", usr.getMobileNumber());
+        return result.toString();
+    }
+
     /* done
     * set department information by himself
     * param uname, resp_person, fixed_phone, mobile_phone, passwd
@@ -238,6 +263,31 @@ public class SchoolController{
             return errorMsg;
         }
     }
+    /*
+    *  done
+     *  */
+    @RequestMapping(value = "/contact/del", method = RequestMethod.POST)
+    @ResponseBody
+    public String delContact(@PathParam("token") String token,
+                             @PathParam("uname") String uname) throws JSONException{
+        if (!checkPermissionWithoutName( token, roleTW))
+            return invalidTokenMsg;
+        if (!userService.containsUname(uname)){
+            return invalidInputMsg;
+        }
+        User usr = userService.findUser(uname);
+
+        usr.setFixedNumber("");
+        usr.setMobileNumber("");
+        usr.getRole().setRespPerson("");
+        try {
+            userRepository.save(usr);
+            return successMsg;
+        } catch (Exception e) {
+            return errorMsg;
+        }
+    }
+
 
     /* done
     * only TuanWei get contact
@@ -255,7 +305,7 @@ public class SchoolController{
         boolean flag = true;
         for (User usr:userList) {
             JSONObject mem = new JSONObject();
-            mem.put("role", usr.getRole().getRole());
+            mem.put("display_name", usr.getRole().getDisplayName());
             mem.put("uname", usr.getUname());
             mem.put("resp_person", usr.getRole().getRespPerson());
             mem.put("fixed_phone", usr.getFixedNumber());
@@ -281,7 +331,7 @@ public class SchoolController{
    @RequestMapping(value = "/contact/set", method = RequestMethod.POST)
     @ResponseBody
     public String setContact(@RequestParam("token") String token,
-                             @RequestParam("displayname") String displayname,
+                             @RequestParam("display_name") String displayname,
                              @RequestParam("uname") String uname,
                              @RequestParam("resp_person") String resp_person,
                              @RequestParam("fixed_phone") String fixed_phone,
@@ -436,7 +486,30 @@ public class SchoolController{
         }
         Role role = roleService.findByRole(tokenRole);
         List<Role> roleList = roleService.findFellowRole(role);
-        JSONArray jsonArray = JSONArray.fromObject(roleList);
-        return jsonArray.toString();
+
+        if (roleList.size() == 0){
+            return "[]";
+        }
+        String result = "";
+        boolean flag = true;
+        for (Role rol: roleList){
+            JSONObject mem = new JSONObject();
+            System.out.println(rol.getRole());
+            mem.put("role", rol.getRole());
+            mem.put("display_name", rol.getDisplayName());
+            mem.put("question_num", rol.getReceivedNumber().toString());
+            mem.put("intime_num", rol.getOntimeNumber().toString());
+            mem.put("outdate_num", rol.getOvertimeNumber().toString());
+            Long num = rol.getOntimeNumber() - rol.getDirectRespondNumber();
+            mem.put("reject_num", num.toString());
+            mem.put("response_num", rol.getDirectRespondNumber().toString());
+            if (flag){
+                flag = false;
+                result = mem.toString();
+            }else {
+                result = result + ',' + mem.toString();
+            }
+        }
+        return "[" + result + "]";
     }
 }
