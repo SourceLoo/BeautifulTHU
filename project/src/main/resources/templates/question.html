@@ -28,10 +28,6 @@
                     alert('Ajax error!');
                 }
             });
-         $('#question').on("click", function() {
-            var id = $(this).attr('question_id')
-            window.location.href="/question/?question_id="+id
-        });
     });
     </script>
     <script src="/script/controller.js"></script>
@@ -102,6 +98,7 @@
             $searchBar.addClass('weui-search-bar_focusing');
             $searchInput.focus();
         });
+
         $searchInput
             .on('blur', function () {
                 if(!this.value.length) cancelSearch();
@@ -112,8 +109,8 @@
                 } else {
                     $searchResult.hide();
                 }
-            })
-        ;
+            });
+
         $searchClear.on('click', function(){
             hideSearchResult();
             $searchInput.focus();

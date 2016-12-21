@@ -32,30 +32,6 @@
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
     <script type="text/javascript" class="uploader js_show">
-        var loc
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(showPosition);
-            }
-            else {
-                x.innerHTML="Geolocation is not supported by this browser.";
-                }
-            }
-        function showPosition(position) {
-            window.latitude = position.coords.latitude
-            window.longitude = position.coords.longitude
-            var myGeo = new BMap.Geocoder();
-            // 根据坐标得到地址描述
-            myGeo.getLocation(new BMap.Point(window.longitude, window.latitude), function(result){
-                loc = result.address
-                $("#position").empty()
-                $("#position").append('<option value="'+loc+'">'+loc+'</option>')
-                surround = result.surround_poi
-                for (pos in surround) {
-                    $("#position").append('<option value="'+pos+'">'+pos+'</option>')
-                }
-            });
-        }
         function getLocation2() {
             var geolocation = new BMap.Geolocation();
             geolocation.getCurrentPosition(function(r){
@@ -63,7 +39,6 @@
                     var myGeo = new BMap.Geocoder();
                     // 根据坐标得到地址描述
                     myGeo.getLocation(new BMap.Point(r.point.lng, r.point.lat), function(result){
-
                         var loc = result.address
                         $("#position").empty()
                         $("#position").append('<option value="'+loc+'">'+loc+'</option>')
