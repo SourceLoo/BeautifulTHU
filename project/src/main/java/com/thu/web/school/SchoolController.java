@@ -115,19 +115,28 @@ public class SchoolController{
         String ansRelated = "";
         JSONObject resultMain = new JSONObject();
         JSONObject resultRelated = new JSONObject();
+        boolean flag = true;
         for (Role role:mainRoleList){
             resultMain = new JSONObject();
 
             resultMain.put("role",role.getRole());
             resultMain.put("label",role.getDisplayName());
-            ansMain = ansMain + resultMain.toString();
-
+            if (flag){
+                ansMain = ansMain + resultMain.toString();
+                flag =false;
+            }
+            else ansMain = ansMain + ',' + resultMain.toString();
         }
+        flag = true;
         for (Role role:relatedRoleList){
             resultRelated = new JSONObject();
             resultRelated.put("role",role.getRole());
             resultRelated.put("label", role.getDisplayName());
-            ansRelated = ansRelated + resultRelated.toString();
+            if (flag){
+                flag = false;
+                ansRelated = ansRelated + resultRelated.toString();
+            }else
+                ansRelated = ansRelated + ',' + resultRelated.toString();
             //resultRelated.put(role.getRole(), role.getDisplayName());
         }
         return "[[" + ansMain +"],["+ ansRelated +"]]";
@@ -140,9 +149,12 @@ public class SchoolController{
     * */
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login(@RequestParam("uname") String uname,
-                        @RequestParam("passwd") String passwd) throws JSONException{
-
+    public String login( String uname
+            //@RequestParam("uname") String uname,
+              //          @RequestParam("passwd") String passwd
+            ) throws JSONException{
+        System.out.println(uname);
+        String passwd = "111";
         if (uname.equals("") || ! userService.containsUname(uname))
             return loginErrorMsg;
         User usr = userService.findUser(uname);
