@@ -61,7 +61,7 @@ public class QuestionService {
         }
         try {
             question.addResponse(response);
-            question.setStatus(Status.SOLVED);
+            question.setStatus(Status.SOLVING);
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
-        question.setStatus(Status.UNAPPROVED);
+        question.setStatus(Status.INVALID);
         question.setRejectReason(rejectReason);
         try {
             questionRepository.save(question);
@@ -89,7 +89,7 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
-        question.setStatus(Status.UNSOLVED);
+        question.setStatus(Status.UNCLASSIFIED);
         question.setTransferRole(to);
         question.setRead(false);
         try {
@@ -108,6 +108,8 @@ public class QuestionService {
         }
         question.setLeaderRole(leaderRole);
         question.setOtherRoles(otherRoles);
+        question.setStatus(Status.UNSOLVED);
+        question.setTransferRole(leaderRole);
         try {
             questionRepository.save(question);
             return true;

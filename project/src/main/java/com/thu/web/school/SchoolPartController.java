@@ -2,6 +2,7 @@ package com.thu.web.school;//school;
 
 import com.thu.domain.*;
 import com.thu.service.*;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +55,11 @@ public class SchoolPartController {
     public static final String Erro_TIMESTAMP1="{'success':false,'msg':'Invalid TIMESTAMP1'}";
     public static final String Erro_TIMESTAMP2="{'success':false,'msg':'Invalid TIMESTAMP2'}";
     public static final String Erro_TIMESTAMP3="{'success':false,'msg':'Invalid TIMESTAMP3'}";
-
+    public static final String Erro_Status="{'success':false,'msg':'Wrong Question Status'}";
 
     //判断是否是主责部分
     private boolean checkMain(String role){
+
         if (role.equals(roleTW)||role.equals(roleXB)||role.equals(roleZB))
             return true;
         else
@@ -132,7 +134,7 @@ public class SchoolPartController {
 //            'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'',
 //            'is_common_top':bool, 'reclassify_reason':'', 'created_location':'', 'likes':int}]
 //    public static Map<String,String> token_role;
-    @RequestMapping(value = "/questions/main/get_all/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/get_all/{token}",method = RequestMethod.POST)
     public String getMainQuestions(@RequestParam(name = "start") int start,@RequestParam(name="number") int number ,@PathVariable String token){
 
 //        token_role.containsKey()
@@ -142,13 +144,13 @@ public class SchoolPartController {
         if(role==null)
             return Erro_Role;
         List<Question> questions=null;
-        if(role.equals(tuanwei)){
+        if(role.equals(tuanwei)||role.equals(xiaoban)){
             questions= questionService.getAllQuestions();          //questionRepository.getQuestions();
-        }else if(role.equals(xiaoban)||role.equals(zongban)){
+        }else if(role.equals(zongban)){
             questions=questionService.getAllQuestionsForRole(roleService.findByRole(role));  //questionRepository.getQuestionsbyRole(roleReposiroty.findRole(role));
         }else{
-            //questions=questionService.getQuestionForRelatedRole(roleService.findByRole(role));    //questionRepository.getQuestionbyRela(roleReposiroty.findRole(role));
-            return Erro_Role;
+            questions=questionService.getQuestionForRelatedRole(roleService.findByRole(role));    //questionRepository.getQuestionbyRela(roleReposiroty.findRole(role));
+//            return Erro_Role;
         }
         JSONArray ja=new JSONArray();
 
@@ -157,11 +159,59 @@ public class SchoolPartController {
             JSONObject result= new JSONObject();
             result.put("question_id",question.getQuestionId().toString());
             result.put("created_time",question.getCreatedTime().toString());
+            result.put("created_location",question.getCreatedLocation());
             result.put("timestamp1",question.getTimestamp1().toString());
             result.put("timestamp2",question.getTimestamp2().toString());
             result.put("timestamp3",question.getTimestamp3().toString());
-            result.put("status",question.getStatus().toString());
-            result.put("resp_role",question.getLeaderRole().getRole());
+            result.put("status",question.getStatus().ordinal());
+
+
+//            result.put("")
+            result.put("resp_role_name",question.getLeaderRole().getDisplayName());
+            List<String> pic_name=new ArrayList<>();
+            List<Pic> pics=question.getPics();
+            for(Pic pic:pics){
+                pic_name.add(pic.getPath());
+            }
+            result.put("pic_path",pic_name);
+
+            List<String> role_role=new ArrayList<>();
+            List<String> role_res_name=new ArrayList<>();
+
+            if((question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
+            {
+                role_role.add(tuanwei);
+                role_res_name.add(roleService.findByRole(tuanwei).getDisplayName());
+            }
+            Role lead_role=question.getLeaderRole();
+            if(lead_role!=null){
+                role_res_name.add(lead_role.getDisplayName());
+                role_role.add(lead_role.getRole());
+            }else if (role.equals(zongban)){
+                Role forward_role=question.getTransferRole();
+                role_res_name.add(forward_role.getDisplayName());
+                role_role.add(forward_role.getRole());
+            }
+//            role_role.add(lead_role.);
+            List<Role> other_roles=question.getOtherRoles();
+            if(other_roles!=null){
+                for(Role oother:other_roles){
+                    role_res_name.add(oother.getDisplayName());
+                    role_role.add(oother.getRole());
+                }
+            }
+
+
+
+            result.put("resp_role",role_role);
+            result.put("resp_role_name",role_res_name);
+
+            result.put("title",question.getTitle());
+            result.put("content",question.getContent());
+            result.put("deadline",question.getDdl().toString());
+
+            result.put("likes",question.getLikes());
+            result.put("opinion",question.getInstruction());
             result.put("is_common",question.getCommon());
             result.put("content",question.getContent());
             result.put("delay_days",question.getDelayDays());
@@ -170,6 +220,22 @@ public class SchoolPartController {
             result.put("reclassify_reason",question.getReclassifyReason());
             result.put("created_location",question.getCreatedLocation());
             result.put("created_location",question.getLikes());
+            EvaluationType type_eval=question.getEvaluationType();
+            int score=0;
+            if(type_eval==EvaluationType.UNSATISFIED)
+                score=-1;
+            else if(type_eval==EvaluationType.SATISFIED)
+                score=1;
+            result.put("student_score",score);
+            result.put("student_comment",question.getEvaluationDetail());
+            JSONArray ja_response=new JSONArray();
+            for(Response response:question.getResponses()){
+                JSONObject jo=new JSONObject();
+                jo.put("response_id",response.getResponseId());
+                jo.put("response_content",response.getResponseContent());
+                ja_response.add(jo);
+            }
+            result.put("responses",ja_response);
             ja.add(result);
         }
         return ja.toString();
@@ -203,12 +269,12 @@ public class SchoolPartController {
         JSONObject jsonObject=new JSONObject();
         jsonObject.put("opinion",question.getInstruction());
 
-        List<Pic> pics=question.getPics();
-        List<String> pics_path=new ArrayList<>();
-        for(Pic pic:pics){
-            pics_path.add(pic.getPath());
-        }
-        jsonObject.put("pic_path",pics_path);
+//        List<Pic> pics=question.getPics();
+//        List<String> pics_path=new ArrayList<>();
+//        for(Pic pic:pics){
+//            pics_path.add(pic.getPath());
+//        }
+//        jsonObject.put("pic_path",pics_path);
         JSONArray ja_response=new JSONArray();
         for(Response response:question.getResponses()){
             JSONObject jo=new JSONObject();
@@ -305,9 +371,17 @@ public class SchoolPartController {
         if(transfer_ok) {
             //更新forword_role表的信息
             //更新timestamp1
-            Boolean setTimeStamp1=questionService.updateTimestamp(qid,LocalDateTime.now(),null,null);
-            if(!setTimeStamp1)
-                return Erro_TIMESTAMP1;
+            if(role.equals(tuanwei)) {
+                Boolean setTimeStamp1 = questionService.updateTimestamp(qid, LocalDateTime.now(), null, null);
+                if (!setTimeStamp1)
+                    return Erro_TIMESTAMP1;
+            }else if(role.equals(xiaoban)){
+                Boolean setTimeStamp2 = questionService.updateTimestamp(qid, null,LocalDateTime.now(),  null);
+                if (!setTimeStamp2)
+                    return Erro_TIMESTAMP2;
+            }else{
+                return Erro_Role;
+            }
 
             return "{'success':true, 'msg':'main transfer ok'}";
         }
@@ -362,10 +436,16 @@ public class SchoolPartController {
         Boolean setTimeStamp=Boolean.FALSE;
         if(role.equals(tuanwei)){
             setTimeStamp=questionService.updateTimestamp(qid,LocalDateTime.now(),null,null);
+            if(!setTimeStamp)
+                return Erro_TIMESTAMP1;
         }else if(role.equals(xiaoban)){
             setTimeStamp=questionService.updateTimestamp(qid,null,LocalDateTime.now(),null);
+            if(!setTimeStamp)
+                return Erro_TIMESTAMP2;
         }else if(role.equals(zongban)){
             setTimeStamp=questionService.updateTimestamp(qid,null,null,LocalDateTime.now());
+            if(!setTimeStamp)
+                return Erro_TIMESTAMP3;
         }else{
             return Erro_Role;
         }
@@ -511,6 +591,10 @@ public class SchoolPartController {
             return Erro_Parse;
         }
 
+        Status status_qu=questionService.getQuestionDetail(qid).getStatus();
+        if(status_qu!=Status.UNSOLVED&&status_qu!=Status.SOLVING&&status_qu!=Status.SOLVED){
+            return Erro_Status;
+        }
         List<Response> has_responses= questionService.getQuestionDetail(qid).getResponses();         //questionRepository.getQuestionbyId(qid).getResponses();
         LocalDateTime ddl=questionService.getQuestionDetail(qid).getDdl();      //getQuestionDetail(qid).getDdl();
         //生成一条回复
@@ -565,6 +649,10 @@ public class SchoolPartController {
             rid= Long.parseLong(r_id);
         }catch (Exception e){
             return Erro_Parse;
+        }
+        Status status_qu=questionService.getQuestionDetail(qid).getStatus();
+        if(status_qu!=Status.SOLVING&&status_qu!=Status.SOLVED){
+            return Erro_Status;
         }
 
         Boolean modify_ok=  responseService.editResponse(rid,r_content);      //responseRepository.modifyResponse(rid,r_content,new Date());
