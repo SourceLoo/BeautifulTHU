@@ -51,7 +51,7 @@
                 </p>
             </div>
             <div class="weui-media-box weui-media-box_text">
-                <h4 class="weui-media-box__title">问题</h4>
+                <h4 class="weui-media-box__title">问题 <span id="questionid" th:text="${question.questionId}"></span> </h4>
                 <p id="question_content"  class="weui-media-box__desc" th:text="${question.content}">{问题内容}</p>
             </div>
             <div class="weui-media-box weui-media-box_text" th:each="response: ${question.responses}">
@@ -112,7 +112,7 @@
             url: '/evaluation/',
             dataType: 'json',
             data: {
-                response_id: $(".page__bd").attr("response_id"),
+                question_id: $("#questionid").val(),
                 evaluation: $("#evaluation").val(),
                 detail: $("textarea").val()
             },

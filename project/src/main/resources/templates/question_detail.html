@@ -47,7 +47,7 @@
         <section>
             <h2 class="title" th:text="${question.title}">{问题标题}</h2>
             <section>
-                <h3 class="title" th:text="${question.user.uname} + ${#temporals.format(question.createdTime, 'yyyy-MM-dd')} + ${question.createdLocation} +${question.likes}">{提问者}{提问时间}{提问地点}{点赞数}</h3>
+                <h3 class="title" th:text="${question.user.uname} + ' | ' + ${#temporals.format(question.createdTime, 'yyyy-MM-dd')} + ' | '+ ${question.createdLocation} + ' | '+${question.likes}">{提问者}{提问时间}{提问地点}{点赞数}</h3>
 
                 <p th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
                     {问题内容}
@@ -83,7 +83,7 @@
         <section>
             <!--开始循环-->
             <section th:each="response: ${question.responses}">
-                <h3 th:text="${response.responseId} +${#temporals.format(response.respondTime, 'yyyy-MM-dd')} + ${response.responder.uname} + ${response.likes}">{回复号}{回复时间}{回复部门}{点赞数}</h3>
+                <h3 th:text="${response.responseId}+ ' | ' +${#temporals.format(response.respondTime, 'yyyy-MM-dd')}+ ' | ' + ${response.responder.uname}+ ' | ' + ${response.likes}">{回复号}{回复时间}{回复部门}{点赞数}</h3>
 
                 <p th:utext="${#strings.replace( #strings.escapeXml( response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
                     {回复内容}

@@ -39,46 +39,54 @@ public class QuestionListController {
                                @RequestParam(name = "depart_condition", required = false) String depart,
                                @RequestParam(name = "order_type" , required = false, defaultValue = "createdTime") String orderType,
                                @RequestParam(name = "keywords" , required = false) String searchKey,
-                               @RequestParam(name = "isCommon" , required = false, defaultValue = "false") boolean isCommon)
+                               @RequestParam(name = "is_common" , required = false, defaultValue = "false") boolean isCommon)
     {
         // pageSize 由后台自定义
-        Integer pageSize = 2;
+        Integer pageSize = 10;
 
-        System.out.println("state="+state);
+        //        status = null;
+        //        depart = null;
+        //        searchKey = null;
+        Status status = Status.UNCLASSIFIED;
+        Long userId = (Long) session.getAttribute("userId");
+        userId = 0L;
+
+        if("".equals(state) || "all".equals(state))
+        {
+            status = null;
+        }
+        if("".equals(depart) || "all".equals(depart))
+        {
+            depart = null;
+        }
+        // createdTime likes 创建时间即创建的ID
+        List<String> orders = new ArrayList<>();
+        if("likenum".equals(orderType))
+        {
+            orders.add("likes");
+        }
+        orders.add("questionId");
+
+
+
+        System.out.println("status="+status);
         // Status: UNAPPROVED, UNCLASSIFIED, UNSOLVED, SOLVING, RECLASSIFY, DELAY, SOLVED, INVALID
 
         System.out.println("depart="+depart);
         // Role.role
 
-        System.out.println("orderType="+orderType);
-        // createdTime likes 创建时间即创建的ID
-        List<String> orders = new ArrayList<>();
-        if("likes".equals(orderType))
-        {
-            orders.add(orderType);
-        }
-        orders.add("questionId");
-
+        System.out.println("orderType="+orders);
 
         System.out.println("searchKey="+searchKey);
         // all
 
         System.out.println("isCommon="+isCommon);
 
-        searchKey = "内容";
-        isCommon = true;
-        depart = "zongban";
-        Status status = Status.UNCLASSIFIED;
-        Long userId = (Long) session.getAttribute("userId");
-        userId = 0L;
 
 
         Page<Question> questionPage = null;
         // 注意 缺失值 则设置为null
-//        status = null;
-//        depart = null;
-//        searchKey = null;
-        isCommon = false;
+
 
         questionPage = questionService.filterQuestions(pageNum, pageSize, status, depart, searchKey, isCommon, userId, orders);
 

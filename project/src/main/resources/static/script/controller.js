@@ -1,7 +1,7 @@
 $(function(){
     var counter = 0;
     // 每页展示4个
-    var num = 4;
+    var num = 10;
     var page = 0;
     // dropload
     $('.weui_panel').dropload({
@@ -135,7 +135,7 @@ $(function(){
                 url: '/question/all/',
                 dataType: 'json',
                 data: {
-                    page_size : 4,
+                    page_size : 10,
                     page_num : 0,
                     state_condition : status,
                     depart_condition : dept,
@@ -169,7 +169,7 @@ $(function(){
                 type = $('#type').val()
             page = 0
             var is_common = false;
-            if (type == 'all') {
+            if (type == 'qa') {
                 is_common = true
             }
             $.ajax({
@@ -177,7 +177,7 @@ $(function(){
                 url: '/question/all/',
                 dataType: 'json',
                 data: {
-                    page_size : 4,
+                    page_size : 10,
                     page_num : 0,
                     state_condition : status,
                     depart_condition : dept,

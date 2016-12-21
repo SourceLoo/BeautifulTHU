@@ -213,7 +213,7 @@ public class QuestionService {
             booleanBuilder.and(question.status.eq(status));
         }
         if(depart != null){
-            booleanBuilder.and(question.leaderRole.role.eq(depart));
+            booleanBuilder.and(question.leaderRole.displayName.eq(depart));
         }
         if (searchKey != null) {
             booleanBuilder.and(question.title.contains(searchKey).or(question.content.contains(searchKey)));
@@ -224,10 +224,13 @@ public class QuestionService {
         if( userId != 0L){
             booleanBuilder.and(question.user.id.eq(userId));
         }
+        System.out.println(booleanBuilder);
+        System.out.println(pageNum);
+        System.out.println(pageSize);
 
         // orders 定不为空
         Sort sort = new Sort(Sort.Direction.DESC, orders);
-        System.out.println(orders);
+        // System.out.println(orders);
         Pageable pageable = new PageRequest(pageNum, pageSize, sort);
 
         return questionRepository.findAll(booleanBuilder.getValue(), pageable);

@@ -37,5 +37,11 @@ public class MainController {
         return "upload_success";
     }
 
+    @GetMapping("/evaluate_success/")
+    public String getEvaluate_success()
+    {
+        return  "evaluate_success";
+    }
+
 
 }

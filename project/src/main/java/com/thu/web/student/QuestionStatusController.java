@@ -37,6 +37,7 @@ public class QuestionStatusController {
         status = "classified";
         status = "replied";
         status = "append";
+        status = "replied";
         return status;
     }
 
@@ -52,10 +53,10 @@ public class QuestionStatusController {
     public String getClassified(@RequestParam(value = "question_id") Long quetionId, Model model)
     {
         String status = getStatus(quetionId);
-        if(! "classified".equals(status))
-        {
-            return "redirect:/question/" + status + "?question_id=" + quetionId;
-        }
+//        if(! "classified".equals(status))
+//        {
+//            return "redirect:/question/" + status + "?question_id=" + quetionId;
+//        }
 
         model.addAttribute("question", questionRepository.findByQuestionId(quetionId));
 
@@ -66,10 +67,10 @@ public class QuestionStatusController {
     public String getReplydetail(@RequestParam(value = "question_id") Long quetionId, Model model)
     {
         String status = getStatus(quetionId);
-        if(! "replied".equals(status))
-        {
-            return "redirect:/question/" + status + "?question_id=" + quetionId;
-        }
+//        if(! "replied".equals(status))
+//        {
+//            return "redirect:/question/" + status + "?question_id=" + quetionId;
+//        }
 
         model.addAttribute("question", questionRepository.findByQuestionId(quetionId));
         return "reply_detail";
@@ -79,10 +80,10 @@ public class QuestionStatusController {
     public String getAppend(@RequestParam(value = "question_id") Long quetionId, Model model)
     {
         String status = getStatus(quetionId);
-        if(! "append".equals(status))
-        {
-            return "redirect:/question/" + status + "?question_id=" + quetionId;
-        }
+//        if(! "append".equals(status))
+//        {
+//            return "redirect:/question/" + status + "?question_id=" + quetionId;
+//        }
         model.addAttribute("question", questionRepository.findByQuestionId(quetionId));
 
         return "append";

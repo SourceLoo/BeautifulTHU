@@ -56,6 +56,13 @@
 <div class="weui-cells">
     <div class="weui-cell">
         <div class="weui-cell__bd">
+            <p>问题提交时间</p>
+        </div>
+        <div class="weui-cell__ft" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}">{答复时间}</div>
+    </div>
+
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
             <p>最迟答复时间</p>
         </div>
         <div class="weui-cell__ft" th:text="${#temporals.format(question.ddl, 'yyyy-MM-dd')}">{答复时间}</div>

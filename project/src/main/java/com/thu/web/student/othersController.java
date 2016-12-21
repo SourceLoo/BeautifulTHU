@@ -31,8 +31,10 @@ public class othersController {
         List<Role> roles = roleRepository.findAll();
         for(Role role: roles)
         {
+            if("xuesheng".equals(role.getRole()))
+                continue;
             JSONObject tmp = new JSONObject();
-            tmp.put("name", role.getRole());
+            tmp.put("name", role.getDisplayName());
 
             jsonArray.put(tmp);
         }
