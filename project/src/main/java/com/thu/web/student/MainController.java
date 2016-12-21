@@ -2,6 +2,7 @@ package com.thu.web.student;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Controller
+@RequestMapping("/student/question")
 public class MainController {
 
 //    @GetMapping(value = "/lyqtest")
@@ -19,28 +21,28 @@ public class MainController {
 //        return "lyqtest";
 //    }
 
-    @GetMapping("/question")
+    @GetMapping("/list")
     public String getQuestion()
     {
-        return "question";
+        return "student/question";
     }
 
     @GetMapping("/upload")
     public String getUpload()
     {
-        return "upload";
+        return "student/upload";
     }
 
     @GetMapping("/upload_success")
     public String getUpload_success()
     {
-        return "upload_success";
+        return "student/upload_success";
     }
 
-    @GetMapping("/evaluate_success/")
+    @GetMapping("/evaluate_success")
     public String getEvaluate_success()
     {
-        return  "evaluate_success";
+        return  "student/evaluate_success";
     }
 
 

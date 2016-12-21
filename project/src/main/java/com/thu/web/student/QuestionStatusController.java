@@ -5,16 +5,14 @@ import com.thu.domain.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by source on 12/9/16.
  */
 
 @Controller
+@RequestMapping("/student")
 public class QuestionStatusController {
 
 
@@ -60,7 +58,7 @@ public class QuestionStatusController {
 
         model.addAttribute("question", questionRepository.findByQuestionId(quetionId));
 
-        return "classify_renew";
+        return "student/classify_renew";
     }
 
     @GetMapping("/question/replied")
@@ -73,7 +71,7 @@ public class QuestionStatusController {
 //        }
 
         model.addAttribute("question", questionRepository.findByQuestionId(quetionId));
-        return "reply_detail";
+        return "student/reply_detail";
     }
 
     @GetMapping("/question/append")
@@ -86,7 +84,7 @@ public class QuestionStatusController {
 //        }
         model.addAttribute("question", questionRepository.findByQuestionId(quetionId));
 
-        return "append";
+        return "student/append";
     }
 
 

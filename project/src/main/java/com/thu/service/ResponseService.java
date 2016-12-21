@@ -58,6 +58,9 @@ public class ResponseService {
         else {
             // cancel vote
             if (!user.getLikedRespones().contains(response))
+            {
+                return  false;
+            }
             response.decrementLikes();
             user.getLikedRespones().remove(response);
         }

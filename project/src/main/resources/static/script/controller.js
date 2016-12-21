@@ -1,7 +1,7 @@
 $(function(){
     var counter = 0;
     // 每页展示4个
-    var num = 10;
+    var num = 4;
     var page = 0;
     // dropload
     var question_entry = function(question_id, question_title, question_content, question_location, like_num) {
@@ -12,7 +12,7 @@ $(function(){
                 '<ul class="weui-media-box__info">' +
                 '<li class="weui-media-box__info__meta">' + question_location + '</li>' +
                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + like_num + '</li>' +
-                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/question/?question_id='+question_id+'">点此查看详情</a></li>' +
+                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question?question_id='+question_id+'">点此查看详情</a></li>' +
                 '</ul>' +
                 '</div>') ;
         }
@@ -39,7 +39,7 @@ $(function(){
             page = 0
             $.ajax({
                 type: 'GET',
-                url: '/question/all/',
+                url: '/student/question/all',
                 dataType: 'json',
                 data: {
                     page_size : num,
@@ -88,7 +88,7 @@ $(function(){
         loadDownFn : function(me){//加载更多
             $.ajax({
                 type: 'GET',
-                url: '/question/all/',
+                url: '/student/question/all',
                 dataType: 'json',
                 data: {
                     page_size : num,
@@ -110,7 +110,7 @@ $(function(){
                                 '<ul class="weui-media-box__info">' +
                                 '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + q.like_num + '</li>' +
-                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question?question_id='+q.question_id+'">点此查看详情</a></li>' +
                                 '</ul>' +
                                 '</div>'
                     }
@@ -140,19 +140,13 @@ $(function(){
                 order = $('#order').val(),
                 type = $('#type').val(),
                 keyword = $(this).val()
-            var get_url = '';
             page = 0
-            if (type == 'all') {
-                get_url = '/question/all/'
-            } else {
-                get_url = '/regular_question/all/'
-            }
             $.ajax({
                 type: 'GET',
-                url: '/question/all/',
+                url: '/student/question/all',
                 dataType: 'json',
                 data: {
-                    page_size : 10,
+                    page_size : 4,
                     page_num : 0,
                     state_condition : status,
                     depart_condition : dept,
@@ -180,10 +174,10 @@ $(function(){
             }
             $.ajax({
                 type: 'GET',
-                url: '/question/all/',
+                url: '/student/question/all',
                 dataType: 'json',
                 data: {
-                    page_size : 10,
+                    page_size : 4,
                     page_num : 0,
                     state_condition : status,
                     depart_condition : dept,

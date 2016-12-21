@@ -23,6 +23,7 @@ import java.util.List;
  */
 
 @Controller
+@RequestMapping("/student")
 public class QuestionListController {
 
     // 得到当前会话
@@ -32,7 +33,7 @@ public class QuestionListController {
     @Autowired
     private QuestionService questionService;
 
-    @GetMapping(value = "/question/all/")
+    @GetMapping(value = "/question/all")
     @ResponseBody
     public Object getQuestions(@RequestParam(name = "page_num") Integer pageNum,
                                @RequestParam(name = "state_condition", required = false) String state,
@@ -47,13 +48,17 @@ public class QuestionListController {
         //        status = null;
         //        depart = null;
         //        searchKey = null;
-        Status status = Status.UNCLASSIFIED;
+        List<Status> statuses = null;
         Long userId = (Long) session.getAttribute("userId");
         userId = 0L;
 
         if("".equals(state) || "all".equals(state))
         {
-            status = null;
+            statuses = null;
+        }
+        else
+        {
+            statuses = othersController.statusMap.get(state);
         }
         if("".equals(depart) || "all".equals(depart))
         {
@@ -69,7 +74,7 @@ public class QuestionListController {
 
 
 
-        System.out.println("status="+status);
+        System.out.println("statuses="+statuses);
         // Status: UNAPPROVED, UNCLASSIFIED, UNSOLVED, SOLVING, RECLASSIFY, DELAY, SOLVED, INVALID
 
         System.out.println("depart="+depart);
@@ -88,7 +93,7 @@ public class QuestionListController {
         // 注意 缺失值 则设置为null
 
 
-        questionPage = questionService.filterQuestions(pageNum, pageSize, status, depart, searchKey, isCommon, userId, orders);
+        questionPage = questionService.filterQuestions(pageNum, pageSize, statuses, depart, searchKey, isCommon, userId, orders);
 
         List<Question> questions = questionPage.getContent();
 

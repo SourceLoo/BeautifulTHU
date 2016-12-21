@@ -109,15 +109,15 @@
     $("#showTooltips").click(function(){
         $.ajax({
             type: 'POST',
-            url: '/evaluation/',
+            url: '/student/question/evaluate',
             dataType: 'json',
             data: {
-                question_id: $("#questionid").val(),
+                question_id: $("#question_id").val(),
                 evaluation: $("#evaluation").val(),
                 detail: $("textarea").val()
             },
             success: function(data) {
-                window.location("/evaluate_success/")
+                window.location("/student/question/evaluate_success")
             },
             error: function(xhr, type) {
                 alert('Ajax error!');

@@ -2,6 +2,7 @@ package com.thu.service;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.thu.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -205,12 +206,15 @@ public class QuestionService {
     }
 
     // add by luyq
-    public Page<Question> filterQuestions(Integer pageNum, Integer pageSize, Status status, String depart, String searchKey, boolean isCommon, Long userId, List<String> orders)
+    public Page<Question> filterQuestions(Integer pageNum, Integer pageSize, List<Status> statuses, String depart, String searchKey, boolean isCommon, Long userId, List<String> orders)
     {
         QQuestion question = QQuestion.question;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        if(status != null){
-            booleanBuilder.and(question.status.eq(status));
+        if(statuses != null){
+            for (Status status: statuses)
+            {
+                booleanBuilder.or(question.status.eq(status));
+            }
         }
         if(depart != null){
             booleanBuilder.and(question.leaderRole.displayName.eq(depart));
@@ -292,7 +296,7 @@ public class QuestionService {
     public boolean saveStudentResponse(Long questionId, EvaluationType evaluationType, String evaluationDetail)
     {
         Question question = findById(questionId);
-        if (question == null) {
+        if (question == null || question.getEvaluationType() != null) {
             return false;
         }
         question.setEvaluationType(evaluationType);

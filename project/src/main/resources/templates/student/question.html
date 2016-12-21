@@ -12,7 +12,7 @@
     $(document).ready(function(){
         $.ajax({
                 type: 'GET',
-                url: '/getDept/all/',
+                url: '/student/getDept/all/',
                 dataType: 'json',
                 data: {},
                 success: function(data){
@@ -130,11 +130,9 @@
             <div class="weui-cell__bd">
                 <select class="weui-select" id="status">
                     <option value="all">所有状态</option>
-                    <option value="waiting">等待受理</option>
-                    <option value="process">受理</option>
-                    <option value="classify">分类</option>
-                    <option value="reply">答复</option>
-                    <option value="append">追答</option>
+                    <option value="待分类">待分类</option>
+                    <option value="待解决">待解决</option>
+                    <option value="已解决">已解决</option>
                 </select>
             </div>
         </div>

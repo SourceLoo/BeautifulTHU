@@ -1,5 +1,6 @@
 package com.thu.web.student;
 
+import com.thu.domain.EvaluationType;
 import com.thu.domain.User;
 import com.thu.domain.UserRepository;
 import com.thu.service.QuestionService;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,7 @@ import java.util.Random;
  */
 
 @Controller
+@RequestMapping("/student")
 public class QuestionEvaluateController {
 
     @Autowired
@@ -39,22 +42,39 @@ public class QuestionEvaluateController {
     private QuestionService questionService;
 
 
-    @PostMapping(value = "/evaluation/")
-    //public ResponseEntity<?> evaluate(
-    public String evaluate(
+    @PostMapping(value = "/question/evaluate")
+    public ResponseEntity<?> evaluate(
+    //public String evaluate(
             @RequestParam("question_id") Long questionId,
             @RequestParam("evaluation") String evaluation,
             @RequestParam("detail") String detail,
             HttpServletRequest request)
     {
+        EvaluationType evaluationType = null;
+        switch (evaluation)
+        {
+            case "无评价": evaluationType = EvaluationType.NOEVALUATION; break;
+            case "满意": evaluationType = EvaluationType.SATISFIED; break;
+            case "不满意": evaluationType = EvaluationType.UNSATISFIED; break;
+            default: evaluationType = null;
+        }
+
+        if(evaluationType == null)
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if(questionService.saveStudentResponse(questionId, evaluationType, detail) == false)
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         System.out.println(questionId);
         System.out.println(evaluation);
         System.out.println(detail);
 
-
         //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        //return new ResponseEntity<>(HttpStatus.OK);
-        return "redirect:/evaluate_success/";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
