@@ -4,8 +4,20 @@ $(function(){
     var num = 4;
     var page = 0;
     // dropload
+    var question_entry = function(question_id, question_title, question_content, question_location, like_num) {
+            return
+                ('<div id="question" class="weui-media-box weui-media-box_text" question_id="' + question_id + '">' +
+                '<h4 class="weui-media-box__title">' + question_title + '</h4>' +
+                '<p class="weui-media-box__desc">' + question_content + '</p>' +
+                '<ul class="weui-media-box__info">' +
+                '<li class="weui-media-box__info__meta">' + question_location + '</li>' +
+                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + like_num + '</li>' +
+                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question?question_id='+question_id+'">点此查看详情</a></li>' +
+                '</ul>' +
+                '</div>') ;
+        }
 
-    var k = $('.weui_panel').dropload({
+    $('.weui_panel').dropload({
         scrollArea : window,
         autoLoad : true,
         domDown : {//上拉
@@ -20,19 +32,14 @@ $(function(){
             domUpdate  : '<div class="dropload-load f15"><i class="icon icon-20"></i>释放更新...</div>',
             domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>'
         },
-        loadUpFn : function(me) {//刷新
+        loadUpFn : function(me){//刷新
             counter = 0
             pageStart = 0
             pageEnd = 0
             page = 0
-            type = $('#type').val()
-            var is_common = false;
-            if (type == 'qa') {
-                is_common = true
-            }
             $.ajax({
                 type: 'GET',
-                url: '/student/question/all/',
+                url: '/student/question/all',
                 dataType: 'json',
                 data: {
                     page_size : num,
@@ -40,8 +47,7 @@ $(function(){
                     state_condition : $('#status').val(),
                     depart_condition : $('#dept').val(),
                     order_type : $('#order').val(),
-                    keywords : $('#searchInput').val(),
-                    isCommon : is_common
+                    keywords : ""
                 },
                 success: function(data){
                     var result = '';
@@ -49,19 +55,13 @@ $(function(){
                     // alert("success1")
                     for(var i = 0; i < data.question_list.length; i++){
                         var q = data.question_list[i]
-                        var liked
-                        if (q.liked == "1") {
-                            liked = "已赞"
-                        } else {
-                            liked = "赞"
-                        }
                         result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
                                   '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
                                   '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
                                   '<ul class="weui-media-box__info">' +
                                   '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
-                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' + q.like_num + '</li>' +
-                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
+                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + q.like_num + '</li>' +
+                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
                                   '</ul>' +
                                   '</div>'
                     }
@@ -86,14 +86,9 @@ $(function(){
             });
         },
         loadDownFn : function(me){//加载更多
-            type = $('#type').val()
-            var is_common = false;
-            if (type == 'qa') {
-                is_common = true
-            }
             $.ajax({
                 type: 'GET',
-                url: '/student/question/all/',
+                url: '/student/question/all',
                 dataType: 'json',
                 data: {
                     page_size : num,
@@ -101,28 +96,21 @@ $(function(){
                     state_condition : $('#status').val(),
                     depart_condition : $('#dept').val(),
                     order_type : $('#order').val(),
-                    keywords : $('#searchInput').val(),
-                    isCommon : is_common
+                    keywords : ""
                 },
-                success: function(data) {
+                success: function(data){
                     counter++;
                     page++;
                     var result = ''
-                    for(var i = 0; i < data.question_list.length; i++) {
+                    for(var i = 0; i < data.question_list.length; i++){
                         q = data.question_list[i]
-                        var liked
-                        if (q.liked == "1") {
-                            liked = "已赞"
-                        } else {
-                            liked = "赞"
-                        }
                         result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
                                 '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
                                 '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
                                 '<ul class="weui-media-box__info">' +
                                 '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
-                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' + q.like_num + '</li>' +
-                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">点赞数: ' + q.like_num + '</li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question?question_id='+q.question_id+'">点此查看详情</a></li>' +
                                 '</ul>' +
                                 '</div>'
                     }
@@ -146,14 +134,64 @@ $(function(){
             });
         }
     });
-
-    $('#searchInput').on('change', function(){
-        page = 0
-        k.opts.loadUpFn(k)
-    });
-
-    $('select').on('change', function(){
-        page = 0
-        k.opts.loadUpFn(k)
-    });
+        $('#searchInput').on('change', function(){
+            var status = $('#status').val(),
+                dept = $('#dept').val(),
+                order = $('#order').val(),
+                type = $('#type').val(),
+                keyword = $(this).val()
+            page = 0
+            $.ajax({
+                type: 'GET',
+                url: '/student/question/all',
+                dataType: 'json',
+                data: {
+                    page_size : 4,
+                    page_num : 0,
+                    state_condition : status,
+                    depart_condition : dept,
+                    order_type : order,
+                    keywords : keyword
+                },
+                success: function(data) {
+                    var result = '';
+                    $('.weui_panel_bd').html(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+        });
+        $('select').on('change', function(){
+            var status = $('#status').val(),
+                dept = $('#dept').val(),
+                order = $('#order').val(),
+                type = $('#type').val()
+            page = 0
+            var is_common = false;
+            if (type == 'qa') {
+                is_common = true
+            }
+            $.ajax({
+                type: 'GET',
+                url: '/student/question/all',
+                dataType: 'json',
+                data: {
+                    page_size : 4,
+                    page_num : 0,
+                    state_condition : status,
+                    depart_condition : dept,
+                    order_type : order,
+                    is_common : is_common,
+                    keywords : ""
+                },
+                success: function(data) {
+                    var result = '';
+                    $('.weui_panel_bd').html(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+        });
 });

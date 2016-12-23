@@ -225,7 +225,7 @@ public class QuestionService {
         if (isCommon) {
             booleanBuilder.and(question.isCommon.eq(Boolean.TRUE));
         }
-        if( userId != 0L){
+        if( userId != null){
             booleanBuilder.and(question.user.id.eq(userId));
         }
         System.out.println(booleanBuilder);

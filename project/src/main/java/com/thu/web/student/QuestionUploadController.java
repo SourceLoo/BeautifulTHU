@@ -49,6 +49,7 @@ public class QuestionUploadController {
             @RequestParam(name="location", required=false, defaultValue="清华大学") String location,
             HttpServletRequest request)
     {
+        System.out.println("123");
         List<String> paths = new ArrayList<>();
 
         // 拷贝到本地

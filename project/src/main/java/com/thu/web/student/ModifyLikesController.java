@@ -38,7 +38,7 @@ public class ModifyLikesController {
     @PostMapping(value = "/question/like")
     public ResponseEntity<?> modifyQuestionLikes(
             @RequestParam("question_id") Long questionId,
-            @RequestParam("like") boolean like
+            @RequestParam("liked") boolean like
     )
     {
         //if(!"true".equals(like) & !"fa")
@@ -57,7 +57,7 @@ public class ModifyLikesController {
     @PostMapping(value = "/response/like")
     public ResponseEntity<?> modifyResponseLikes(
             @RequestParam("response_id") Long responseId,
-            @RequestParam("like") boolean like
+            @RequestParam("liked") boolean like
     )
     {
         // like 为真，则点赞；否则取消点赞
