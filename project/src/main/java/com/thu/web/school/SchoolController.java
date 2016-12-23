@@ -149,12 +149,11 @@ public class SchoolController{
     * */
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
     @ResponseBody
-    public String login( String uname
-            //@RequestParam("uname") String uname,
-              //          @RequestParam("passwd") String passwd
+    public String login( @RequestParam("uname") String uname,
+                        @RequestParam("passwd") String passwd
             ) throws JSONException{
-        System.out.println(uname);
-        String passwd = "111";
+        //System.out.println(uname);
+        //String passwd = "111";
         if (uname.equals("") || ! userService.containsUname(uname))
             return loginErrorMsg;
         User usr = userService.findUser(uname);
@@ -184,9 +183,9 @@ public class SchoolController{
     *  no param
     *  return {role, resp_person, fixed_phone, mobile_phone}
     * */
-    @RequestMapping(value="/auth/logout",method =RequestMethod.POST)
+    @RequestMapping(value="/auth/logout/{token:.+}",method =RequestMethod.POST)
     @ResponseBody
-    public String logout(@RequestParam("token") String token)throws JSONException{
+    public String logout(@PathVariable String token)throws JSONException{
         System.out.println(token);
         if (!checkPermissionWithoutName(token, roleALL)){
             return invalidTokenMsg;
@@ -215,9 +214,9 @@ public class SchoolController{
             return userNotLogMsg;
     }
 
-    @RequestMapping(value ="/info/get", method = RequestMethod.POST)
+    @RequestMapping(value ="/info/get/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String getInfo(@RequestParam("token") String token) throws JSONException{
+    public String getInfo(@PathVariable String token) throws JSONException{
         String tokenName , tokenRole;
         if (!checkPermissionWithoutName(token, roleALL)){
             return invalidTokenMsg;
@@ -245,9 +244,9 @@ public class SchoolController{
     * param uname, resp_person, fixed_phone, mobile_phone, passwd
     * return {success, msg}
     * */
-    @RequestMapping(value ="/info/set", method = RequestMethod.POST)
+    @RequestMapping(value ="/info/set/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String setInfo(@RequestParam("token") String token,
+    public String setInfo(@PathVariable String token,
                     @RequestParam("uname") String uname,
                    @RequestParam("resp_person") String resp_person,
                    @RequestParam("fixed_phone") String fixed_phone,
@@ -278,9 +277,9 @@ public class SchoolController{
     /*
     *  done
      *  */
-    @RequestMapping(value = "/contact/del", method = RequestMethod.POST)
+    @RequestMapping(value = "/contact/del/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String delContact(@PathParam("token") String token,
+    public String delContact(@PathVariable String token,
                              @PathParam("uname") String uname) throws JSONException{
         if (!checkPermissionWithoutName( token, roleTW))
             return invalidTokenMsg;
@@ -307,9 +306,9 @@ public class SchoolController{
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
 
-   @RequestMapping(value = "/contact/get", method = RequestMethod.POST)
+   @RequestMapping(value = "/contact/get/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String getContact(@RequestParam("token") String token) throws JSONException{
+    public String getContact(@PathVariable String token) throws JSONException{
        if (!checkPermissionWithoutName(token, roleTW))
            return invalidTokenMsg;
         List<User> userList = userService.findAll();
@@ -340,9 +339,9 @@ public class SchoolController{
     * department(uname = role)
     * return success, msg
     * */
-   @RequestMapping(value = "/contact/set", method = RequestMethod.POST)
+   @RequestMapping(value = "/contact/set/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String setContact(@RequestParam("token") String token,
+    public String setContact(@PathVariable String token,
                              @RequestParam("display_name") String displayname,
                              @RequestParam("uname") String uname,
                              @RequestParam("resp_person") String resp_person,
@@ -375,9 +374,9 @@ public class SchoolController{
     * param question_id
     * return {success, msg}
     * */
-    @RequestMapping(value = "/questions/main/delay", method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/delay/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String setDelay(@RequestParam("token") String token,
+    public String setDelay(@PathVariable String token,
                             @RequestParam("question_id") String question_id) throws JSONException{
         if (!checkPermissionWithoutName(token, roleTW))
             return invalidTokenMsg;
@@ -395,9 +394,9 @@ public class SchoolController{
     * param question_id, delay_reason, delay_days
     * return {success , msg}
     * */
-    @RequestMapping(value = "/questions/related/delay", method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/related/delay/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String applyDelay(@RequestParam("token") String token,
+    public String applyDelay(@PathVariable String token,
                               @RequestParam("question_id") String question_id,
                              @RequestParam("delay_reason") String delay_reason,
                              @RequestParam("delay_days") int delay_days) throws JSONException{
@@ -420,9 +419,9 @@ public class SchoolController{
     *  param question_id
     *  return {success, msg}
     * */
-    @RequestMapping(value = "/qa/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/qa/add/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String addQA(@RequestParam("token") String token,
+    public String addQA(@PathVariable String token,
                         @RequestParam("question_id") String question_id) throws JSONException{
         if (!checkPermissionWithoutName(token, roleTW)){
             return invalidTokenMsg;
@@ -440,9 +439,9 @@ public class SchoolController{
     *  param question_id
     *  return {success, msg}
     * * */
-   @RequestMapping(value = "/qa/del", method = RequestMethod.POST)
+   @RequestMapping(value = "/qa/del/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String delQA(@RequestParam("token") String token,
+    public String delQA(@PathVariable String token,
                         @RequestParam("question_id") String question_id) throws JSONException{
         if (!checkPermissionWithoutName(token, roleTW)){
             return invalidTokenMsg;
@@ -462,9 +461,9 @@ public class SchoolController{
     * **/
 
 
-    @RequestMapping(value = "/qa/top", method = RequestMethod.POST)
+    @RequestMapping(value = "/qa/top/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String setTopQA(@RequestParam("token") String token,
+    public String setTopQA(@PathVariable String token,
                             @RequestParam("question_id") String question_id) throws JSONException{
         if (!checkPermissionWithoutName( token, roleTW)){
             return invalidTokenMsg;
@@ -482,9 +481,9 @@ public class SchoolController{
     * no param
     * return msg
     * ***/
-   @RequestMapping(value = "/statistics/get", method = RequestMethod.POST)
+   @RequestMapping(value = "/statistics/get/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
-    public String getStatistics(@RequestParam("token") String token) throws JSONException{
+    public String getStatistics(@PathVariable String token) throws JSONException{
         if (!checkPermissionWithoutName(token, roleXB) && !checkPermissionWithoutName(token, roleZB)){
             return invalidTokenMsg;
         }
