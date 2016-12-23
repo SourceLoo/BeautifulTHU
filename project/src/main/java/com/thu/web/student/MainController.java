@@ -42,6 +42,8 @@ public class MainController {
     @GetMapping("/evaluate_success")
     public String getEvaluate_success()
     {
+        System.out.println("test lyq");
+
         return  "student/evaluate_success";
     }
 

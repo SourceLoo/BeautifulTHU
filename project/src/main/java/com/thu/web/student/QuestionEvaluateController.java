@@ -9,10 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +32,9 @@ import java.util.Random;
 @RequestMapping("/student")
 public class QuestionEvaluateController {
 
+    private final String errorMsg = "{'success':false,'msg':'重复提交'}";
+    private final String successMsg = "{'success':false,'msg':'Done'}";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -43,8 +43,9 @@ public class QuestionEvaluateController {
 
 
     @PostMapping(value = "/question/evaluate")
-    public ResponseEntity<?> evaluate(
-    //public String evaluate(
+    //public ResponseEntity<?> evaluate(
+    @ResponseBody
+    public String evaluate(
             @RequestParam("question_id") Long questionId,
             @RequestParam("evaluation") String evaluation,
             @RequestParam("detail") String detail,
@@ -61,12 +62,14 @@ public class QuestionEvaluateController {
 
         if(evaluationType == null)
         {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return errorMsg;
+            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         if(questionService.saveStudentResponse(questionId, evaluationType, detail) == false)
         {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return errorMsg;
+            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         System.out.println(questionId);
@@ -74,7 +77,8 @@ public class QuestionEvaluateController {
         System.out.println(detail);
 
         //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(HttpStatus.OK);
+        //return new ResponseEntity<>(HttpStatus.OK);
+        return successMsg;
     }
 
 }

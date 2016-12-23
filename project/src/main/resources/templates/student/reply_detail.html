@@ -105,22 +105,25 @@
 <div class="weui-btn-area">
     <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
 </div>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
+    var questionId = [[${question.questionId}]];
+
     $("#showTooltips").click(function(){
         $.ajax({
             type: 'POST',
             url: '/student/question/evaluate',
             dataType: 'json',
             data: {
-                question_id: $("#question_id").val(),
+                //question_id: $("#question_id").val(),
+                question_id: questionId,
                 evaluation: $("#evaluation").val(),
                 detail: $("textarea").val()
             },
-            success: function(data) {
+            success: function() {
                 window.location("/student/question/evaluate_success")
             },
             error: function(xhr, type) {
-                alert('Ajax error!');
+                alert('不能重复评价');
             }
         });
      });
