@@ -1,8 +1,8 @@
 const common_props = ['curr', 'data', 'is_tuanwei', 'is_xiaoban', 'is_zongban', 'is_main'];
 const display_status = ['待审核', '待分类', '待解决', '解决中', '申请重分类', '申请延期', '已解决', '无效']
 var handle_res = function(data) {
-    return data;
-    //return JSON.parse(data);
+    //return data;
+    return JSON.parse(data);
 }
 var handle_req = function(data) {
     return data;
@@ -91,9 +91,9 @@ const questions = {
             return this.curr.question_filter == status ? 'active' : '';
         },
         _update_questions: res => {
-            res.data = handle_res(res.data);
-            if (res.data.success === false) {
-                alert(handle_res(res.data).msg);
+            res = handle_res(res);
+            if (res.success === false) {
+                alert(handle_res(res).msg);
                 return false;
             } else {
                 this.$router.app.update_questions().then(function(result) {
@@ -122,9 +122,9 @@ const questions = {
                 path = '/qa/del/';
             }
             this.$http.post('/qa/add/' + localStorage.token, handle_req(temp)).then(res => {
-                res.data = handle_res(res.data);
-                if (res.data.success === false) {
-                    alert(res.data.msg);
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
                     return false;
                 } else {
                     this.$router.app.update_questions();
@@ -142,9 +142,9 @@ const questions = {
                 path = '/qa/notop/';
             }
             this.$http.post(path + localStorage.token, handle_req(temp)).then(res => {
-                res.data = handle_res(res.data);
-                if (res.data.success === false) {
-                    alert(res.data.msg);
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
                     return false;
                 } else {
                     this.$router.app.update_questions();
@@ -198,9 +198,9 @@ const questions = {
                     response_content: response.content,
                 };
                 this.$http.post('/questions/related/modify_response/' + localStorage.token, handle_req(temp)).then(res => {
-                    res.data = handle_res(res.data);
-                    if (res.data.success === false) {
-                        alert(res.data.msg);
+                    res = handle_res(res);
+                    if (res.success === false) {
+                        alert(res.msg);
                         return false;
                     } else {
                         this.$router.app.update_questions().then(function(result) {
@@ -273,7 +273,8 @@ const error = {
     name: 'error',
     template: '#error',
 };
-Vue.prototype.$http = axios;
+//Vue.prototype.$http = axios;
+Vue.prototype.$http = $;
 var router = new VueRouter({
     routes: [{
         path: '/',
@@ -307,11 +308,11 @@ var router = new VueRouter({
             });
             if (this.app.is_xiaoban || this.app.is_zongban) {
                 this.app.$http.post('/statistics/get/' + localStorage.token).then(res => {
-                    res.data = handle_res(res.data);
-                    if (res.data.success === false) {
-                        alert(res.data.msg);
+                    res = handle_res(res);
+                    if (res.success === false) {
+                        alert(res.msg);
                     } else {
-                        this.data.statistics = res.data;
+                        this.data.statistics = res;
                     }
                 })
             }
@@ -346,8 +347,8 @@ var app = new Vue({
             this.curr.is_login = false;
         }
         this.$http.post('/init/get_displayname').then(res => {
-            //console.log('get_displayname: ', res);
-            this.data.display_name = handle_res(res.data); //JSON.parse(res.data);
+            console.log('get_displayname: ', res);
+            this.data.display_name = handle_res(res);
         });
     },
     ready: function() {
@@ -409,13 +410,14 @@ var app = new Vue({
                 passwd: this.curr.passwd
             };
             this.$http.post('/auth/login', handle_req(temp)).then(res => {
-                res.data = handle_res(res.data);
-                if (res.data.success === false) {
-                    alert(res.data.msg);
+                console.log('login', res);
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
                 } else {
-                    localStorage.setItem('token', res.data.token);
-                    localStorage.setItem('role', res.data.role);
-                    this.curr.role = res.data.role;
+                    localStorage.setItem('token', res.token);
+                    localStorage.setItem('role', res.role);
+                    this.curr.role = res.role;
                     this.curr.is_login = true;
                     alert('登录成功');
                 }
@@ -425,9 +427,9 @@ var app = new Vue({
         },
         logout: function() {
             this.$http.post('/auth/logout/' + localStorage.token).then(res => {
-                res.data = handle_res(res.data);
-                if (res.data.success === false) {
-                    alert(res.data.msg);
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
                 } else {
                     localStorage.removeItem('token');
                     localStorage.removeItem('role');
@@ -440,40 +442,45 @@ var app = new Vue({
         },
         update_info: function() {
             return this.$http.post('/info/get/' + localStorage.token).then(res => {
-                res.data = handle_res(res.data);
-                if (res.data.success === false) {
-                    alert(res.data.msg);
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
                     return false;
                 } else {
-                    this.data.info = res.data;
+                    this.data.info = res;
                     this.set_curr_view('info');
                     return true;
                 }
             })
         },
         update_contact: function() {
-            return this.$http.post('/contact/get/').then(res => {
-                res.data = handle_res(res.data);
-                if (res.data.success === false) {
-                    alert(res.data.msg);
+            return this.$http.post('/contact/get/' + localStorage.token).then(res => {
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
                     return false;
                 } else {
-                    this.data.contact = res.data;
+                    this.data.contact = res;
                     this.set_curr_view('contact');
                     return true;
                 }
             })
         },
         update_questions: function() {
-            return this.$http.post('/questions/get_all/' + localStorage.token).then(res => {
-                res.data = handle_res(res.data);
-                if (res.data.success === false) {
-                    alert(res.data.msg);
+            // TODO: split pages
+            var temp = {
+                start:0,
+                number: 100,
+            }
+            return this.$http.post('/questions/get_all/' + localStorage.token, handle_req(temp)).then(res => {
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
                     return false;
                 } else {
                     var _role = this.curr.role;
                     //TODO: remove after combined.
-                    this.data.questions = res.data.filter(function(question) {
+                    this.data.questions = res.filter(function(question) {
                         return _role == 'tuanwei' || _role == 'xiaoban' || question.resp_role.indexOf(_role) != -1;
                     });
                     this.set_curr_view('questions');
