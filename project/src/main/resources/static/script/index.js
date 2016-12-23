@@ -1,5 +1,13 @@
 const common_props = ['curr', 'data', 'is_tuanwei', 'is_xiaoban', 'is_zongban', 'is_main'];
 const display_status = ['待审核', '待分类', '待解决', '解决中', '申请重分类', '申请延期', '已解决', '无效']
+var handle_res = function(data) {
+    return data;
+    //return JSON.parse(data);
+}
+var handle_req = function(data) {
+    return data;
+    //return JSON.stringify(data);
+}
 const introduction = {
     name: 'introduction',
     template: '#introduction',
@@ -18,7 +26,7 @@ const info = {
             this.curr.info_modify = !this.curr.info_modify;
         },
         info_save: function() {
-            this.$http.post('/info/set/' + localStorage.token, this.data.contact[index].uname).then(function(res) {});
+            this.$http.post('/info/set/' + localStorage.token, this.data.contact[index].uname).then(res => {});
             this.curr.info_modify = !this.curr.info_modify;
         },
     }
@@ -82,9 +90,10 @@ const questions = {
         question_filter_used: function(status) {
             return this.curr.question_filter == status ? 'active' : '';
         },
-        _update_questions: function(res) {
+        _update_questions: res => {
+            res.data = handle_res(res.data);
             if (res.data.success === false) {
-                alert(res.data.msg);
+                alert(handle_res(res.data).msg);
                 return false;
             } else {
                 this.$router.app.update_questions().then(function(result) {
@@ -112,7 +121,8 @@ const questions = {
             } else {
                 path = '/qa/del/';
             }
-            this.$http.post('/qa/add/' + localStorage.token, temp).then(function(res) {
+            this.$http.post('/qa/add/' + localStorage.token, handle_req(temp)).then(res => {
+                res.data = handle_res(res.data);
                 if (res.data.success === false) {
                     alert(res.data.msg);
                     return false;
@@ -131,7 +141,8 @@ const questions = {
             } else {
                 path = '/qa/notop/';
             }
-            this.$http.post(path + localStorage.token, temp).then(function(res) {
+            this.$http.post(path + localStorage.token, handle_req(temp)).then(res => {
+                res.data = handle_res(res.data);
                 if (res.data.success === false) {
                     alert(res.data.msg);
                     return false;
@@ -145,14 +156,14 @@ const questions = {
                 question_id: id,
                 agree: agree,
             };
-            this.$http.post('/questions/main/reclassify/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/main/reclassify/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_delay: function(id, agree) {
             var temp = {
                 question_id: id,
                 agree: agree,
             };
-            this.$http.post('/questions/main/delay/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/main/delay/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_classify: function(id) {
             var temp = {
@@ -162,20 +173,20 @@ const questions = {
                 deadline: this.selected_ddl,
                 opinion: this.selected_opinion,
             };
-            this.$http.post('/questions/main/classify/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/main/classify/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_forward: function(id, role) {
             var temp = {
                 question_id: id,
                 role: role,
             };
-            this.$http.post('/questions/main/forward/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/main/forward/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_reject: function(id) {
             var temp = {
                 question_id: id,
             };
-            this.$http.post('/questions/main/reject/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/main/reject/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_related_modify: function(id, response) {
             if (this.response_modify == -1) {
@@ -186,7 +197,8 @@ const questions = {
                     response_id: response.id,
                     response_content: response.content,
                 };
-                this.$http.post('/questions/related/modify_response/' + localStorage.token, temp).then(function(res) {
+                this.$http.post('/questions/related/modify_response/' + localStorage.token, handle_req(temp)).then(res => {
+                    res.data = handle_res(res.data);
                     if (res.data.success === false) {
                         alert(res.data.msg);
                         return false;
@@ -205,14 +217,14 @@ const questions = {
                 question_id: id,
                 response_content: this.response_text
             };
-            this.$http.post('/questions/related/response/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/related/response/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_related_reclassify: function(id) {
             var temp = {
                 question_id: id,
                 reclassify_reason: this.reclassify_reason,
             };
-            this.$http.post('/questions/related/reclassify/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/related/reclassify/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_related_delay: function(id) {
             var temp = {
@@ -220,7 +232,7 @@ const questions = {
                 delay_reason: this.delay_reason,
                 delay_days: this.delay_days,
             };
-            this.$http.post('/questions/related/delay/' + localStorage.token, temp).then(this._update_questions);
+            this.$http.post('/questions/related/delay/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
     }
 };
@@ -244,7 +256,7 @@ const contact = {
         },
         contact_delete: function(index) {
             this.data.contact.splice(index, 1);
-            this.$http.post('/contact/del/' + localStorage.token, this.data.contact[index].uname).then(function(res) {});
+            this.$http.post('/contact/del/' + localStorage.token, this.data.contact[index].uname).then(res => {});
         },
         contact_discard: function(index) {
             this.data.contact[index] = this.curr.contact_backup;
@@ -252,7 +264,7 @@ const contact = {
 
         },
         contact_save: function(index) {
-            this.$http.post('/contact/set/' + localStorage.token, this.data.contact[index]).then(function(res) {});
+            this.$http.post('/contact/set/' + localStorage.token, this.data.contact[index]).then(res => {});
             this.curr.contact_modify = -1;
         },
     }
@@ -261,6 +273,7 @@ const error = {
     name: 'error',
     template: '#error',
 };
+Vue.prototype.$http = axios;
 var router = new VueRouter({
     routes: [{
         path: '/',
@@ -293,7 +306,8 @@ var router = new VueRouter({
             this.app.update_questions().then(function(result) {
             });
             if (this.app.is_xiaoban || this.app.is_zongban) {
-                this.app.$http.post('/statistics/get/' + localStorage.token).then(function(res) {
+                this.app.$http.post('/statistics/get/' + localStorage.token).then(res => {
+                    res.data = handle_res(res.data);
                     if (res.data.success === false) {
                         alert(res.data.msg);
                     } else {
@@ -331,9 +345,9 @@ var app = new Vue({
             this.curr.role = '';
             this.curr.is_login = false;
         }
-        this.$http.get('/init/get_displayname').then(function(res) {
+        this.$http.post('/init/get_displayname').then(res => {
             //console.log('get_displayname: ', res);
-            this.data.display_name = res.data; //JSON.parse(res.data);
+            this.data.display_name = handle_res(res.data); //JSON.parse(res.data);
         });
     },
     ready: function() {
@@ -390,10 +404,12 @@ var app = new Vue({
         },
         login: function() {
             //TODO: md5 passwd?
-            this.$http.post('/auth/login', {
+            var temp = {
                 uname: this.curr.uname,
                 passwd: this.curr.passwd
-            }).then(function(res) {
+            };
+            this.$http.post('/auth/login', handle_req(temp)).then(res => {
+                res.data = handle_res(res.data);
                 if (res.data.success === false) {
                     alert(res.data.msg);
                 } else {
@@ -408,7 +424,8 @@ var app = new Vue({
             });
         },
         logout: function() {
-            this.$http.post('/auth/logout/' + localStorage.token).then(function(res) {
+            this.$http.post('/auth/logout/' + localStorage.token).then(res => {
+                res.data = handle_res(res.data);
                 if (res.data.success === false) {
                     alert(res.data.msg);
                 } else {
@@ -422,7 +439,8 @@ var app = new Vue({
             });
         },
         update_info: function() {
-            return this.$http.post('/info/get/' + localStorage.token).then(function(res) {
+            return this.$http.post('/info/get/' + localStorage.token).then(res => {
+                res.data = handle_res(res.data);
                 if (res.data.success === false) {
                     alert(res.data.msg);
                     return false;
@@ -434,7 +452,8 @@ var app = new Vue({
             })
         },
         update_contact: function() {
-            return this.$http.post('/contact/get/').then(function(res) {
+            return this.$http.post('/contact/get/').then(res => {
+                res.data = handle_res(res.data);
                 if (res.data.success === false) {
                     alert(res.data.msg);
                     return false;
@@ -446,7 +465,8 @@ var app = new Vue({
             })
         },
         update_questions: function() {
-            return this.$http.post('/questions/get_all/' + localStorage.token).then(function(res) {
+            return this.$http.post('/questions/get_all/' + localStorage.token).then(res => {
+                res.data = handle_res(res.data);
                 if (res.data.success === false) {
                     alert(res.data.msg);
                     return false;

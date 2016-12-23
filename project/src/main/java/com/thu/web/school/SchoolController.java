@@ -103,7 +103,7 @@ public class SchoolController{
     *
     *
     * */
-    @RequestMapping(value = "/init/get_displayname", method = RequestMethod.GET)
+    @RequestMapping(value = "/init/get_displayname", method = RequestMethod.POST)
     @ResponseBody
     public String getDisplayname() throws JSONException{
 
