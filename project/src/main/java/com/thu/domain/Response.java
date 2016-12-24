@@ -19,11 +19,6 @@ public class Response {
 
     protected Response() {}
 
-    // lyqtest
-    public Response(String responseContent) {
-        this.responseContent = responseContent;
-    }
-
     public Response(String responseContent, User responder) {
         this.responseContent = responseContent;
         this.responder = responder;

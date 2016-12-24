@@ -199,7 +199,7 @@ public class QuestionService {
             booleanBuilder.and(question.title.contains(searchKey).or(question.content.contains(searchKey)));
         }
         // TODO: 16/12/10 orders validation
-        //Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, orders)); modified by lyq
+        //Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, orders)); modified by luyq
         Sort sort = new Sort(Sort.Direction.DESC, orders);
         System.out.println(orders);
         return new PageRequest(pageNum, pageSize, sort);
