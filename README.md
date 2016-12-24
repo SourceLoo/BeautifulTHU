@@ -122,7 +122,7 @@ receive: {'success':bool, 'msg':''}
 
 ```
 /contact/del
-send: 'tuanwei'(the value of uname)
+send: {'uname': 'tuanwei'}
 receive: {'success':bool, 'msg':''}
 ```
 
@@ -137,7 +137,7 @@ receive: [{'question_id':'', 'created_time':'', 'created_location':'',
     'title':'', 'content':'', 'pic_path':['',''], 'deadline':'',
     'is_common':bool, 'is_common_top':bool, 'likes':int,
     'reclassify_reason':'', 'delay_days':number, 'delay_reason':'',
-    'opinion':'', 'responses':[{'id':'', 'content':''}],
+    'opinion':'', 'responses':[{'id':'', 'content':'', 'time':''}],
     'student_score':1/-1/0, 'student_comment':'',
 }]
 ```

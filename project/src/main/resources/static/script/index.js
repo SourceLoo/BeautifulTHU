@@ -26,8 +26,14 @@ const info = {
             this.curr.info_modify = !this.curr.info_modify;
         },
         info_save: function() {
-            this.$http.post('/info/set/' + localStorage.token, this.data.contact[index].uname).then(res => {});
-            this.curr.info_modify = !this.curr.info_modify;
+            this.$http.post('/info/set/' + localStorage.token, handle_req(this.data.info)).then(res => {
+                if (res.success === false) {
+                    alert(res.msg);
+                    return false;
+                } else {
+                    this.curr.info_modify = !this.curr.info_modify;
+                }
+            });
         },
     }
 };
@@ -72,10 +78,10 @@ const questions = {
             return display_status[status];
         },
         question_for_main: function(status) {
-            return (status==0 && this.is_tuanwei) || (status==1 && (this.is_xiaoban || this.is_zongban));
+            return (status == 0 && this.is_tuanwei) || (status == 1 && (this.is_xiaoban || this.is_zongban));
         },
         question_for_related: function(status) {
-            return ([2,3,4,5,6].indexOf(status) != -1);
+            return ([2, 3, 4, 5, 6].indexOf(status) != -1);
         },
         question_is_show: function(status, is_common, role) {
             return (this.curr.question_filter == -1 || this.curr.question_filter == status) && (!this.filter_common || is_common) && (this.filter_statistics == '' || role.indexOf(this.filter_statistics) != -1);
@@ -250,22 +256,36 @@ const contact = {
             this.curr.contact_modify = this.data.contact.push({
                 is_new: true
             }) - 1;
-            this.curr.contact_backup = {
-                is_new: true
-            };
         },
         contact_delete: function(index) {
-            this.data.contact.splice(index, 1);
-            this.$http.post('/contact/del/' + localStorage.token, this.data.contact[index].uname).then(res => {});
+            var temp = {uname: this.data.contact[index].uname};
+            this.$http.post('/contact/del/' + localStorage.token, handle_req(temp)).then(res => {
+                if (res.success === false) {
+                    alert(res.msg);
+                    return false;
+                } else {
+                    this.data.contact.splice(index, 1);
+                }
+            });
         },
         contact_discard: function(index) {
-            this.data.contact[index] = this.curr.contact_backup;
+            if (this.data.contact[index].is_new) {
+                this.data.contact.splice(index, 1);
+            } else {
+                this.data.contact[index] = this.curr.contact_backup;
+            }
             this.curr.contact_modify = -1;
-
         },
         contact_save: function(index) {
-            this.$http.post('/contact/set/' + localStorage.token, this.data.contact[index]).then(res => {});
-            this.curr.contact_modify = -1;
+            this.data.contact[index].is_new = false;
+            this.$http.post('/contact/set/' + localStorage.token, handle_req(this.data.contact[index])).then(res => {
+                if (res.success === false) {
+                    alert(res.msg);
+                    return false;
+                } else {
+                    this.curr.contact_modify = -1;
+                }
+            });
         },
     }
 };
@@ -304,8 +324,7 @@ var router = new VueRouter({
         path: '/questions',
         component: questions,
         beforeEnter: function(to, from, next) {
-            this.app.update_questions().then(function(result) {
-            });
+            this.app.update_questions().then(function(result) {});
             if (this.app.is_xiaoban || this.app.is_zongban) {
                 this.app.$http.post('/statistics/get/' + localStorage.token).then(res => {
                     res = handle_res(res);
@@ -469,7 +488,7 @@ var app = new Vue({
         update_questions: function() {
             // TODO: split pages
             var temp = {
-                start:0,
+                start: 0,
                 number: 100,
             }
             return this.$http.post('/questions/get_all/' + localStorage.token, handle_req(temp)).then(res => {
