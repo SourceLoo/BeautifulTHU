@@ -172,8 +172,6 @@ public class SchoolController{
         JSONObject result = new JSONObject();
         result.put("token", token);
         result.put("role", usr.getRole().getRole());
-        result.put("resp_person", usr.getRole().getRespPerson());
-        result.put("mobile_phone", usr.getMobileNumber());
         return result.toString();
     }
 
@@ -261,6 +259,7 @@ public class SchoolController{
         if (null == rol){
             return invalidInputMsg;
         }
+        System.out.println(resp_person);
         boolean success = roleService.updateRole(rol.getRole(),resp_person, rol.getDisplayName());
         if (!success){
             return invalidInputMsg;
@@ -321,6 +320,7 @@ public class SchoolController{
             mem.put("resp_person", usr.getRole().getRespPerson());
             mem.put("fixed_phone", usr.getFixedNumber());
             mem.put("mobile_phone", usr.getMobileNumber());
+            System.out.println(mem.toString());
             if (flag) {
                 flag = false;
                 result = result + mem.toString();

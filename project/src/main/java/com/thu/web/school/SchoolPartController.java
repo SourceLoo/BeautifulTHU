@@ -148,10 +148,13 @@ public class SchoolPartController {
             return Erro_Role;
         List<Question> questions=null;
         if(role.equals(tuanwei)||role.equals(xiaoban)){
+            System.out.println("=== questions:tuanwei&xiaoban ===");
             questions= questionService.getAllQuestions();          //questionRepository.getQuestions();
         }else if(role.equals(zongban)){
+            System.out.println("=== questions:zongban ===");
             questions=questionService.getAllQuestionsForRole(roleService.findByRole(role));  //questionRepository.getQuestionsbyRole(roleReposiroty.findRole(role));
         }else{
+            System.out.println("=== questions:related ===");
             questions=questionService.getQuestionForRelatedRole(roleService.findByRole(role));    //questionRepository.getQuestionbyRela(roleReposiroty.findRole(role));
 //            return Erro_Role;
         }
