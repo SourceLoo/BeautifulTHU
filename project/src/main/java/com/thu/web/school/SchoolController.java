@@ -103,7 +103,7 @@ public class SchoolController{
     *
     *
     * */
-    @RequestMapping(value = "/init/get_displayname", method = RequestMethod.GET)
+    @RequestMapping(value = "/init/get_displayname", method = RequestMethod.POST)
     @ResponseBody
     public String getDisplayname() throws JSONException{
 
@@ -172,8 +172,6 @@ public class SchoolController{
         JSONObject result = new JSONObject();
         result.put("token", token);
         result.put("role", usr.getRole().getRole());
-        result.put("resp_person", usr.getRole().getRespPerson());
-        result.put("mobile_phone", usr.getMobileNumber());
         return result.toString();
     }
 
@@ -306,11 +304,9 @@ public class SchoolController{
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
 
-   @RequestMapping(value = "/contact/get/{token:.+}", method = RequestMethod.POST)
+   @RequestMapping(value = "/contact/get", method = RequestMethod.POST)
     @ResponseBody
-    public String getContact(@PathVariable String token) throws JSONException{
-       if (!checkPermissionWithoutName(token, roleTW))
-           return invalidTokenMsg;
+    public String getContact() throws JSONException{
         List<User> userList = userService.findAll();
         String result = "[";
         boolean flag = true;

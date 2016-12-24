@@ -57,9 +57,10 @@ public class RoleService {
     public boolean insertRole(String role, String respPerson, String displayName){
         Role r = roleRepository.findByRole(role);
         if (null != r){
-            return false;
+            r.setRespPerson(respPerson);
+            r.setDisplayName(displayName);
         }
-        r = new Role(role , displayName , respPerson);
+        else r = new Role(role , displayName , respPerson);
         try{
             roleRepository.save(r);
             return true;
