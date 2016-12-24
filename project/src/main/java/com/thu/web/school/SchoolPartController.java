@@ -134,9 +134,12 @@ public class SchoolPartController {
 //            'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'',
 //            'is_common_top':bool, 'reclassify_reason':'', 'created_location':'', 'likes':int}]
 //    public static Map<String,String> token_role;
-    @RequestMapping(value = "/questions/get_all/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/get_all/{token:.+}",method = RequestMethod.POST)
     public String getMainQuestions(@RequestParam(name = "start") int start,@RequestParam(name="number") int number ,@PathVariable String token){
 
+//        System.out.println(token);
+//        if(true)
+//            return "ok";
 //        token_role.containsKey()
         if(!CheckToken(token))
             return Error_Msg;
@@ -233,6 +236,7 @@ public class SchoolPartController {
                 JSONObject jo=new JSONObject();
                 jo.put("response_id",response.getResponseId());
                 jo.put("response_content",response.getResponseContent());
+                jo.put("time",response.getRespondTime().toLocalDate());
                 ja_response.add(jo);
             }
             result.put("responses",ja_response);
@@ -251,7 +255,7 @@ public class SchoolPartController {
     //主责部门获取具体问题
 //    {'opinion':'', 'pic_path':['',''],
 //        'responses':[{'response_id':'', 'response_content':''}]}
-    @RequestMapping(value = "/questions/main/get_detail/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/get_detail/{token:.+}",method = RequestMethod.POST)
     public String getMainQueDetail(@RequestParam(name="question_id") String q_id,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
@@ -291,7 +295,7 @@ public class SchoolPartController {
 
     //主责部门直接回复
     // {'success':bool, 'msg':''}
-    @RequestMapping(value = "/questions/main/response/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/response/{token:.+}",method = RequestMethod.POST)
     public String MainResponse(@RequestParam(name = "question_id") String q_id,@RequestParam("response_content") String content,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
@@ -331,7 +335,7 @@ public class SchoolPartController {
 
     //主责部门直接拒绝
     //{'success':bool, 'msg':''}
-    @RequestMapping(value = "/questions/main/reject/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/reject/{token:.+}",method = RequestMethod.POST)
     public String MainReject(@RequestParam("question_id") String q_id,@RequestParam("response_content") String content,@PathVariable String token) {
         if(!CheckToken(token))
             return Error_Msg;
@@ -350,7 +354,7 @@ public class SchoolPartController {
 
     //主责部门转发问题
     //{'success':bool, 'msg':''}
-    @RequestMapping(value = "/questions/main/forward/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/forward/{token:.+}",method = RequestMethod.POST)
     public String MainForward(@RequestParam("question_id")String q_id,@RequestParam("forward") String for_role,@PathVariable String token) {
         if(!CheckToken(token))
             return Error_Msg;
@@ -397,7 +401,7 @@ public class SchoolPartController {
 
     //主责部门的对问题分类
     //{'success':bool, 'msg':''}
-    @RequestMapping(value = "/quesitons/main/classify/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/quesitons/main/classify/{token:.+}",method = RequestMethod.POST)
     public String MainClassify(@RequestParam("question_id") String q_id,
                                @RequestParam("leader_role") String lead_role,
                                @RequestParam("other_roles") List<String> other_roles,
@@ -464,7 +468,7 @@ public class SchoolPartController {
 //    [{'question_id':'', 'created_time':'', 'deadline':'',
 //            'created_location':'', 'status':'', 'content':'', 'likes':number,
 //            'is_read':bool, 'is_common':bool, 'is_common_top':bool}]
-    @RequestMapping(value = "/questions/related/get_all/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/related/get_all/{token:.+}",method = RequestMethod.POST)
     public String getRelateQuestions(@RequestParam(name = "start") int start,@RequestParam(name="number") int number ,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
@@ -508,7 +512,7 @@ public class SchoolPartController {
     //相关部门获取具体信息
 //    {'opinion':'', 'pic_path':['',''],
 //        'responses':[{'response_id':'', 'response_content':''}]}
-    @RequestMapping(value = "/questions/related/get_detail/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/related/get_detail/{token:.+}",method = RequestMethod.POST)
     public String getRelaQueDetail(@RequestParam(name="question_id") String q_id,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
@@ -546,7 +550,7 @@ public class SchoolPartController {
 
     //相关部门申请重分类
 //    {'success':bool, 'msg':''}
-    @RequestMapping(value = "/quesitons/related/reclassify/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/quesitons/related/reclassify/{token:.+}",method = RequestMethod.POST)
     public String RelaReclassify(@RequestParam("question_id") String q_id,@RequestParam("reclassify_reason") String reason,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
@@ -580,7 +584,7 @@ public class SchoolPartController {
 
     //相关部门的回复（包括追加回复）
 //    {'success':bool, 'msg':''}
-    @RequestMapping(value = "/quesitons/related/response/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/quesitons/related/response/{token:.+}",method = RequestMethod.POST)
     public String RalaResponse(@RequestParam("question_id") String q_id,@RequestParam("response_content") String r_content,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
@@ -634,7 +638,7 @@ public class SchoolPartController {
 
     //相关部门修改回复
 //    {'success':bool, 'msg':''}
-    @RequestMapping(value = "/quesitons/related/modify_response/{token}",method = RequestMethod.POST)
+    @RequestMapping(value = "/quesitons/related/modify_response/{token:.+}",method = RequestMethod.POST)
     public String ModifyResponse(@RequestParam("question_id") String q_id,@RequestParam("response_id") String r_id,@RequestParam("response_content") String r_content,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
