@@ -14,23 +14,53 @@
     <!-- <script src="https://weui.io/weui.min.js"></script> -->
     <!-- <script src="https://weui.io/example.js"></script> -->
     <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
-.en-markup-crop-options {
-    top: 18px !important;
-    left: 50% !important;
-    margin-left: -100px !important;
-    width: 200px !important;
-    border: 2px rgba(255,255,255,.38) solid !important;
-    border-radius: 4px !important;
-}
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
 
-.en-markup-crop-options div div:first-of-type {
-    margin-left: 0px !important;
-}
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
 
-.page, body {
-    background-color: #f8f8f8;
-}
-</style>
+        .page, body {
+            background-color: #f8f8f8;
+        }
+    </style>
+    <script>
+        function clicklike(ele){
+            var liked
+            var response_id = $(ele).parent('ul').children("#response_id").text
+            if ($(ele).text == "已赞") {
+                liked = false
+            } else {
+                liked = true
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/student/question/like',
+                dataType: 'json',
+                data: {
+                    question_id : question_id,
+                    liked : liked
+                },
+                success: function(data) {
+                    if (liked == true) {
+                        $(ele).text("已赞")
+                    } else {
+                        $(ele).text("赞")
+                    }
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+        }
+    </script>
 </head>
 <body ontouchstart>
 <div class="weui-cells">
@@ -64,9 +94,24 @@
 </div>
 
 <div class="weui-grids">
-    <a href="javascript:;" class="weui-grid" th:each="pic: ${question.pics}">
-            <img style="width:100%;height:100%" th:src="${pic.path}" alt="">
-    </a>
+    <img href="javascript:;" style="
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
+    <img href="javascript:;" style="
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
+    <img href="javascript:;" style="
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
 </div>
 
 
@@ -84,8 +129,14 @@
         <section>
             <!--开始循环-->
             <section th:each="response: ${question.responses}">
-                <h3 th:text="${response.responseId} +${#temporals.format(response.respondTime, 'yyyy-MM-dd')} + ${response.responder.uname} + ${response.likes}">{回复号}{回复时间}{回复部门}{点赞数}</h3>
-
+                <h3 class="title">
+                    <ul class="weui-media-box__info">
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${response.responseId}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(response.respondTime, 'yyyy-MM-dd')}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${response.responder.uname}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${response.likes}"><a href="javascript:void(0);" onclick="clicklike(this)">{已赞/赞}</a></li>
+                    </ul>
+                </h3>
                 <p th:utext="${#strings.replace( #strings.escapeXml( response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
                     {回复内容}
                 </p>
