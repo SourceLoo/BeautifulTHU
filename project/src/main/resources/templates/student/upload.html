@@ -31,6 +31,12 @@
         }
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+    <script type="text/javascript">
+        function addPosition(ele) {
+            position = prompt("请输入地址", "")
+            $("#position").append('<option value="'+position+'">'+position+'</option>')
+        }
+    </script>
     <script type="text/javascript" class="uploader js_show">
         function getLocation2() {
             var geolocation = new BMap.Geolocation();
@@ -132,12 +138,9 @@
                     </select>
                 </div>
             </div>
-
         </div>
-
     </div>
-
-
+    <div><a href="javascript:;" onclick="addPosition(this)">没有需要的位置? 点此添加</a></div>
 </div>
 <script type="text/javascript" class="uploader js_show">
     var file_list = [];
