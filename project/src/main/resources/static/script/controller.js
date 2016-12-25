@@ -60,7 +60,8 @@ $(function(){
                                   '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
                                   '<ul class="weui-media-box__info">' +
                                   '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
-                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' + q.like_num + '</li>' +
+                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
+                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">点赞数: ' + q.like_num + '</li>' +
                                   '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
                                   '</ul>' +
                                   '</div>'
@@ -121,7 +122,8 @@ $(function(){
                                 '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
                                 '<ul class="weui-media-box__info">' +
                                 '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
-                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' + q.like_num + '</li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">点赞数: ' + q.like_num + '</li>' +
                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
                                 '</ul>' +
                                 '</div>'

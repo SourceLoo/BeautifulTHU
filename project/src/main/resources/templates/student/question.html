@@ -66,10 +66,12 @@
                 success: function(data) {
                     if (liked == true) {
                         $(ele).attr("state", "1")
-                        $(ele).text("已赞 ")
+                        $(ele).text("已赞")
+                        $(ele).parent('li').parent('ul').children('#likenum').text("点赞数: "+data.likenum)
                     } else {
                         $(ele).attr("state", "0")
-                        $(ele).text("赞 ")
+                        $(ele).text("赞")
+                        $(ele).parent('li').parent('ul').children('#likenum').text("点赞数: "+data.likenum)
                     }
                 },
                 error: function(xhr, type){
