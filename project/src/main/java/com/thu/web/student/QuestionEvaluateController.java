@@ -33,7 +33,7 @@ import java.util.Random;
 public class QuestionEvaluateController {
 
     private final String errorMsg = "{'success':false,'msg':'重复提交'}";
-    private final String successMsg = "{'success':false,'msg':'Done'}";
+    private final String successMsg = "{'success':true,'msg':'Done'}";
 
     @Autowired
     private UserRepository userRepository;

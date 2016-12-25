@@ -1,8 +1,6 @@
 package com.thu.web.student;
 
-import com.thu.domain.Question;
-import com.thu.domain.QuestionRepository;
-import com.thu.domain.Status;
+import com.thu.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +24,12 @@ public class QuestionDetailController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private HttpSession session;
 
     @GetMapping(value = "/question")
     public Object getAQuestion(@RequestParam("question_id") Long questionId, Model model, HttpServletRequest request)
@@ -58,6 +64,48 @@ public class QuestionDetailController {
         model.addAttribute("leaderRoleName", leaderRoleName);
 
         model.addAttribute("question", question);
+
+        Long userId = (Long) session.getAttribute("userId");
+        userId = new Long(1);
+        User user = userRepository.findById(userId);
+
+        List<UserResponse> userResponses = new ArrayList<>();
+        for(Response response: question.getResponses())
+        {
+            String liked = user.getLikedRespones().contains(response) ? "已赞" : "赞";
+            UserResponse userResponse = new UserResponse(liked, response);
+            userResponses.add(userResponse);
+        }
+
+        model.addAttribute("userResponses", userResponses);
+
         return "student/question_detail";
+    }
+}
+
+class UserResponse
+{
+    private String liked;
+    private Response response;
+
+    public UserResponse(String liked, Response response) {
+        this.liked = liked;
+        this.response = response;
+    }
+
+    public String getLiked() {
+        return liked;
+    }
+
+    public void setLiked(String liked) {
+        this.liked = liked;
+    }
+
+    public Response getResponse() {
+        return response;
+    }
+
+    public void setResponse(Response response) {
+        this.response = response;
     }
 }

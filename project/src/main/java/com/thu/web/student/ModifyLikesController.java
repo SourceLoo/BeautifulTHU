@@ -1,9 +1,11 @@
 package com.thu.web.student;
 
+import com.thu.domain.ResponseRepositiry;
 import com.thu.domain.User;
 import com.thu.domain.UserRepository;
 import com.thu.service.QuestionService;
 import com.thu.service.ResponseService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -35,8 +38,13 @@ public class ModifyLikesController {
     @Autowired
     private ResponseService responseService;
 
+    @Autowired
+    private ResponseRepositiry responseRepositiry;
+
     @PostMapping(value = "/question/like")
-    public ResponseEntity<?> modifyQuestionLikes(
+    //public ResponseEntity<?> modifyQuestionLikes(
+    @ResponseBody
+    public String modifyQuestionLikes(
             @RequestParam("question_id") Long questionId,
             @RequestParam("liked") boolean like
     )
@@ -48,14 +56,18 @@ public class ModifyLikesController {
         userId = new Long(1);
         User user = userRepository.findById(userId);
 
-        if(questionService.modifyQuestionLike(user, questionId, like))
-            return new ResponseEntity<>(HttpStatus.OK);
-        else
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        questionService.modifyQuestionLike(user, questionId, like);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("likenum", questionService.findById(questionId).getLikes());
+        return jsonObject.toString();
+
     }
 
     @PostMapping(value = "/response/like")
-    public ResponseEntity<?> modifyResponseLikes(
+    //public ResponseEntity<?> modifyResponseLikes(
+    @ResponseBody
+    public String modifyResponseLikes(
             @RequestParam("response_id") Long responseId,
             @RequestParam("liked") boolean like
     )
@@ -65,9 +77,10 @@ public class ModifyLikesController {
         userId = new Long(1);
         User user = userRepository.findById(userId);
 
-        if(responseService.modifyResponseLike(user, responseId, like))
-            return new ResponseEntity<>(HttpStatus.OK);
-        else
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        responseService.modifyResponseLike(user, responseId, like);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("likenum", responseRepositiry.findByResponseId(responseId).getLikes());
+        return jsonObject.toString();
     }
 }

@@ -42,10 +42,10 @@
             }
             $.ajax({
                 type: 'POST',
-                url: '/student/question/like',
+                url: '/student/response/like',
                 dataType: 'json',
                 data: {
-                    question_id : question_id,
+                    response_id : response_id,
                     liked : liked
                 },
                 success: function(data) {
@@ -128,16 +128,16 @@
         <h1>回复内容</h1>
         <section>
             <!--开始循环-->
-            <section th:each="response: ${question.responses}">
+            <section th:each="userResponse: ${userResponses}">
                 <h3 class="title">
                     <ul class="weui-media-box__info">
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${response.responseId}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(response.respondTime, 'yyyy-MM-dd')}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${response.responder.uname}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${response.likes}"><a href="javascript:void(0);" onclick="clicklike(this)">{已赞/赞}</a></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${userResponse.response.responseId}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(userResponse.response.respondTime, 'yyyy-MM-dd')}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.uname}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.likes}"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
                     </ul>
                 </h3>
-                <p th:utext="${#strings.replace( #strings.escapeXml( response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                <p th:utext="${#strings.replace( #strings.escapeXml( userResponse.response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
                     {回复内容}
                 </p>
 
