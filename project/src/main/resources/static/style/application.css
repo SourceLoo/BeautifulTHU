@@ -1,43 +1,3 @@
-svg.railroad-diagram {
-    background-color: hsl(30, 20%, 98%);
-    border-radius: 5px;
-}
-
-svg.railroad-diagram:hover {
-    background-color: hsl(30, 20%, 96%);
-}
-
-svg.railroad-diagram path,
-svg.railroad-diagram rect {
-    stroke-width: 2;
-    stroke: #333;
-}
-
-svg.railroad-diagram path {
-    fill: rgba(0, 0, 0, 0);
-}
-
-svg.railroad-diagram rect {
-    fill: hsl(120, 100%, 90%);
-}
-
-svg.railroad-diagram text {
-    font: 14px monospace;
-    text-anchor: middle;
-}
-
-svg.railroad-diagram text.label {
-    text-anchor: start;
-}
-
-svg.railroad-diagram text.comment {
-    font: italic 12px monospace;
-}
-
-svg.railroad-diagram path.arrow {
-    stroke-width: 2;
-}
-
 .thu-sidebar-header {
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
@@ -408,11 +368,6 @@ img {
  * Correct overflow displayed oddly in IE 9.
  */
 
-svg:not(:root) {
-    overflow: hidden;
-}
-
-
 /* Grouping content
    ========================================================================== */
 
@@ -782,10 +737,6 @@ input:not([type]) {
     color: #bbb;
 }
 
-svg.thu-image-button {
-    padding: 0px 1px 1px 0px;
-}
-
 kbd {
     display: inline-block;
     padding: 3px 5px;
@@ -848,7 +799,6 @@ table tfoot tr td {
 }
 
 .thu-tiddler-frame img,
-.thu-tiddler-frame svg,
 .thu-tiddler-frame canvas,
 .thu-tiddler-frame embed,
 .thu-tiddler-frame iframe {
@@ -971,7 +921,6 @@ a.thu-link-external:hover {
 
 a i,
 button img,
-label svg,
 label img {
     vertical-align: baseline;
 }
@@ -992,17 +941,9 @@ label img {
     border-radius: 0.25em;
 }
 
-html body.thu-body .thu-btn-boxed svg {
-    font-size: 1.6666em;
-}
-
 .thu-btn-boxed:hover {
     background: #bbb;
     color: #ffffff;
-}
-
-html body.thu-body .thu-btn-boxed:hover svg {
-    fill: #ffffff;
 }
 
 .thu-btn-rounded {
@@ -1016,25 +957,10 @@ html body.thu-body .thu-btn-boxed:hover svg {
     border-radius: 2em;
 }
 
-html body.thu-body .thu-btn-rounded svg {
-    font-size: 1.6666em;
-    fill: #ffffff;
-}
-
 .thu-btn-rounded:hover {
     border: 1px solid #bbb;
     background: #ffffff;
     color: #bbb;
-}
-
-html body.thu-body .thu-btn-rounded:hover svg {
-    fill: #bbb;
-}
-
-.thu-btn-icon svg {
-    height: 1em;
-    width: 1em;
-    fill: #bbb;
 }
 
 .thu-btn-text {
@@ -1055,7 +981,6 @@ html body.thu-body .thu-btn-rounded:hover svg {
     text-decoration: none;
 }
 
-.thu-btn-big-green svg,
 .thu-btn-big-green img {
     height: 2em;
     width: 2em;
@@ -1104,17 +1029,6 @@ button .thu-image-button img {
 .thu-unfold-banner:hover {
     background: #f8f8f8;
     border-top: 2px solid #dddddd;
-}
-
-.thu-unfold-banner svg,
-.thu-fold-banner svg {
-    height: 0.75em;
-    fill: #cccccc;
-}
-
-.thu-unfold-banner:hover svg,
-.thu-fold-banner:hover svg {
-    fill: #888888;
 }
 
 .thu-fold-banner {
@@ -1199,7 +1113,6 @@ button.thu-untagged-label {
     background-color: #999999;
 }
 
-.thu-tag-label svg,
 .thu-tag-label img {
     height: 1em;
     width: 1em;
@@ -1268,12 +1181,6 @@ button.thu-untagged-label {
     width: 60%;
 }
 
-.thu-search a svg {
-    width: 1.2em;
-    height: 1.2em;
-    vertical-align: middle;
-}
-
 .thu-page-controls {
     margin-top: 14px;
     font-size: 1.5em;
@@ -1289,15 +1196,6 @@ button.thu-untagged-label {
 
 .thu-page-controls img {
     width: 1em;
-}
-
-.thu-page-controls svg {
-    fill: #aaaaaa;
-}
-
-.thu-page-controls button:hover svg,
-.thu-page-controls a:hover svg {
-    fill: #000000;
 }
 
 .thu-menu-list-item {
@@ -1610,13 +1508,87 @@ html body.thu-body.thu-single-tiddler-window {
 }
 
 .thu-single-tiddler-window img,
-.thu-single-tiddler-window svg,
 .thu-single-tiddler-window canvas,
 .thu-single-tiddler-window embed,
 .thu-single-tiddler-window iframe {
     max-width: 100%;
 }
 
+.thu-tiddler-body .thu-pic-grids {
+
+}
+.thu-tiddler-body .thu-pic-grids {
+    overflow: hidden
+}
+
+.thu-tiddler-body .thu-pic-grids:before {
+    right: 0;
+    height: 1px;
+    border-top: 1px solid #d9d9d9;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5)
+}
+
+.thu-tiddler-body .thu-pic-grids:after,
+.thu-tiddler-body .thu-pic-grids:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #d9d9d9
+}
+
+.thu-tiddler-body .thu-pic-grids:after {
+    width: 1px;
+    bottom: 0;
+    border-left: 1px solid #d9d9d9;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleX(.5);
+    transform: scaleX(.5)
+}
+
+.thu-pic-grid {
+    position: relative;
+    float: left;
+    padding: 10px 10px;
+    width: 33.33333333%;
+    box-sizing: border-box
+}
+
+.thu-pic-grid:before {
+    top: 0;
+    width: 1px;
+    border-right: 1px solid #d9d9d9;
+    -webkit-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -webkit-transform: scaleX(.5);
+    transform: scaleX(.5)
+}
+
+.thu-pic-grid:after,.thu-pic-grid:before {
+    content: " ";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #d9d9d9
+}
+
+.thu-pic-grid:after {
+    left: 0;
+    height: 1px;
+    border-bottom: 1px solid #d9d9d9;
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5)
+}
+
+.thu-pic-grid:active {
+    background-color: #ececec
+}
 
 /*
 ** Editor
@@ -1708,18 +1680,6 @@ html body.thu-body.thu-single-tiddler-window {
 /*
 ** Toolbar buttons
 */
-
-.thu-page-controls svg.thu-image-new-button {
-    fill: ;
-}
-
-.thu-page-controls svg.thu-image-options-button {
-    fill: ;
-}
-
-.thu-page-controls svg.thu-image-save-button {
-    fill: ;
-}
 
 .thu-tiddler-controls a i.thu-image-info-button {
     fill: ;
@@ -1874,7 +1834,6 @@ html body.thu-body.thu-single-tiddler-window {
     text-align: left;
 }
 
-.thu-btn-dropdown svg,
 .thu-btn-dropdown img {
     height: 1em;
     width: 1em;

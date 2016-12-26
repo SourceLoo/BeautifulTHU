@@ -1,5 +1,6 @@
 package com.thu.web.school;//school;
 
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.thu.domain.*;
 import com.thu.service.*;
 import net.sf.json.JSON;
@@ -134,6 +135,12 @@ public class SchoolPartController {
 //            'is_common':bool, 'content':'', 'delay_days':number, 'delay_reason':'',
 //            'is_common_top':bool, 'reclassify_reason':'', 'created_location':'', 'likes':int}]
 //    public static Map<String,String> token_role;
+    public String Convert(Object o){
+        if(o!=null)
+            return o.toString();
+        return null;
+    }
+
     @RequestMapping(value = "/questions/get_all/{token:.+}",method = RequestMethod.POST)
     public String getMainQuestions(@RequestParam(name = "start") int start,@RequestParam(name="number") int number ,@PathVariable String token){
 
@@ -146,15 +153,12 @@ public class SchoolPartController {
         String role=getRole(token);
         if(role==null)
             return Erro_Role;
-        List<Question> questions=null;
+        List<Question> questions=new ArrayList<>();
         if(role.equals(tuanwei)||role.equals(xiaoban)){
-            System.out.println("=== questions:tuanwei&xiaoban ===");
             questions= questionService.getAllQuestions();          //questionRepository.getQuestions();
         }else if(role.equals(zongban)){
-            System.out.println("=== questions:zongban ===");
             questions=questionService.getAllQuestionsForRole(roleService.findByRole(role));  //questionRepository.getQuestionsbyRole(roleReposiroty.findRole(role));
         }else{
-            System.out.println("=== questions:related ===");
             questions=questionService.getQuestionForRelatedRole(roleService.findByRole(role));    //questionRepository.getQuestionbyRela(roleReposiroty.findRole(role));
 //            return Erro_Role;
         }
@@ -163,21 +167,22 @@ public class SchoolPartController {
         for(int i=start;i<start+number&&i<questions.size();i++){
             Question question=questions.get(i);
             JSONObject result= new JSONObject();
-            result.put("question_id",question.getQuestionId().toString());
-            result.put("created_time",question.getCreatedTime().toString());
+            result.put("question_id",this.Convert(question.getQuestionId()));
+            result.put("created_time",this.Convert(question.getCreatedTime()));//.toString());
             result.put("created_location",question.getCreatedLocation());
-            result.put("timestamp1",question.getTimestamp1().toString());
-            result.put("timestamp2",question.getTimestamp2().toString());
-            result.put("timestamp3",question.getTimestamp3().toString());
+            result.put("timestamp1",this.Convert(question.getTimestamp1()));//.toString());
+            result.put("timestamp2",this.Convert(question.getTimestamp2()));//.toString());
+            result.put("timestamp3",this.Convert(question.getTimestamp3()));//.toString());
             result.put("status",question.getStatus().ordinal());
 
 
-//            result.put("")
-            result.put("resp_role_name",question.getLeaderRole().getDisplayName());
+            //result.put("resp_role_name",question.getLeaderRole().getDisplayName());
             List<String> pic_name=new ArrayList<>();
             List<Pic> pics=question.getPics();
-            for(Pic pic:pics){
-                pic_name.add(pic.getPath());
+            if(pics!=null) {
+                for (Pic pic : pics) {
+                    pic_name.add(pic.getPath());
+                }
             }
             result.put("pic_path",pic_name);
 
@@ -214,7 +219,7 @@ public class SchoolPartController {
 
             result.put("title",question.getTitle());
             result.put("content",question.getContent());
-            result.put("deadline",question.getDdl().toString());
+            result.put("deadline",this.Convert(question.getDdl()));//.toString());
 
             result.put("likes",question.getLikes());
             result.put("opinion",question.getInstruction());
@@ -235,12 +240,15 @@ public class SchoolPartController {
             result.put("student_score",score);
             result.put("student_comment",question.getEvaluationDetail());
             JSONArray ja_response=new JSONArray();
-            for(Response response:question.getResponses()){
-                JSONObject jo=new JSONObject();
-                jo.put("response_id",response.getResponseId());
-                jo.put("response_content",response.getResponseContent());
-                jo.put("time",response.getRespondTime().toLocalDate());
-                ja_response.add(jo);
+            List<Response> null_responses=question.getResponses();
+            if(null_responses!=null) {
+                for (Response response : null_responses) {
+                    JSONObject jo = new JSONObject();
+                    jo.put("response_id", response.getResponseId());
+                    jo.put("response_content", response.getResponseContent());
+                    jo.put("time", response.getRespondTime().toLocalDate());
+                    ja_response.add(jo);
+                }
             }
             result.put("responses",ja_response);
             ja.add(result);
