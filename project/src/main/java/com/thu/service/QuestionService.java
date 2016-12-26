@@ -2,6 +2,7 @@ package com.thu.service;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.thu.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,8 +12,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -188,7 +191,7 @@ public class QuestionService {
     }
 
 
-    private Pageable makeBuilderAndPageable(BooleanBuilder booleanBuilder, String searchKey, boolean isCommon, int pageNum, int pageSize, String orderType) {
+    private Pageable makeBuilderAndPageable(BooleanBuilder booleanBuilder, String searchKey, boolean isCommon, int pageNum, int pageSize, List<String> orders) {
         QQuestion question = QQuestion.question;
         if (isCommon) {
             booleanBuilder.and(question.isCommon.eq(Boolean.TRUE));
@@ -196,40 +199,77 @@ public class QuestionService {
         if (!searchKey.isEmpty()) {
             booleanBuilder.and(question.title.contains(searchKey).or(question.content.contains(searchKey)));
         }
-        // TODO: 16/12/10 orderType validation
-        Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, orderType));
+        // TODO: 16/12/10 orders validation
+        //Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, orders)); modified by luyq
+        Sort sort = new Sort(Sort.Direction.DESC, orders);
+        System.out.println(orders);
         return new PageRequest(pageNum, pageSize, sort);
     }
 
-    public Page<Question> findByState(Integer pageNum, Integer pageSize, Status state, String orderType, String searchKey, boolean isCommon)
-    {
-        QQuestion question = QQuestion.question;
-        BooleanBuilder booleanBuilder = new BooleanBuilder(question.status.eq(state));
-        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
-        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
-    }
-
-    public Page<Question> findByDepart(Integer pageNum, Integer pageSize, String Depart, String orderType, String searchKey, boolean isCommon)
-    {
-        QQuestion question = QQuestion.question;
-        BooleanBuilder booleanBuilder = new BooleanBuilder(question.leaderRole.role.eq(Depart));
-        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
-        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
-    }
-
-    public Page<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, String orderType, String searchKey, boolean isCommon)
-    {
-        QQuestion question = QQuestion.question;
-        BooleanBuilder booleanBuilder = new BooleanBuilder(question.user.id.eq(userId));
-        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
-        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
-    }
-
-    public Page<Question> findAll(Integer pageNum, Integer pageSize, String orderType, String searchKey, boolean isCommon)
+    // add by luyq
+    public Page<Question> filterQuestions(Integer pageNum, Integer pageSize, List<Status> statuses, String depart, String searchKey, boolean isCommon, Long userId, List<String> orders)
     {
         QQuestion question = QQuestion.question;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orderType);
+        if(statuses != null){
+            for (Status status: statuses)
+            {
+                booleanBuilder.or(question.status.eq(status));
+            }
+        }
+        if(depart != null){
+            booleanBuilder.and(question.leaderRole.displayName.eq(depart));
+        }
+        if (searchKey != null) {
+            booleanBuilder.and(question.title.contains(searchKey).or(question.content.contains(searchKey)));
+        }
+        if (isCommon) {
+            booleanBuilder.and(question.isCommon.eq(Boolean.TRUE));
+        }
+        if( userId != null){
+            booleanBuilder.and(question.user.id.eq(userId));
+        }
+        System.out.println(booleanBuilder);
+        System.out.println(pageNum);
+        System.out.println(pageSize);
+
+        // orders 定不为空
+        Sort sort = new Sort(Sort.Direction.DESC, orders);
+        // System.out.println(orders);
+        Pageable pageable = new PageRequest(pageNum, pageSize, sort);
+
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
+    }
+
+    public Page<Question> findByState(Integer pageNum, Integer pageSize, Status state, List<String> orders, String searchKey, boolean isCommon)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.status.eq(state));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
+    }
+
+    public Page<Question> findByDepart(Integer pageNum, Integer pageSize, String Depart, List<String> orders, String searchKey, boolean isCommon)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.leaderRole.role.eq(Depart));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
+    }
+
+    public Page<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, List<String> orders, String searchKey, boolean isCommon)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.user.id.eq(userId));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
+    }
+
+    public Page<Question> findAll(Integer pageNum, Integer pageSize, List<String> orders, String searchKey, boolean isCommon)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
         return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
@@ -257,7 +297,7 @@ public class QuestionService {
     public boolean saveStudentResponse(Long questionId, EvaluationType evaluationType, String evaluationDetail)
     {
         Question question = findById(questionId);
-        if (question == null) {
+        if (question == null || question.getEvaluationType() != null) {
             return false;
         }
         question.setEvaluationType(evaluationType);
