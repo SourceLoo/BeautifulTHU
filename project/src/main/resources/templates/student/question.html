@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>WeUI</title>
     <!-- 引入 WeUI -->
-    <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css"/>
+    <link rel="stylesheet" href="/style/weui.css"/>
     <script src="/script/zepto.min.js"></script>
     <script src="/script/updown.js"></script>
     <script>
@@ -94,10 +94,30 @@
         .en-markup-crop-options div div:first-of-type {
             margin-left: 0px !important;
         }
+    </style>
+    <style>
 
-        .page, body {
-            background-color: #f8f8f8;
+        .weui-cell {
+            position: relative;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            float: left;
+            width: 25%;
         }
+
+        .weui-cell_select-after {
+            padding-left: 0px;
+        }
+
+        .weui-cell_select-after .weui-select {
+            padding-left: 10px;
+            font-size: small;
+        }
+
     </style>
 </head>
 <body ontouchstart>
@@ -180,9 +200,6 @@
 <div class="page__bd page__bd_spacing">
     <div class="weui-cells">
         <div class="weui-cell weui-cell_select weui-cell_select-after">
-            <div class="weui-cell__hd">
-                <label for="" class="weui-label">当前状态</label>
-            </div>
             <div class="weui-cell__bd">
                 <select class="weui-select" id="status">
                     <option value="all">所有状态</option>
@@ -190,9 +207,6 @@
             </div>
         </div>
         <div class="weui-cell weui-cell_select weui-cell_select-after">
-            <div class="weui-cell__hd">
-                <label for="" class="weui-label">所属部门</label>
-            </div>
             <div class="weui-cell__bd">
                 <select class="weui-select" id="dept">
                     <option value="all">所有部门</option>
@@ -200,20 +214,15 @@
             </div>
         </div>
         <div class="weui-cell weui-cell_select weui-cell_select-after">
-            <div class="weui-cell__hd">
-                <label for="" class="weui-label">排序方式</label>
-            </div>
             <div class="weui-cell__bd">
                 <select class="weui-select" id="order">
-                    <option value="time" selected="selected">提问时间</option>
+                    <option value="none" selected="selected">不排序</option>
+                    <option value="time">提问时间</option>
                     <option value="likenum">附议数量</option>
                 </select>
             </div>
         </div>
         <div class="weui-cell weui-cell_select weui-cell_select-after">
-            <div class="weui-cell__hd">
-                <label for="" class="weui-label">问题类别</label>
-            </div>
             <div class="weui-cell__bd">
                 <select class="weui-select" id="type">
                     <option value="all">所有问题</option>
