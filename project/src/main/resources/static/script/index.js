@@ -86,6 +86,41 @@ const questions = {
         question_is_show: function(status, is_common, role) {
             return (this.curr.question_filter == -1 || this.curr.question_filter == status) && (!this.filter_common || is_common) && (this.filter_statistics == '' || role.indexOf(this.filter_statistics) != -1);
         },
+        question_is_urgent: function(question) {
+            return ([3,6,7].indexOf(question.status) == -1) && (question.resp_role.indexOf(this.curr.role) != -1)
+        },
+        _seconds: function(date) {
+        return ((date - this.curr.time) % 60).toString() + '秒';
+        },
+        _minutes: function(date) {
+        return (Math.trunc((date - this.curr.time) / 60) % 60).toString() + '分';
+        },
+        _hours: function(date) {
+        return (Math.trunc((date - this.curr.time) / 60 / 60) % 24).toString() + '小时';
+        },
+        _days: function(date) {
+        return (Math.trunc((date - this.curr.time) / 60 / 60 / 24)).toString() + '天';
+        },
+        question_count_down: function(question) {
+            var ddl;
+            if ([0].indexOf(question.status)) {
+                ddl = new Date(question.created_time);
+                ddl.setHours(ddl.getHours() + 2);
+                ddl = Math.trunc(ddl.getTime() / 1000);
+            }
+            if ([1,4,5].indexOf(question.status)) {
+                ddl = new Date(question.timestamp);
+                ddl.setHours(ddl.getHours() + 2);
+                ddl = Math.trunc(ddl.getTime() / 1000);
+            }
+            if (question.status == 2) {
+                ddl = new Date(question.deadline);
+                ddl = Math.trunc(ddl.getTime() / 1000);
+            }
+            console.log(ddl);
+            console.log(this.curr.time);
+            return this._days(ddl) + this._hours(ddl) + this._minutes(ddl) + this._seconds(ddl);
+        },
         question_filter: function(status) {
             if (this.curr.question_filter == status) {
                 this.curr.question_filter = -1;
@@ -371,7 +406,7 @@ var app = new Vue({
         });
     },
     ready: function() {
-        window.setInterval(function() {
+        window.setInterval(() => {
             this.curr.time = Math.trunc((new Date()).getTime() / 1000);
         }, 1000);
     },
