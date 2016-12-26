@@ -51,6 +51,12 @@ public class Question {
 
     protected Question() {}
 
+    // lyqtest
+    public Question(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
     public Question(String title, String content, User user, String createdLocation, List<String> picPaths) {
         this.title = title;
         this.content = content;
@@ -59,6 +65,7 @@ public class Question {
         for (String path: picPaths) {
             pics.add(new Pic(path));
         }
+        //this.responses.add(new Response("回复1"));
     }
 
     public Long getQuestionId() {
@@ -266,7 +273,7 @@ public class Question {
     }
 
     public void addResponse(Response response) {
-        this.responses.add(response);
+        this.getResponses().add(response);
     }
 
     public Status getStatus() {

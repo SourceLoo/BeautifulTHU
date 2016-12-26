@@ -40,6 +40,7 @@ public class ResponseService {
         }
     }
 
+    // modified by luyq
     @Transactional
     public boolean modifyResponseLike(User user, Long responseId, boolean op)
     {
@@ -58,6 +59,9 @@ public class ResponseService {
         else {
             // cancel vote
             if (!user.getLikedRespones().contains(response))
+            {
+                return  false;
+            }
             response.decrementLikes();
             user.getLikedRespones().remove(response);
         }

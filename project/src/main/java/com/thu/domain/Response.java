@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Response {
     @Id
+    @GeneratedValue
     private Long responseId;
     private String responseContent;
     @ManyToOne

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>WeUI</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css"/>
+    <script src="/script/zepto.min.js"></script>
+    <script src="/script/updown.js"></script>
+    <script>
+    $(document).ready(function(){
+        $.ajax({
+                type: 'GET',
+                url: '/student/getDept/all/',
+                dataType: 'json',
+                data: {},
+                success: function(data){
+                    var result = '';
+                    result+='<option value="all">所有部门</option>';
+                    for(var i = 0; i < data.dept_list.length; i++){
+                        result+='<option value="'+data.dept_list[i].name+'">'+data.dept_list[i].name+'</option>';
+                    }
+                    $('#dept').html(result);
+                    // alert(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+        $.ajax({
+                type: 'GET',
+                url: '/student/getStatus/all',
+                dataType: 'json',
+                data: {},
+                success: function(data){
+                    var result = '';
+                    result+='<option value="all">所有状态</option>';
+                    for(var i = 0; i < data.status_list.length; i++){
+                        result+='<option value="'+data.status_list[i].name+'">'+data.status_list[i].name+'</option>';
+                    }
+                    $('#status').html(result);
+                    // alert(result);
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+    });
+    function clicklike(ele){
+            var liked
+            var question_id = $(ele).attr('question_id')
+            if ($(ele).attr('state') == "1") {
+                liked = false
+            } else {
+                liked = true
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/student/question/like',
+                dataType: 'json',
+                data: {
+                    question_id : question_id,
+                    liked : liked
+                },
+                success: function(data) {
+                    if (liked == true) {
+                        $(ele).attr("state", "1")
+                        $(ele).text("已赞 ")
+                    } else {
+                        $(ele).attr("state", "0")
+                        $(ele).text("赞 ")
+                    }
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+        }
+    </script>
+    <script src="/script/controller.js"></script>
+    <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
+
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
+
+        .page, body {
+            background-color: #f8f8f8;
+        }
+    </style>
+</head>
+<body ontouchstart>
+<div class="page__bd">
+    <!-- <a href="javascript:;" class="weui-btn weui-btn_primary">点击展现searchBar</a> -->
+    <div class="weui-search-bar" id="searchBar">
+        <form class="weui-search-bar__form">
+            <div class="weui-search-bar__box">
+                <i class="weui-icon-search"></i>
+                <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
+                <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+            </div>
+            <label class="weui-search-bar__label" id="searchText" style="transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">
+                <i class="weui-icon-search"></i>
+                <span>搜索</span>
+            </label>
+        </form>
+        <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+    </div>
+    <div class="weui-cells searchbar-result" id="searchResult" style="display: none;">
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>实时搜索文本</p>
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_access">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>实时搜索文本</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" class="searchbar js_show">
+    $(function(){
+        var $searchBar = $('#searchBar'),
+            $searchResult = $('#searchResult'),
+            $searchText = $('#searchText'),
+            $searchInput = $('#searchInput'),
+            $searchClear = $('#searchClear'),
+            $searchCancel = $('#searchCancel');
+
+        function hideSearchResult(){
+            $searchResult.hide();
+            $searchInput.val('');
+        }
+        function cancelSearch(){
+            hideSearchResult();
+            $searchBar.removeClass('weui-search-bar_focusing');
+            $searchText.show();
+        }
+
+        $searchText.on('click', function(){
+            $searchBar.addClass('weui-search-bar_focusing');
+            $searchInput.focus();
+        });
+
+        $searchInput
+            .on('blur', function () {
+                if(!this.value.length) cancelSearch();
+            })
+            .on('input', function() {
+                if(this.value.length) {
+                    $searchResult.show();
+                } else {
+                    $searchResult.hide();
+                }
+            });
+
+        $searchClear.on('click', function(){
+            hideSearchResult();
+            $searchInput.focus();
+        });
+
+        $searchCancel.on('click', function(){
+            cancelSearch();
+            $searchInput.blur();
+        });
+
+    });</script>
+<div class="page__bd page__bd_spacing">
+    <div class="weui-cells">
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">当前状态</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="status">
+                    <option value="all">所有状态</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">所属部门</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="dept">
+                    <option value="all">所有部门</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">排序方式</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="order">
+                    <option value="time" selected="selected">提问时间</option>
+                    <option value="likenum">附议数量</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">问题类别</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" id="type">
+                    <option value="all">所有问题</option>
+                    <option value="qa">常见问题Q&A</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="weui_panel weui_panel_access" >
+    <div class="weui_panel_bd">
+
+    </div>
+</div>
+<!-- 使用 -->
+</body>
+</html>
