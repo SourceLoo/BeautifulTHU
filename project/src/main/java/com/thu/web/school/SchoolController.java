@@ -303,6 +303,44 @@ public class SchoolController{
     * no param
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
+    @RequestMapping(value = "/contact/get/{token:.+}", method = RequestMethod.POST)
+    @ResponseBody
+    public String getContact(@PathVariable String token) throws JSONException{
+        if (!checkPermissionWithoutName( token, roleALL))
+            return invalidTokenMsg;
+        String tokenRole;
+        try{
+            Claims claims = jwtService.parseToken(token);
+            tokenRole = claims.get("role").toString();
+        }
+        catch (final Exception e){
+            return invalidTokenMsg;
+        }
+        List<User> userList = userService.findAll();
+        String result = "[";
+        boolean flag = true;
+        for (User usr:userList) {
+            JSONObject mem = new JSONObject();
+            mem.put("display_name", usr.getRole().getDisplayName());
+            if (tokenRole.equals(roleTW))
+            {
+                mem.put("uname", usr.getUname());
+            }
+            mem.put("resp_person", usr.getRole().getRespPerson());
+            mem.put("fixed_phone", usr.getFixedNumber());
+            mem.put("mobile_phone", usr.getMobileNumber());
+            if (flag) {
+                flag = false;
+                result = result + mem.toString();
+            }else{
+                result = result + ',' + mem.toString();
+            }
+        }
+        result = result + "]";
+        return result;
+    }
+
+
 
    @RequestMapping(value = "/contact/get", method = RequestMethod.POST)
     @ResponseBody
@@ -313,7 +351,6 @@ public class SchoolController{
         for (User usr:userList) {
             JSONObject mem = new JSONObject();
             mem.put("display_name", usr.getRole().getDisplayName());
-            mem.put("uname", usr.getUname());
             mem.put("resp_person", usr.getRole().getRespPerson());
             mem.put("fixed_phone", usr.getFixedNumber());
             mem.put("mobile_phone", usr.getMobileNumber());
