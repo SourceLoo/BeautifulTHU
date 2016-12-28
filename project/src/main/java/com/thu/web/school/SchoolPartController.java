@@ -176,7 +176,8 @@ public class SchoolPartController {
             result.put("status",question.getStatus().ordinal());
 
 
-            //result.put("resp_role_name",question.getLeaderRole().getDisplayName());
+//            result.put("")
+//            result.put("resp_role_name",question.getLeaderRole().getDisplayName());
             List<String> pic_name=new ArrayList<>();
             List<Pic> pics=question.getPics();
             if(pics!=null) {
@@ -189,19 +190,21 @@ public class SchoolPartController {
             List<String> role_role=new ArrayList<>();
             List<String> role_res_name=new ArrayList<>();
 
-            if((question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
+            if(question.getTransferRole()==null||question.getStatus() ==Status.UNAPPROVED||(question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
             {
                 role_role.add(tuanwei);
                 role_res_name.add(roleService.findByRole(tuanwei).getDisplayName());
+            }else if ((role.equals(zongban)||role.equals(xiaoban))&&question.getStatus()==Status.UNCLASSIFIED){
+                Role forward_role=question.getTransferRole();
+                if(forward_role.getRole().equals(role)) {
+                    role_res_name.add(forward_role.getDisplayName());
+                    role_role.add(forward_role.getRole());
+                }
             }
             Role lead_role=question.getLeaderRole();
             if(lead_role!=null){
                 role_res_name.add(lead_role.getDisplayName());
                 role_role.add(lead_role.getRole());
-            }else if (role.equals(zongban)){
-                Role forward_role=question.getTransferRole();
-                role_res_name.add(forward_role.getDisplayName());
-                role_role.add(forward_role.getRole());
             }
 //            role_role.add(lead_role.);
             List<Role> other_roles=question.getOtherRoles();
