@@ -120,7 +120,7 @@
                 detail: $("textarea").val()
             },
             success: function() {
-                window.location("/student/question/evaluate_success")
+                window.location.href="/student/question/evaluate_success"
             },
             error: function(xhr, type) {
                 alert('不能重复评价');

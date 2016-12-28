@@ -32,8 +32,8 @@ import java.util.Random;
 @RequestMapping("/student")
 public class QuestionEvaluateController {
 
-    private final String errorMsg = "{'success':false,'msg':'重复提交'}";
-    private final String successMsg = "{'success':true,'msg':'Done'}";
+    private final String errorMsg = "{\"success\":false,\"msg\":\"重复提交\"}";
+    private final String successMsg = "{\"success\":true,\"msg\":\"Done\"}";
 
     @Autowired
     private UserRepository userRepository;
