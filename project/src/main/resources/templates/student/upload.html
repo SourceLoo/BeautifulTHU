@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>WeUI</title>
     <!-- 引入 WeUI -->
-    <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css"/>
+    <link rel="stylesheet" href="/style/weui.css"/>
     <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
     <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -29,6 +29,48 @@
         .page, body {
             background-color: #f8f8f8;
         }
+    </style>
+    <style>
+        .page__hd {
+            padding: 0px;
+        }
+
+        .page__bd_spacing {
+            padding: 0 15px;
+        }
+
+        .page__ft.j_bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .page__ft {
+           padding-top: 40px;
+           padding-bottom: 10px;
+           text-align: center;
+        }
+
+        .page.js_show {
+            opacity: 1;
+        }
+
+        .page {
+           overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .container, .page {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
     <script type="text/javascript">
@@ -65,82 +107,114 @@
 
     </script>
 </head>
+
 <body ontouchstart>
-<div class="page__bd">
-    <div class="weui-gallery" id="gallery">
-        <span class="weui-gallery__img" id="galleryImg"></span>
-        <div class="weui-gallery__opr">
-            <a href="javascript:" class="weui-gallery__del">
-                <i class="weui-icon-delete weui-icon_gallery-delete"></i>
-            </a>
-        </div>
+<div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg"></span>
+    <div class="weui-gallery__opr">
+        <a href="javascript:" class="weui-gallery__del">
+            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+        </a>
     </div>
-
-    <div class="weui-cells weui-cells_form">
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <div class="weui-uploader">
-                    <div class="weui-uploader__hd">
-                        <p class="weui-uploader__title">图片上传</p>
-                        <!--<div class="weui-uploader__info">0/2</div>-->
-                    </div>
-                    <div class="weui-uploader__bd">
-                        <ul class="weui-uploader__files" id="uploaderFiles">
-                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
-                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
-                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
-                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
-                                <!--<div class="weui-uploader__file-content">-->
-                                    <!--<i class="weui-icon-warn"></i>-->
-                                <!--</div>-->
-                            <!--</li>-->
-                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
-                                <!--<div class="weui-uploader__file-content">50%</div>-->
-                            <!--</li>-->
-                        </ul>
-                        <div class="weui-uploader__input-box">
-                            <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="multiple">
+</div>
+<div class="container" id="container"><div class="page tabbar js_show">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+            <div class="weui-tab__panel">
+                <div class="page__hd">
+                    <h1 class="page__title">
+                        <img src="./images/logo.png" alt="WeUI" height="21px">
+                    </h1>
+                </div>
+                <div class="page__bd">
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <div class="weui-uploader">
+                                    <div class="weui-uploader__hd">
+                                        <p class="weui-uploader__title">图片上传</p>
+                                        <p><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" id="showTooltips">确定</a> </p>
+                                        <!--<div class="weui-uploader__info">0/2</div>-->
+                                    </div>
+                                    <div class="weui-uploader__bd">
+                                        <ul class="weui-uploader__files" id="uploaderFiles">
+                                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
+                                            <!--<div class="weui-uploader__file-content">-->
+                                            <!--<i class="weui-icon-warn"></i>-->
+                                            <!--</div>-->
+                                            <!--</li>-->
+                                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
+                                            <!--<div class="weui-uploader__file-content">50%</div>-->
+                                            <!--</li>-->
+                                        </ul>
+                                        <div class="weui-uploader__input-box">
+                                            <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="multiple">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
+                            <div class="weui-cells__title">问题标题</div>
+                            <div class="weui-cells">
+                                <div class="weui-cell">
+                                    <div class="weui-cell__bd">
+                                        <input name="title" id="title" class="weui-input" type="text" placeholder="请输入文本">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weui-cells__title">问题详情</div>
+                            <div class="weui-cells weui-cells_form">
+                                <div class="weui-cell">
+                                    <div class="weui-cell__bd">
+                                        <textarea name="content" id="content" class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weui-cell weui-cell_select weui-cell_select-after">
+                                <div class="weui-cell__hd">
+                                    <label for="" class="weui-label">当前定位</label>
+                                </div>
+                                <div class="weui-cell__bd">
+                                    <select class="weui-select" id="position" name="position">
+                                        <option value="none">没有位置信息</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <div><a href="javascript:;" onclick="addPosition(this)">没有需要的位置? 点此添加</a></div>
                 </div>
             </div>
-        </div>
-
-
-        <div class="page__bd">
-
-            <div class="weui-cells__title">问题标题</div>
-            <div class="weui-cells">
-                <div class="weui-cell">
-                    <div class="weui-cell__bd">
-                        <input name="title" id="title" class="weui-input" type="text" placeholder="请输入文本">
-                    </div>
-                </div>
-            </div>
-
-            <div class="weui-cells__title">问题详情</div>
-            <div class="weui-cells weui-cells_form">
-                <div class="weui-cell">
-                    <div class="weui-cell__bd">
-                        <textarea name="content" id="content" class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
-                        <div class="weui-textarea-counter"><span>0</span>/200</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="weui-cell weui-cell_select weui-cell_select-after">
-                <div class="weui-cell__hd">
-                    <label for="" class="weui-label">当前定位</label>
-                </div>
-                <div class="weui-cell__bd">
-                    <select class="weui-select" id="position" name="position">
-                        <option value="none">没有位置信息</option>
-                    </select>
-                </div>
+            <div class="weui-tabbar">
+                <a href="/student/question/list" class="weui-tabbar__item">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_form.png" alt="" class="weui-tabbar__icon">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">问题</p>
+                </a>
+                <a href="/student/question/upload" class="weui-tabbar__item weui-bar__item_on">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_nav.png" alt="" class="weui-tabbar__icon">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">创建问题</p>
+                </a>
+                <a href="/student/question/homepage" class="weui-tabbar__item">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_layout.png" alt="" class="weui-tabbar__icon">
+                        <span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>
+                    </span>
+                    <p class="weui-tabbar__label">我</p>
+                </a>
             </div>
         </div>
     </div>
-    <div><a href="javascript:;" onclick="addPosition(this)">没有需要的位置? 点此添加</a></div>
 </div>
 <script type="text/javascript" class="uploader js_show">
     var file_list = [];
@@ -194,17 +268,27 @@
                 //fd.append(file_list[i].name, file_list[i]);
                 fd.append("uploadfiles", file_list[i]);
             }
-            fd.append("title", $("#title").val())
-            fd.append("content", $("#content").val())
-            fd.append("location", $("#position option:selected").val())
 
-            xhr = new XMLHttpRequest();
-            xhr.upload.addEventListener("progress", uploadProgress, false);
-            xhr.addEventListener("load", uploadComplete, false);
-            xhr.addEventListener("error", uploadFailed, false);
-            xhr.addEventListener("abort", uploadCanceled, false);
-            xhr.open("POST", "/student/question/upload"); //修改成自己的接口
-            xhr.send(fd);
+            var title = $("#title").val();
+            var content = $("#content").val();
+            var position = $("#position option:selected").val()
+            if (title.length) {
+                alert("请输入问题标题");
+            } else if (content.length) {
+                alert("请输入问题内容");
+            } else {
+                fd.append("title", title)
+                fd.append("content", content)
+                fd.append("location", position)
+
+                xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener("progress", uploadProgress, false);
+                xhr.addEventListener("load", uploadComplete, false);
+                xhr.addEventListener("error", uploadFailed, false);
+                xhr.addEventListener("abort", uploadCanceled, false);
+                xhr.open("POST", "/student/question/upload"); //修改成自己的接口
+                xhr.send(fd);
+            }
         }
         function cancelFile() {
             xhr.abort();
@@ -255,6 +339,12 @@
         });
 
     });</script>
+    <script type="text/javascript" class="tabbar js_show">
+    $(function(){
+        $('.weui-tabbar__item').on('click', function () {
+            $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        });
+    });</script>
 <!--<div class="page__bd">
 
     <div class="weui-cells__title">问题标题</div>
@@ -283,9 +373,6 @@
         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
     </ul>
 </div>-->
-<div class="weui-btn-area">
-    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
-</div>
 <!-- 使用 -->
 </body>
 </html>
