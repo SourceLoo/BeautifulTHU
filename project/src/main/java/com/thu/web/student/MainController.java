@@ -14,13 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/student/question")
 public class MainController {
 
-//    @GetMapping(value = "/lyqtest")
-//    public String getMyTest(HttpServletRequest request)
-//    {
-//        // System.out.println(request.getSession().getServletContext().getRealPath("/image"));
-//        return "lyqtest";
-//    }
-
     @GetMapping("/list")
     public String getQuestion()
     {
@@ -42,8 +35,6 @@ public class MainController {
     @GetMapping("/evaluate_success")
     public String getEvaluate_success()
     {
-        System.out.println("test lyq");
-
         return  "student/evaluate_success";
     }
 
