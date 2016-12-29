@@ -43,7 +43,6 @@ public class QuestionEvaluateController {
 
 
     @PostMapping(value = "/question/evaluate")
-    //public ResponseEntity<?> evaluate(
     @ResponseBody
     public String evaluate(
             @RequestParam("question_id") Long questionId,
@@ -63,21 +62,18 @@ public class QuestionEvaluateController {
         if(evaluationType == null)
         {
             return errorMsg;
-            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         if(questionService.saveStudentResponse(questionId, evaluationType, detail) == false)
         {
             return errorMsg;
-            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         System.out.println(questionId);
         System.out.println(evaluation);
         System.out.println(detail);
 
-        //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        //return new ResponseEntity<>(HttpStatus.OK);
+
         return successMsg;
     }
 

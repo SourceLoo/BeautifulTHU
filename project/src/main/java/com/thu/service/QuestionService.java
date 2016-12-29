@@ -64,7 +64,13 @@ public class QuestionService {
         }
         try {
             question.addResponse(response);
-            question.setStatus(Status.SOLVED);
+
+            // modified by luyq 第一次回复 设置为解决中
+            if(question.getResponses().size() == 1)
+            {
+                question.setStatus(Status.SOLVING);
+            }
+
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
@@ -78,7 +84,9 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
-        question.setStatus(Status.UNAPPROVED);
+
+        // luyq
+        question.setStatus(Status.INVALID);
         question.setRejectReason(rejectReason);
         try {
             questionRepository.save(question);
@@ -206,7 +214,7 @@ public class QuestionService {
     }
 
     // add by luyq
-    public Page<Question> filterQuestions(Integer pageNum, Integer pageSize, List<Status> statuses, String depart, String searchKey, boolean isCommon, Long userId, List<String> orders)
+    public Page<Question> filterQuestions(Integer pageNum, Integer pageSize, List<Status> statuses, String depart, String searchKey, boolean isCommon, List<String> orders)
     {
         QQuestion question = QQuestion.question;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
@@ -225,9 +233,6 @@ public class QuestionService {
         if (isCommon) {
             booleanBuilder.and(question.isCommon.eq(Boolean.TRUE));
         }
-        if( userId != null){
-            booleanBuilder.and(question.user.id.eq(userId));
-        }
         System.out.println(booleanBuilder);
         System.out.println(pageNum);
         System.out.println(pageSize);
@@ -237,6 +242,23 @@ public class QuestionService {
         // System.out.println(orders);
         Pageable pageable = new PageRequest(pageNum, pageSize, sort);
 
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
+    }
+
+    // add by luyq
+    public Page<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, List<String> orders)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(question.user.id.eq(userId));
+
+        System.out.println(booleanBuilder);
+        System.out.println(pageNum);
+        System.out.println(pageSize);
+
+        // orders 定不为空
+        Sort sort = new Sort(Sort.Direction.DESC, orders);
+        Pageable pageable = new PageRequest(pageNum, pageSize, sort);
         return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
@@ -252,14 +274,6 @@ public class QuestionService {
     {
         QQuestion question = QQuestion.question;
         BooleanBuilder booleanBuilder = new BooleanBuilder(question.leaderRole.role.eq(Depart));
-        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
-        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
-    }
-
-    public Page<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, List<String> orders, String searchKey, boolean isCommon)
-    {
-        QQuestion question = QQuestion.question;
-        BooleanBuilder booleanBuilder = new BooleanBuilder(question.user.id.eq(userId));
         Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
         return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
@@ -293,12 +307,17 @@ public class QuestionService {
         }
     }
 
+
     public boolean saveStudentResponse(Long questionId, EvaluationType evaluationType, String evaluationDetail)
     {
         Question question = findById(questionId);
         if (question == null || question.getEvaluationType() != null) {
             return false;
         }
+
+        // add by luyq
+        question.setStatus(Status.SOLVED);
+
         question.setEvaluationType(evaluationType);
         question.setEvaluationDetail(evaluationDetail);
         try {
@@ -332,6 +351,34 @@ public class QuestionService {
         }
         try {
             questionRepository.save(question);
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // add by luyq 当op为真，增加user未读的question
+    @Transactional
+    public boolean modifyUnreadQuestions(User user, Long questionId, boolean op)
+    {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        if (op) {
+            if (user.getUnreadQuestions().contains(question)) {
+                return false;
+            }
+            user.getUnreadQuestions().add(question);
+        }
+        else {
+            if (!user.getUnreadQuestions().contains(question)) {
+                return false;
+            }
+            user.getUnreadQuestions().remove(question);
+        }
+        try {
             userRepository.save(user);
             return true;
         } catch (Exception e) {

@@ -70,6 +70,9 @@ public class Initialization implements CommandLineRunner {
         paths.add("/upload/image/20161214194625_1617113213.jpg");
 
 
+        Response response1= new Response("老师甲的回复\n\n回复第2行", t1);
+        Response response2= new Response("老师乙的回复", t2);
+
         Question question;
 
         questionService.saveQuestion(s1, "这是标题1", "这是内容1\n\n测试1", "这是清华大学", paths);
@@ -89,6 +92,7 @@ public class Initialization implements CommandLineRunner {
         question = questionService.findById(2L);
         question.setLeaderRole(roleService.findByRole("zongban"));
         question.setLikes(2L);
+        question.setStatus(Status.UNCLASSIFIED);
         questionRepository.save(question);
 
         question = questionService.findById(3L);
@@ -96,12 +100,14 @@ public class Initialization implements CommandLineRunner {
         question.setCommon(true);
         question.setDdl(LocalDateTime.now().plusDays(2));
         question.setLikes(6L);
+        question.setStatus(Status.UNSOLVED);
         questionRepository.save(question);
 
         question = questionService.findById(4L);
         question.setLeaderRole(roleService.findByRole("xiaoban"));
         question.setDdl(LocalDateTime.now().plusDays(4));
         question.setLikes(4L);
+
         questionRepository.save(question);
 
 
@@ -109,6 +115,7 @@ public class Initialization implements CommandLineRunner {
         question.setCommon(true);
         question.setLeaderRole(roleService.findByRole("tuanwei"));
         question.setLikes(3L);
+
         questionRepository.save(question);
 
 
@@ -116,17 +123,13 @@ public class Initialization implements CommandLineRunner {
         question.setCommon(true);
         question.setLeaderRole(roleService.findByRole("tuanwei"));
         question.setLikes(0L);
+        question.setStatus(Status.INVALID);
+        question.setRejectReason("问题不在处理范围");
         questionRepository.save(question);
 
-        Response response1= new Response("老师甲的回复\n\n回复第2行", t1);
-        //responseRepositiry.save(response1);
-
-        Response response2= new Response("老师乙的回复", t2);
-        //responseRepositiry.save(response2);
-
-        questionService.responsibleDeptRespond(new Long(1), response1);
-        questionService.responsibleDeptRespond(new Long(1), response2);
-        questionService.responsibleDeptRespond(new Long(2), response1);
+        questionService.responsibleDeptRespond(new Long(4), response1); // 解决中
+        questionService.responsibleDeptRespond(new Long(5), response1); // 解决中
+        questionService.responsibleDeptRespond(new Long(5), response2);
     }
 
 }

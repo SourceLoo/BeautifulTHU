@@ -40,16 +40,18 @@ public class QuestionUploadController {
     @Autowired
     private QuestionService questionService;
 
+    private final String errorMsg = "{\"success\":false,\"msg\":\"创建失败\"}";
+    private final String successMsg = "{\"success\":true,\"msg\":\"Done\"}";
 
     @PostMapping(value = "/question/upload")
-    public ResponseEntity<?> uploadQuestion(
+    @ResponseBody
+    public String uploadQuestion(
             @RequestParam("uploadfiles") MultipartFile[] uploadfiles,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
             @RequestParam(name="location", required=false, defaultValue="清华大学") String location,
             HttpServletRequest request)
     {
-        System.out.println("123");
         List<String> paths = new ArrayList<>();
 
         // 拷贝到本地
@@ -77,7 +79,7 @@ public class QuestionUploadController {
             catch (Exception e)
             {
                 System.out.println(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return errorMsg;
             }
 
         }
@@ -94,6 +96,6 @@ public class QuestionUploadController {
         System.out.println(location);
         questionService.saveQuestion(user, title, content, location, paths);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return successMsg;
     }
 }

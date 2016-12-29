@@ -20,15 +20,19 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/student")
-public class othersController {
+public class GetStatusAndDepartController {
 
     public final static Map<String, List<Status>> statusMap = new HashMap<>();
+    public final static List<Status> visibleStatus = new ArrayList<>();
 
     static
     {
-        List<Status> invisibleStatus = new ArrayList<>();
-        invisibleStatus.add(Status.UNAPPROVED); // 0 7
-        invisibleStatus.add(Status.INVALID);
+        visibleStatus.add(Status.UNCLASSIFIED);
+        visibleStatus.add(Status.UNSOLVED);
+        visibleStatus.add(Status.SOLVING);
+        visibleStatus.add(Status.RECLASSIFY);
+        visibleStatus.add(Status.DELAY);
+        visibleStatus.add(Status.SOLVED);
 
         List<Status> unClassifiedStatus = new ArrayList<>();
         unClassifiedStatus.add(Status.UNCLASSIFIED); // 1

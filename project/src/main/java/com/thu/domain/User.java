@@ -31,6 +31,19 @@ public class User {
     private String idNumber;
     @OneToMany
     private Set<Question> likedQuestions = new HashSet<Question>();
+
+    // add by luyq
+    @OneToMany
+    private Set<Question> unreadQuestions = new HashSet<Question>();
+
+    public Set<Question> getUnreadQuestions() {
+        return unreadQuestions;
+    }
+
+    public void setUnreadQuestions(Set<Question> unreadQuestions) {
+        this.unreadQuestions = unreadQuestions;
+    }
+
     @OneToMany
     private Set<Response> likedRespones = new HashSet<Response>();
 
