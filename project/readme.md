@@ -9,15 +9,9 @@ receive:
 对返回的json判断
 
 
-/student/question/all # 首页问题列表 增加unread
+/student/home/status # 个人主页 增加unread
 receive:
 {
-  "question_list" : [
-    {
-        ...
-    }
-    ]
-    ,
    "unread": (0|1)
 }
 

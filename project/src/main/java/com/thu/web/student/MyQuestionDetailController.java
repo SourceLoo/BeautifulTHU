@@ -2,6 +2,8 @@ package com.thu.web.student;
 
 import com.thu.domain.Question;
 import com.thu.domain.QuestionRepository;
+import com.thu.domain.UserRepository;
+import com.thu.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,12 @@ public class MyQuestionDetailController {
     QuestionRepository questionRepository;
 
     @Autowired
+    QuestionService questionService;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     HttpSession session;
 
 
@@ -38,6 +46,10 @@ public class MyQuestionDetailController {
         }
 
         model.addAttribute("question", question);
+
+        // 用户点击某个问题，将这个问题从未读列表中删除
+        questionService.modifyUnreadQuestions(userRepository.findById(userId), quetionId, false);
+
         return "student/myquestion";
     }
 }

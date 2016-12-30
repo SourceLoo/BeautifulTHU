@@ -21,7 +21,7 @@ public class Question {
     @OneToMany
     private List<Role> otherRoles = new ArrayList<Role>();
 
-    private Status status = Status.UNCLASSIFIED;
+    private Status status = Status.UNAPPROVED;
     private Long likes = 0L;
     private EvaluationType evaluationType;
     private String evaluationDetail;

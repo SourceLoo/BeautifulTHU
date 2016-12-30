@@ -119,8 +119,24 @@ public class QuestionListController {
 
             jsonArray.put(tmp);
         }
-        jsonObject.put("unread", user.getUnreadQuestions().isEmpty() ? 0 : 1);
 
+        System.out.println(jsonObject.toString());
+
+        return jsonObject.toString();
+    }
+
+
+    @GetMapping("/home/status")
+    @ResponseBody
+    public String getHomeStatus()
+    {
+
+        JSONObject jsonObject = new JSONObject();
+        Long userId = (Long) session.getAttribute("userId");
+        userId = new Long(1);
+        User user = userRepository.findById(userId);
+
+        jsonObject.put("unread", user.getUnreadQuestions().isEmpty() ? 0 : 1);
         System.out.println(jsonObject.toString());
 
         return jsonObject.toString();
