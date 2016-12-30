@@ -21,7 +21,7 @@ public class Question {
     @OneToMany
     private List<Role> otherRoles = new ArrayList<Role>();
 
-    private Status status = Status.UNCLASSIFIED;
+    private Status status = Status.UNAPPROVED;
     private Long likes = 0L;
     private EvaluationType evaluationType;
     private String evaluationDetail;
@@ -48,6 +48,8 @@ public class Question {
     private List<Pic> pics = new ArrayList<Pic>();
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Response> responses = new ArrayList<Response>();
+
+    private Boolean update = false;
 
     protected Question() {}
 
@@ -275,6 +277,14 @@ public class Question {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Boolean getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(Boolean update) {
+        this.update = update;
     }
 
     public void incrementLikes() {
