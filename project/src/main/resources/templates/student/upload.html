@@ -102,6 +102,20 @@
             });
         }
         $(document).ready(function(){
+            $.ajax({
+                type: 'GET',
+                url: '/student/home/status',
+                dataType: 'json',
+                data: {},
+                success: function(data){
+                    if (data.unread == 1) {
+                        $('#my').children('span').append('<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>')
+                    }
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
            getLocation2()
         });
 
@@ -121,11 +135,11 @@
     <div class="page__bd" style="height: 100%;">
         <div class="weui-tab">
             <div class="weui-tab__panel">
-                <div class="page__hd">
-                    <h1 class="page__title">
-                        <img src="./images/logo.png" alt="WeUI" height="21px">
-                    </h1>
-                </div>
+                <!--<div class="page__hd">-->
+                    <!--<h1 class="page__title">-->
+                        <!--<img src="./images/logo.png" alt="WeUI" height="21px">-->
+                    <!--</h1>-->
+                <!--</div>-->
                 <div class="page__bd">
                     <div class="weui-cells weui-cells_form">
                         <div class="weui-cell">
@@ -205,10 +219,9 @@
                     </span>
                     <p class="weui-tabbar__label">创建问题</p>
                 </a>
-                <a href="/student/question/homepage" class="weui-tabbar__item">
+                <a href="/student/home" class="weui-tabbar__item" id="my">
                     <span style="display: inline-block;position: relative;">
                         <img src="/image/icon_nav_layout.png" alt="" class="weui-tabbar__icon">
-                        <span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>
                     </span>
                     <p class="weui-tabbar__label">我</p>
                 </a>
@@ -219,6 +232,7 @@
 <script type="text/javascript" class="uploader js_show">
     var file_list = [];
     var file_style_list = [];
+    var xhr;
 
     $(function(){
         var src, url, files
@@ -260,7 +274,6 @@
             }
         });
 
-        var xhr;
         function uploadFile() {
             var fd = new FormData();
             console.log(file_list);
@@ -272,9 +285,9 @@
             var title = $("#title").val();
             var content = $("#content").val();
             var position = $("#position option:selected").val()
-            if (title.length) {
+            if (title.length == 0) {
                 alert("请输入问题标题");
-            } else if (content.length) {
+            } else if (content.length == 0) {
                 alert("请输入问题内容");
             } else {
                 fd.append("title", title)
@@ -301,7 +314,7 @@
                 $('.js_progress').css('width',percentComplete.toString() + '%');
             } else {
                 return false
-        }
+            }
         }
 
         function deleteFile(style) {
@@ -319,9 +332,14 @@
         }
 
         function uploadComplete(e) {
-            console.log(e);
-            alert('上传成功');
-            window.location.href="/student/question/upload_success"
+            var response = JSON.parse(xhr.responseText)
+            if (response.success == true) {
+                console.log(e);
+                // alert('上传成功');
+                window.location.href="/student/question/upload_success"
+            } else {
+                alert(response.msg)
+            }
         }
 
         function uploadFailed(e) {

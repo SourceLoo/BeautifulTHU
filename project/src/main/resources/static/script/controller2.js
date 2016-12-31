@@ -32,7 +32,7 @@ $(function(){
 //            }
 //            $.ajax({
 //                type: 'GET',
-//                url: '/student/question/all/',
+//                url: '/student/home/question/all/',
 //                dataType: 'json',
 //                data: {
 //                    page_size : num,
@@ -55,6 +55,10 @@ $(function(){
 //                        } else {
 //                            liked = "赞"
 //                        }
+//                        var dots = ""
+//                        if (q.unread == 1) {
+//                            dots = '<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>'
+//                        }
 //                        result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
 //                                  '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
 //                                  '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
@@ -64,7 +68,7 @@ $(function(){
 //                                  '<ul class="weui-media-box__info">' +
 //                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
 //                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">点赞数: ' + q.like_num + '</li>' +
-//                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
+//                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'">'+dots+'点此查看详情</a></li>' +
 //                                  '</ul>' +
 //                                  '</div>'
 //                    }
@@ -96,7 +100,7 @@ $(function(){
             }
             $.ajax({
                 type: 'GET',
-                url: '/student/question/all/',
+                url: '/student/home/question/all/',
                 dataType: 'json',
                 data: {
                     page_size : num,
@@ -119,6 +123,10 @@ $(function(){
                         } else {
                             liked = "赞"
                         }
+                        var dots = ""
+                        if (q.unread == 1) {
+                            dots = '<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>'
+                        }
                         result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
                                 '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
                                 '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
@@ -128,7 +136,7 @@ $(function(){
                                 '<ul class="weui-media-box__info">' +
                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">点赞数: ' + q.like_num + '</li>' +
-                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'">点此查看详情</a></li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'">'+dots+'点此查看详情</a></li>' +
                                 '</ul>' +
                                 '</div>'
                     }

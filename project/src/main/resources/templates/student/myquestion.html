@@ -48,7 +48,7 @@
             <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status)} != 'INVALID'">
                 <h4 class="weui-media-box__title">答复流程</h4>
                 <p class="weui-media-box__desc" th:switch="${#strings.toString(question.status)}">
-                    <img src="/image/append_progress.jpg" width="100%;height=21px" th:case="'UNAPPROVED'">
+                    <img src="/image/handle_progress.jpg" width="100%;height=21px" th:case="'UNAPPROVED'">
                     <img src="/image/classify_progress.jpg" width="100%;height=21px" th:case="'UNCLASSIFIED'">
                     <img src="/image/reply_progress.jpg" width="100%;height=21px" th:case="*">
                 </p>
@@ -161,8 +161,12 @@
                 evaluation: $("#evaluation").val(),
                 detail: $("textarea").val()
             },
-            success: function() {
-                window.location.href="/student/question/evaluate_success"
+            success: function(data) {
+                if (data.success == true) {
+                    window.location.href="/student/question/evaluate_success"
+                } else {
+                    alert(data.msg);
+                }
             },
             error: function(xhr, type) {
                 alert('不能重复评价');
