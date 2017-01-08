@@ -21,7 +21,7 @@ public class Question {
     @OneToMany
     private List<Role> otherRoles = new ArrayList<Role>();
 
-    private Status status = Status.UNCLASSIFIED;
+    private Status status = Status.UNAPPROVED;
     private Long likes = 0L;
     private EvaluationType evaluationType;
     private String evaluationDetail;
@@ -65,6 +65,7 @@ public class Question {
         for (String path: picPaths) {
             pics.add(new Pic(path));
         }
+        this.setStatus(Status.UNAPPROVED);
         //this.responses.add(new Response("回复1"));
     }
 

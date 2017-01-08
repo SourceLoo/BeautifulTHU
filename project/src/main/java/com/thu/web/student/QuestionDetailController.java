@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by source on 12/16/16.
@@ -40,10 +39,9 @@ public class QuestionDetailController {
         Status status = question.getStatus();
         String statusStr = null;
         System.out.println(question.getStatus());
-//        Map<String, List<Status>> statusMap =
-        for (String key : othersController.statusMap.keySet())
+        for (String key : GetStatusAndDepartController.statusMap.keySet())
         {
-            if(othersController.statusMap.get(key).contains(status))
+            if(GetStatusAndDepartController.statusMap.get(key).contains(status))
             {
                 statusStr = key;
                 break;

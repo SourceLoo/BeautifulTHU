@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title>WeUI</title>
     <!-- 引入 WeUI -->
-    <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css"/>
+    <link rel="stylesheet" href="/style/weui.css"/>
     <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
     <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -34,8 +34,8 @@
     <script>
         function clicklike(ele){
             var liked
-            var response_id = $(ele).parent('ul').children("#response_id").text
-            if ($(ele).text == "已赞") {
+            var response_id = $("#response_id").text()
+            if ($(ele).text() == "已赞") {
                 liked = false
             } else {
                 liked = true
@@ -51,8 +51,10 @@
                 success: function(data) {
                     if (liked == true) {
                         $(ele).text("已赞")
+                        $(ele).parent('li').parent('ul').children("#likenum").text(data.likenum)
                     } else {
                         $(ele).text("赞")
+                        $(ele).parent('li').parent('ul').children("#likenum").text(data.likenum)
                     }
                 },
                 error: function(xhr, type){
@@ -93,36 +95,36 @@
     </article>
 </div>
 
+<div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg"></span>
+</div>
+
 <div class="weui-grids">
     <img href="javascript:;" style="
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 5px;
     padding-right: 5px;
+    height: 185px;
 " class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
-
-    <img href="javascript:;" style="
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
-
-    <img href="javascript:;" style="
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
-
-    <img href="javascript:;" style="
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
-
 </div>
+
+<script type="text/javascript" class="uploader js_show">
+    $(function(){
+        $galleryImg = $("#galleryImg")
+        $gallery = $("#gallery")
+        //$galleryImg.attr("style", this.getAttribute("style"));
+        $('img').click(function(){
+           $gallery.fadeIn(100);
+           $galleryImg.append('<img style="height:100%;width:100%" src='+$(this).attr("src")+'/>')
+        });
+
+        $gallery.on("click", function(){
+            $galleryImg.children().remove()
+            $gallery.fadeOut(100);
+        });
+
+    });</script>
 
 
 <div class="weui-cells">
@@ -144,7 +146,8 @@
                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${userResponse.response.responseId}"></li>
                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(userResponse.response.respondTime, 'yyyy-MM-dd')}"></li>
                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.uname}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.likes}"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum" th:text="${userResponse.response.likes}"></li>
                     </ul>
                 </h3>
                 <p th:utext="${#strings.replace( #strings.escapeXml( userResponse.response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >

@@ -11,40 +11,37 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Controller
-@RequestMapping("/student/question")
+@RequestMapping("/student")
 public class MainController {
 
-//    @GetMapping(value = "/lyqtest")
-//    public String getMyTest(HttpServletRequest request)
-//    {
-//        // System.out.println(request.getSession().getServletContext().getRealPath("/image"));
-//        return "lyqtest";
-//    }
-
-    @GetMapping("/list")
+    @GetMapping("/question/list")
     public String getQuestion()
     {
         return "student/question";
     }
 
-    @GetMapping("/upload")
+    @GetMapping("/question/upload")
     public String getUpload()
     {
         return "student/upload";
     }
 
-    @GetMapping("/upload_success")
-    public String getUpload_success()
+    @GetMapping("/question/upload_success")
+    public String getUploadSuccess()
     {
         return "student/upload_success";
     }
 
-    @GetMapping("/evaluate_success")
-    public String getEvaluate_success()
+    @GetMapping("/question/evaluate_success")
+    public String getEvaluateSuccess()
     {
-        System.out.println("test lyq");
-
         return  "student/evaluate_success";
+    }
+
+    @GetMapping("/home")
+    public String getHomepage()
+    {
+        return  "student/homepage";
     }
 
 

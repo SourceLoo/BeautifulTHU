@@ -10,25 +10,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by source on 12/9/16.
  */
 @RestController
 @RequestMapping("/student")
-public class othersController {
+public class GetStatusAndDepartController {
 
-    public final static Map<String, List<Status>> statusMap = new HashMap<>();
+    public final static Map<String, List<Status>> statusMap = new LinkedHashMap<>();
+    public final static List<Status> visibleStatus = new ArrayList<>();
 
     static
     {
-        List<Status> invisibleStatus = new ArrayList<>();
-        invisibleStatus.add(Status.UNAPPROVED); // 0 7
-        invisibleStatus.add(Status.INVALID);
+        visibleStatus.add(Status.UNCLASSIFIED);
+        visibleStatus.add(Status.UNSOLVED);
+        visibleStatus.add(Status.SOLVING);
+        visibleStatus.add(Status.RECLASSIFY);
+        visibleStatus.add(Status.DELAY);
+        visibleStatus.add(Status.SOLVED);
 
         List<Status> unClassifiedStatus = new ArrayList<>();
         unClassifiedStatus.add(Status.UNCLASSIFIED); // 1
@@ -47,6 +48,27 @@ public class othersController {
 
     }
 
+    // 得到所有分类
+    @GetMapping("/getStatus/all")
+    public Object getAllStatus()
+    {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        jsonObject.put("status_list", jsonArray);
+
+        for(String s: statusMap.keySet())
+        {
+            JSONObject tmp = new JSONObject();
+            tmp.put("name", s);
+            jsonArray.put(tmp);
+        }
+        System.out.println(jsonObject.toString());
+
+        return jsonObject.toString();
+    }
+
+
     @Autowired
     private RoleRepository roleRepository;
 
@@ -64,29 +86,10 @@ public class othersController {
         {
             if("xuesheng".equals(role.getRole()))
                 continue;
+
             JSONObject tmp = new JSONObject();
             tmp.put("name", role.getDisplayName());
 
-            jsonArray.put(tmp);
-        }
-        System.out.println(jsonObject.toString());
-
-        return jsonObject.toString();
-    }
-
-    // 得到所有分类
-    @GetMapping("/getStatus/all")
-    public Object getAllStatus()
-    {
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-
-        jsonObject.put("status_list", jsonArray);
-
-        for(String s: statusMap.keySet())
-        {
-            JSONObject tmp = new JSONObject();
-            tmp.put("name", s);
             jsonArray.put(tmp);
         }
         System.out.println(jsonObject.toString());

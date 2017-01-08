@@ -42,15 +42,12 @@ public class ModifyLikesController {
     private ResponseRepositiry responseRepositiry;
 
     @PostMapping(value = "/question/like")
-    //public ResponseEntity<?> modifyQuestionLikes(
     @ResponseBody
     public String modifyQuestionLikes(
             @RequestParam("question_id") Long questionId,
             @RequestParam("liked") boolean like
     )
     {
-        //if(!"true".equals(like) & !"fa")
-
         // like 为真，则点赞；否则取消点赞
         Long userId = (Long) session.getAttribute("userId");
         userId = new Long(1);
@@ -65,7 +62,6 @@ public class ModifyLikesController {
     }
 
     @PostMapping(value = "/response/like")
-    //public ResponseEntity<?> modifyResponseLikes(
     @ResponseBody
     public String modifyResponseLikes(
             @RequestParam("response_id") Long responseId,
