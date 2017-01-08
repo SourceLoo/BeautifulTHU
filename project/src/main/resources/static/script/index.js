@@ -206,6 +206,13 @@ const questions = {
             };
             this.$http.post('/questions/main/delay/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
+        question_response: function(id) {
+            var temp = {
+                question_id: id,
+                response_content: this.response_text
+            };
+            this.$http.post('/questions/main/response/' + localStorage.token, handle_req(temp)).then(this._update_questions);
+        },
         question_classify: function(id) {
             var temp = {
                 question_id: id,
@@ -332,7 +339,7 @@ const error = {
 Vue.prototype.$http = $;
 var router = new VueRouter({
     routes: [{
-        path: '/',
+        path: '/school/manage_console',
         component: introduction,
         beforeEnter: function(to, from, next) {
             if (this.app) {
@@ -341,14 +348,14 @@ var router = new VueRouter({
             next();
         }
     }, {
-        path: '/introduction',
+        path: '/school/manage_console/introduction',
         component: introduction,
         beforeEnter: function(to, from, next) {
             this.app.set_curr_view('introduction');
             next();
         }
     }, {
-        path: '/info',
+        path: '/school/manage_console/info',
         component: info,
         beforeEnter: function(to, from, next) {
             this.app.update_info().then(function(result) {
@@ -356,7 +363,7 @@ var router = new VueRouter({
             });
         }
     }, {
-        path: '/questions',
+        path: '/school/manage_console/questions',
         component: questions,
         beforeEnter: function(to, from, next) {
             this.app.update_questions().then(function(result) {});
@@ -373,7 +380,7 @@ var router = new VueRouter({
             next();
         },
     }, {
-        path: '/contact',
+        path: '/school/manage_console/contact',
         component: contact,
         beforeEnter: function(to, from, next) {
             this.app.update_contact().then(function(result) {
@@ -381,7 +388,7 @@ var router = new VueRouter({
             });
         },
     }, {
-        path: '*',
+        path: '/school/manage_console/*',
         component: error
     }],
     mode: 'history',
