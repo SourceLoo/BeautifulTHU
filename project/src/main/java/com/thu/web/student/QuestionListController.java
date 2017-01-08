@@ -99,7 +99,6 @@ public class QuestionListController {
 
 
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
         User user = userRepository.findById(userId);
 
         for (Question question : questions)
@@ -133,7 +132,6 @@ public class QuestionListController {
 
         JSONObject jsonObject = new JSONObject();
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
         User user = userRepository.findById(userId);
 
         jsonObject.put("unread", user.getUnreadQuestions().isEmpty() ? 0 : 1);

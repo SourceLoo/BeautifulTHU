@@ -35,23 +35,23 @@ public class JWTService {
         return claims;
     }
 
-    public boolean checkToken(String token){
+    public Long getUserId(String token){
         String idNumber;
         try{
             Claims claims = parseToken(token);
             idNumber = claims.get("idNumber").toString();
         }
         catch (Exception e){
-            return false;
+            return null;
         }
         User user = userRepository.findByIdNumber(idNumber);
         if(user != null && user.getPasswd().equals(token))
         {
-            return true;
+            return user.getId();
         }
         else
         {
-            return false;
+            return null;
         }
     }
 }

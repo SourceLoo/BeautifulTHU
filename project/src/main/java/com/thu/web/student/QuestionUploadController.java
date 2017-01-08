@@ -86,7 +86,6 @@ public class QuestionUploadController {
 
 
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
         User user = userRepository.findById(userId);
 
         //public boolean insertQuestion(String title, String content, User user, String createdLocation, Date createdTime, List<Pic> pics) {

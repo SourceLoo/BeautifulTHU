@@ -30,10 +30,19 @@ public class TokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(httpServletRequest,httpServletResponse);
             return;
         }
+
+//        if(uri.contains("student/home/question")) // 测试 放行
+//        {
+//            System.out.println("filter:student/home/question" + "测试第一视角问题 放行");
+//            filterChain.doFilter(httpServletRequest,httpServletResponse);
+//            return;
+//        }
+
         if(uri.contains("student/")) //其它admin页面拦截
         {
             System.out.println("filter:student/");
             Long userId = (Long) session.getAttribute("userId");
+            System.out.println("当面用户id:" + userId);
             if(null == userId)
             {
                 httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/auth");
