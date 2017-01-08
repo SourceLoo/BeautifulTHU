@@ -6,16 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,17 +33,14 @@ public class QuestionListController {
 
     @GetMapping(value = "/question/all")
     @ResponseBody
-    public Object getQuestions(@RequestParam(name = "page_num") Integer pageNum,
+    public Object getQuestions(@RequestParam(name = "page_num", required = false, defaultValue = "0") Integer pageNum,
+                               @RequestParam(name = "page_size", required = false, defaultValue = "4") Integer pageSize,
                                @RequestParam(name = "state_condition", required = false) String state,
                                @RequestParam(name = "depart_condition", required = false) String depart,
                                @RequestParam(name = "order_type" , required = false, defaultValue = "createdTime") String orderType,
                                @RequestParam(name = "keywords" , required = false) String searchKey,
-                               @RequestParam(name = "isCommon" , required = false, defaultValue = "false") boolean isCommon,
-                               @RequestParam(name = "isMine" , required = false, defaultValue = "false") boolean isMine)
+                               @RequestParam(name = "isCommon" , required = false, defaultValue = "false") boolean isCommon)
     {
-        // pageSize 由后台自定义
-        Integer pageSize = 10;
-
         //        status = null;
         //        depart = null;
         //        searchKey = null;
@@ -57,11 +49,11 @@ public class QuestionListController {
 
         if("".equals(state) || "all".equals(state))
         {
-            statuses = null;
+            statuses = GetStatusAndDepartController.visibleStatus;
         }
         else
         {
-            statuses = othersController.statusMap.get(state);
+            statuses = GetStatusAndDepartController.statusMap.get(state);
         }
         if("".equals(depart) || "all".equals(depart))
         {
@@ -96,14 +88,7 @@ public class QuestionListController {
         // 注意 缺失值 则设置为null
 
 
-        Long userId = null;
-        if(isMine)
-        {
-            userId = (Long) session.getAttribute("userId");
-            //userId = new Long(1);
-        }
-
-        questionPage = questionService.filterQuestions(pageNum, pageSize, statuses, depart, searchKey, isCommon, userId, orders);
+        questionPage = questionService.filterQuestions(pageNum, pageSize, statuses, depart, searchKey, isCommon, orders);
 
         List<Question> questions = questionPage.getContent();
 
@@ -113,10 +98,9 @@ public class QuestionListController {
         jsonObject.put("question_list", jsonArray);
 
 
-        userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) session.getAttribute("userId");
         userId = new Long(1);
         User user = userRepository.findById(userId);
-
 
         for (Question question : questions)
         {
@@ -136,6 +120,23 @@ public class QuestionListController {
             jsonArray.put(tmp);
         }
 
+        System.out.println(jsonObject.toString());
+
+        return jsonObject.toString();
+    }
+
+
+    @GetMapping("/home/status")
+    @ResponseBody
+    public String getHomeStatus()
+    {
+
+        JSONObject jsonObject = new JSONObject();
+        Long userId = (Long) session.getAttribute("userId");
+        userId = new Long(1);
+        User user = userRepository.findById(userId);
+
+        jsonObject.put("unread", user.getUnreadQuestions().isEmpty() ? 0 : 1);
         System.out.println(jsonObject.toString());
 
         return jsonObject.toString();

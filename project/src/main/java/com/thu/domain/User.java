@@ -31,6 +31,19 @@ public class User {
     private String idNumber;
     @OneToMany
     private Set<Question> likedQuestions = new HashSet<Question>();
+
+    // add by luyq
+    @OneToMany
+    private Set<Question> unreadQuestions = new HashSet<Question>();
+
+    public Set<Question> getUnreadQuestions() {
+        return unreadQuestions;
+    }
+
+    public void setUnreadQuestions(Set<Question> unreadQuestions) {
+        this.unreadQuestions = unreadQuestions;
+    }
+
     @OneToMany
     private Set<Response> likedRespones = new HashSet<Response>();
 
@@ -126,21 +139,13 @@ public class User {
         this.idNumber = idNumber;
     }
 
-
-
-//    public User(String uname, String passwd, String mobileNumber, String fixedNumber, String email, String idNumber) {
-//        PasswordEncoder passwordEncoder;
-//
-//        this.uname = uname;
-//        this.passwd = passwd;
-////        this.role = role;
-//        this.mobileNumber = mobileNumber;
-//        this.fixedNumber = fixedNumber;
-//        this.email = email;
-//        this.idNumber = idNumber;
-//    }
-
-
-
+    //add by luyq
+    public User(String uname, String passwd, Role role, String email, String idNumber) {
+        this.uname = uname;
+        this.passwd = passwd;
+        this.role = role;
+        this.email = email;
+        this.idNumber = idNumber;
+    }
 }
 
