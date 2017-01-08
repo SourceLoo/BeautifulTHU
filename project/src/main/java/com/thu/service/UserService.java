@@ -32,6 +32,19 @@ public class UserService {
         return userRepository.countByUname(uname) > 0;
     }
 
+    // add by luyq
+    public boolean saveStudent(String uname, String passwd, Role role, String email, String idNumber)
+    {
+        User user = new User(uname, passwd, role, email, idNumber);
+        try {
+            // 会自动更新passwd
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public boolean insertUser(String uname, String mobileNumber, String fixedNumber, String idNumber, String email, Role role, String passwd) {
         if (userRepository.countByUname(uname) > 0) {
             return false;

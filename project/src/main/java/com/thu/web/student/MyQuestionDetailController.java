@@ -27,7 +27,7 @@ public class MyQuestionDetailController {
     QuestionService questionService;
 
     @Autowired
-    UserRepository userRepository;
+        UserRepository userRepository;
 
     @Autowired
     HttpSession session;
@@ -49,6 +49,14 @@ public class MyQuestionDetailController {
 
         // 用户点击某个问题，将这个问题从未读列表中删除
         questionService.modifyUnreadQuestions(userRepository.findById(userId), quetionId, false);
+
+
+        String leaderRoleName = "待分配";
+        if(question.getLeaderRole() != null)
+        {
+            leaderRoleName = question.getLeaderRole().getDisplayName();
+        }
+        model.addAttribute("leaderRoleName", leaderRoleName);
 
         return "student/myquestion";
     }
