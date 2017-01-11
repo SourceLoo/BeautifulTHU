@@ -135,21 +135,15 @@ public class User {
         this.idNumber = idNumber;
     }
 
+    //add by luyq
+    public User(String uname, String passwd, Role role, String email, String idNumber) {
+        this.uname = uname;
+        this.passwd = passwd;
+        this.role = role;
+        this.email = email;
+        this.idNumber = idNumber;
 
-
-//    public User(String uname, String passwd, String mobileNumber, String fixedNumber, String email, String idNumber) {
-//        PasswordEncoder passwordEncoder;
-//
-//        this.uname = uname;
-//        this.passwd = passwd;
-////        this.role = role;
-//        this.mobileNumber = mobileNumber;
-//        this.fixedNumber = fixedNumber;
-//        this.email = email;
-//        this.idNumber = idNumber;
-//    }
-
-
-
+        this.mobileNumber = "";
+    }
 }
 

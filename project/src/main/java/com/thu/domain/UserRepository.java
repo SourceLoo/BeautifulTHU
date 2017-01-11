@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long>, QueryDslPredi
     long countByUname(String name);
     List<User> findAll();
 
+    //add by luyq
+    User findByIdNumber(String idNumber);
 }

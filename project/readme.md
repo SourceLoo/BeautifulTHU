@@ -1,3 +1,66 @@
+To老师端
+
+```java
+//当user的问题状态改变时，执行下面语句，将问题加入未读中
+questionService.modifyUnreadQuestions(user, quetionId, true);
+```
+
+
+
+To sunji
+
+```json
+1. 上传问题后，跳转至第一视角的问题列表页面
+
+2. 第一视角的问题列表页面，去掉所有的筛选条件
+
+3. 第三视角的问题列表的筛选条件失效，js出错了应该。
+
+4. 
+/student/login?ticket=xxx # 获取服务端签发的token， 成功获取后跳转至第三视角 问题列表，否则跳转认证auth
+receive:
+{
+   "success":false, // 判断是否有此字段，无则表示正常返回token
+   "msg":"用户名密码不正确",
+   "token": xxx, 
+}
+
+5.
+/student/auth?token=xxx # 从localstorage 获取token发送，可空。
+
+6.
+测试方法
+先get
+/student/login?ticket=123
+得到token后，再get
+/student/auth?token={token}
+即可登录成功
+```
+
+
+
+login
+
+```
+1. 需要首先走个申请手续，这个上次说过哈
+2. 需要在这边的数据库注册你们的域名
+3. 你们的登录页面要跳转到 
+https://id.tsinghua.edu.cn/do/off/ui/auth/login/form/{AppIDMD5}/{seq}
+其中的两个参数会分配给你们
+4. 你们的系统需要有个url处理类似 /login?ticket={ticket} 的请求。发服务端-服务端https请求到
+https://id.tsinghua.edu.cn/thuser/authapi/checkticket/{AppID}/{ticket}/{UserIpAddr}
+成功的话，服务端会返回用户信息，类似
+code=0:zjh=2011980001:yhm=lqx:xm=刘启新:yhlb=J0000:dw=计算中心:email=lqx@mail.com
+
+student/auth
+```
+
+
+
+
+
+done
+
 接口
 
 ```json
@@ -61,8 +124,8 @@ receive:
 
 
 MainController
-/student/question/list # 返回页面：首页
-/student/home # 返回页面：个人主页
+/student/question/list # 返回页面：第三视角问题列表
+/student/home # 返回页面：第一视角问题列表
 
 /student/question/upload # 返回页面：创建问题
 /student/question/upload_success # 返回页面：成功创建
