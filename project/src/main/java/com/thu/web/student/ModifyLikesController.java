@@ -50,7 +50,6 @@ public class ModifyLikesController {
     {
         // like 为真，则点赞；否则取消点赞
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
         User user = userRepository.findById(userId);
 
         questionService.modifyQuestionLike(user, questionId, like);
@@ -70,7 +69,6 @@ public class ModifyLikesController {
     {
         // like 为真，则点赞；否则取消点赞
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
         User user = userRepository.findById(userId);
 
         responseService.modifyResponseLike(user, responseId, like);

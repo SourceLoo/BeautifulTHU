@@ -146,6 +146,8 @@ public class User {
         this.role = role;
         this.email = email;
         this.idNumber = idNumber;
+
+        this.mobileNumber = "";
     }
 }
 

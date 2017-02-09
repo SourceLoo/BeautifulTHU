@@ -101,7 +101,7 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
-        question.setStatus(Status.UNCLASSIFIED);
+        question.setStatus(Status.UNSOLVED);
         question.setTransferRole(to);
         question.setRead(false);
         try {

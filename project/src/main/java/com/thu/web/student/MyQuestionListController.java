@@ -52,7 +52,6 @@ public class MyQuestionListController {
 
         Long userId = null;
         userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
 
         questionPage = questionService.findMyQuestions(pageNum, pageSize, userId, orders);
 

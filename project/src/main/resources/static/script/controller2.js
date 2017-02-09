@@ -161,13 +161,13 @@ $(function(){
         }
     });
 
-    $('#searchInput').on('change', function(){
-        page = 0
-        k.opts.loadUpFn(k)
-    });
+//    $('#searchInput').on('change', function(){
+//        page = 0
+//        k.opts.loadUpFn(k)
+//    });
 
-    $('select').on('change', function(){
-        page = 0
-        k.opts.loadUpFn(k)
-    });
+//    $('select').on('change', function(){
+//        page = 0
+//        k.opts.loadUpFn(k)
+//    });
 });
