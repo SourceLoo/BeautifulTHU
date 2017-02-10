@@ -1,7 +1,6 @@
 package com.thu.web.student;
 
 import com.thu.domain.Role;
-import com.thu.domain.User;
 import com.thu.service.RoleService;
 import com.thu.service.UserService;
 import org.apache.http.client.ClientProtocolException;

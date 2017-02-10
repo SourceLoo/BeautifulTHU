@@ -2,7 +2,7 @@ To老师端
 
 ```java
 //当user的问题状态改变时，执行下面语句，将问题加入未读中
-questionService.modifyUnreadQuestions(user, quetionId, true);
+questionService.modifyUnreadQuestions(TUser, quetionId, true);
 ```
 
 

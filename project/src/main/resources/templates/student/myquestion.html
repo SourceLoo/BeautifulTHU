@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta name="viewport" content="width=device-width,initial-scale=1,TUser-scalable=0">
     <title>WeUI</title>
     <!-- 引入 WeUI -->
     <link rel="stylesheet" href="/style/weui.css"/>
@@ -59,7 +59,7 @@
                 <h4 class="weui-media-box__title" th:text="${question.title}">{问题标题}</h4>
 
                 <ul class="weui-media-box__info">
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.user.uname}"></li>
+                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.TUser.uname}"></li>
                     <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
                     <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
                     <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>

@@ -1,8 +1,6 @@
 package com.thu.service;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.thu.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,10 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -252,7 +248,7 @@ public class QuestionService {
     {
         QQuestion question = QQuestion.question;
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(question.user.id.eq(userId));
+        booleanBuilder.and(question.TUser.id.eq(userId));
 
         System.out.println(booleanBuilder);
         System.out.println(pageNum);
@@ -299,8 +295,8 @@ public class QuestionService {
 //    }
 
     @Transactional
-    public boolean saveQuestion(User user, String title, String content, String location, List<String> paths) {
-        Question question = new Question(title, content, user, location, paths);
+    public boolean saveQuestion(TUser TUser, String title, String content, String location, List<String> paths) {
+        Question question = new Question(title, content, TUser, location, paths);
         try {
             questionRepository.save(question);
             return true;
@@ -330,29 +326,29 @@ public class QuestionService {
     }
 
     @Transactional
-    public boolean modifyQuestionLike(User user, Long questionId, boolean op)
+    public boolean modifyQuestionLike(TUser TUser, Long questionId, boolean op)
     {
         Question question = findById(questionId);
         if (question == null) {
             return false;
         }
         if (op) {
-            if (user.getLikedQuestions().contains(question)) {
+            if (TUser.getLikedQuestions().contains(question)) {
                 return false;
             }
             question.incrementLikes();
-            user.getLikedQuestions().add(question);
+            TUser.getLikedQuestions().add(question);
         }
         else {
-            if (!user.getLikedQuestions().contains(question)) {
+            if (!TUser.getLikedQuestions().contains(question)) {
                 return false;
             }
             question.decrementLikes();
-            user.getLikedQuestions().remove(question);
+            TUser.getLikedQuestions().remove(question);
         }
         try {
             questionRepository.save(question);
-            userRepository.save(user);
+            userRepository.save(TUser);
             return true;
         } catch (Exception e) {
             return false;
@@ -361,26 +357,26 @@ public class QuestionService {
 
     // add by luyq 当op为真，增加user未读的question
     @Transactional
-    public boolean modifyUnreadQuestions(User user, Long questionId, boolean op)
+    public boolean modifyUnreadQuestions(TUser TUser, Long questionId, boolean op)
     {
         Question question = findById(questionId);
         if (question == null) {
             return false;
         }
         if (op) {
-            if (user.getUnreadQuestions().contains(question)) {
+            if (TUser.getUnreadQuestions().contains(question)) {
                 return false;
             }
-            user.getUnreadQuestions().add(question);
+            TUser.getUnreadQuestions().add(question);
         }
         else {
-            if (!user.getUnreadQuestions().contains(question)) {
+            if (!TUser.getUnreadQuestions().contains(question)) {
                 return false;
             }
-            user.getUnreadQuestions().remove(question);
+            TUser.getUnreadQuestions().remove(question);
         }
         try {
-            userRepository.save(user);
+            userRepository.save(TUser);
             return true;
         } catch (Exception e) {
             return false;

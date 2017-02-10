@@ -99,7 +99,7 @@ public class QuestionListController {
 
 
         Long userId = (Long) session.getAttribute("userId");
-        User user = userRepository.findById(userId);
+        TUser TUser = userRepository.findById(userId);
 
         for (Question question : questions)
         {
@@ -110,10 +110,10 @@ public class QuestionListController {
             tmp.put("question_location", question.getCreatedLocation());
             tmp.put("like_num", question.getLikes());
 
-            tmp.put("liked", user.getLikedQuestions().contains(question) ? 1 : 0);
+            tmp.put("liked", TUser.getLikedQuestions().contains(question) ? 1 : 0);
 
             // 问题作者，问题创建时间
-            tmp.put("author", question.getUser().getUname());
+            tmp.put("author", question.getTUser().getUname());
             tmp.put("createdTime", question.getCreatedTime().toLocalDate());
 
             jsonArray.put(tmp);
@@ -132,9 +132,9 @@ public class QuestionListController {
 
         JSONObject jsonObject = new JSONObject();
         Long userId = (Long) session.getAttribute("userId");
-        User user = userRepository.findById(userId);
+        TUser TUser = userRepository.findById(userId);
 
-        jsonObject.put("unread", user.getUnreadQuestions().isEmpty() ? 0 : 1);
+        jsonObject.put("unread", TUser.getUnreadQuestions().isEmpty() ? 0 : 1);
         System.out.println(jsonObject.toString());
 
         return jsonObject.toString();

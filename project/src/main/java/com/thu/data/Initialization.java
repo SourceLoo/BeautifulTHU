@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -58,11 +57,11 @@ public class Initialization implements CommandLineRunner {
         userService.insertUser("老师乙", "mobile", "fix", "001", "001@qq.com", roleService.findByRole("xiaoban"), "passwd");
         userService.insertUser("老师丙", "mobile", "fix", "002", "002@qq.com", roleService.findByRole("tuanwei"), "passwd");
 
-        User s1 = userRepository.findById(new Long(1));
-        User s2 = userRepository.findById(2L);
-        User t1 = userRepository.findById(new Long(3));
-        User t2 = userRepository.findById(new Long(4));
-        User t3 = userRepository.findById(new Long(5));
+        TUser s1 = userRepository.findById(new Long(1));
+        TUser s2 = userRepository.findById(2L);
+        TUser t1 = userRepository.findById(new Long(3));
+        TUser t2 = userRepository.findById(new Long(4));
+        TUser t3 = userRepository.findById(new Long(5));
 
         List<String> paths = new ArrayList<>();
         paths.add("/upload/image/20161214194625_138940119.jpg");
@@ -82,20 +81,22 @@ public class Initialization implements CommandLineRunner {
         questionService.saveQuestion(s2, "这是标题5", "这是内容5", "这是清华大学", paths.subList(0,1));
         questionService.saveQuestion(s2, "这是标题6", "这是内容6\n测试", "这是清华大学", paths.subList(0,1));
 
-        question = questionService.findById(1L);
+        question = questionService.findById(19L);
+        System.out.println("lyq");
+        System.out.println(roleService.findByRole("zongban"));
         question.setLeaderRole(roleService.findByRole("zongban"));
         question.setLikes(4L);
         questionRepository.save(question);
 
 
 
-        question = questionService.findById(2L);
+        question = questionService.findById(10L);
         question.setLeaderRole(roleService.findByRole("zongban"));
         question.setLikes(2L);
         question.setStatus(Status.UNCLASSIFIED);
         questionRepository.save(question);
 
-        question = questionService.findById(3L);
+        question = questionService.findById(13L);
         question.setLeaderRole(roleService.findByRole("xiaoban"));
         question.setCommon(true);
         question.setDdl(LocalDateTime.now().plusDays(2));
@@ -103,7 +104,7 @@ public class Initialization implements CommandLineRunner {
         question.setStatus(Status.UNSOLVED);
         questionRepository.save(question);
 
-        question = questionService.findById(4L);
+        question = questionService.findById(15L);
         question.setLeaderRole(roleService.findByRole("xiaoban"));
         question.setDdl(LocalDateTime.now().plusDays(4));
         question.setLikes(4L);
@@ -111,7 +112,7 @@ public class Initialization implements CommandLineRunner {
         questionRepository.save(question);
 
 
-        question = questionService.findById(5L);
+        question = questionService.findById(17L);
         question.setCommon(true);
         question.setLeaderRole(roleService.findByRole("tuanwei"));
         question.setLikes(3L);
@@ -119,7 +120,7 @@ public class Initialization implements CommandLineRunner {
         questionRepository.save(question);
 
 
-        question = questionService.findById(6L);
+        question = questionService.findById(19L);
         question.setCommon(true);
         question.setLeaderRole(roleService.findByRole("tuanwei"));
         question.setLikes(0L);
@@ -127,9 +128,9 @@ public class Initialization implements CommandLineRunner {
         question.setRejectReason("问题不在处理范围");
         questionRepository.save(question);
 
-        questionService.responsibleDeptRespond(new Long(4), response1); // 解决中
-        questionService.responsibleDeptRespond(new Long(5), response1); // 解决中
-        questionService.responsibleDeptRespond(new Long(5), response2);
+        questionService.responsibleDeptRespond(new Long(15), response1); // 解决中
+        questionService.responsibleDeptRespond(new Long(17), response1); // 解决中
+        questionService.responsibleDeptRespond(new Long(17), response2);
     }
 
 }
