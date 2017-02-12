@@ -114,6 +114,7 @@ public class LoginController {
         String email = "";
         String idNumber = "";
 
+
         content = "code=0:zjh=2011980001:yhm=lqx:xm=刘启新:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
         String [] arr = content.split(":");
         for(String pairs : arr)
@@ -134,11 +135,26 @@ public class LoginController {
             return errorMsg;
         }
 
+        System.out.println(uname);
+        System.out.println(token);
+        System.out.println(role);
+        System.out.println(email);
+        System.out.println(idNumber);
+
         userService.saveStudent(uname, token, role, email, idNumber);
 
         JSONObject result = new JSONObject();
         result.put("token", token);
-        session.setAttribute("idNumber", idNumber);
-        return result.toString();
+
+        // 登录成功
+        Long userId = jwtService.getUserId(token);
+        session.setAttribute("userId", userId);
+
+        System.out.println("login: userId=" + userId);
+
+        String info = "登录成功，获得token" + result.toString() + "\n" +
+                "请再次访问根目录进入主页！";
+
+        return info;
     }
 }

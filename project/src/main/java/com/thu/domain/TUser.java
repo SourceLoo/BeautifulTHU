@@ -147,7 +147,7 @@ public class TUser {
         this.email = email;
         this.idNumber = idNumber;
 
-        this.mobileNumber = "";
+        this.mobileNumber = "未知";
     }
 }
 

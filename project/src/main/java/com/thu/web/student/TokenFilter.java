@@ -45,7 +45,11 @@ public class TokenFilter extends OncePerRequestFilter {
             System.out.println("当面用户id:" + userId);
             if(null == userId)
             {
-                httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/auth");
+                //这是学生端的登录
+                //httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/auth");
+
+                //这是直接login成功
+                httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/login?ticket=1024");
                 return;
             }
         }
