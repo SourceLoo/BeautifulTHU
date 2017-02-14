@@ -162,7 +162,7 @@ const questions = {
             } else {
                 path = '/qa/del/';
             }
-            this.$http.post('/qa/add/' + localStorage.token, handle_req(temp)).then(res => {
+            this.$http.post(path + localStorage.token, handle_req(temp)).then(res => {
                 res = handle_res(res);
                 if (res.success === false) {
                     alert(res.msg);
@@ -399,8 +399,20 @@ var app = new Vue({
     //delimiters: ['${', '}'],
     created: function() {
         if (localStorage.token != undefined && localStorage.token != '') {
-            this.curr.is_login = true;
-            this.curr.role = localStorage.getItem('role');
+            this.$http.post('/auth/login/' + localStorage.token).then(res => {
+                console.log('login');
+                res = handle_res(res);
+                if (res.success === false) {
+                    alert(res.msg);
+                    localStorage.setItem('token', '')
+                    localStorage.setItem('role', '')
+                    this.curr.role = '';
+                    this.curr.is_login = false;
+                } else {
+                    this.curr.is_login = true;
+                    this.curr.role = localStorage.getItem('role');
+                }
+            });
         } else {
             localStorage.setItem('token', '')
             localStorage.setItem('role', '')
