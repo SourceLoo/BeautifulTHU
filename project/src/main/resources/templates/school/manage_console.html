@@ -12,8 +12,6 @@
     <link type="text/css" href="/style/application.css" rel="stylesheet" />
     <script src="/script/vue.js"></script>
     <script src="/script/vue-router.js"></script>
-    <script src="/script/jquery.min.js"></script>
-    <script src="/script/index.js"></script>
 </head>
 
 <body class="thu-body thu-dirty">
@@ -85,13 +83,6 @@
                     </div>
                     <div class="thu-subtitle">
                         <a class="thu-link thu-link-missing" href="#"> </a> 25th July 2016 at 4:48pm
-                    </div>
-                    <div class="thu-tags-wrapper">
-                        <span class="thu-tag-list-item">
-                        <span class="thu-tag-label">
-                            Status
-                        </span>
-                        </span>
                     </div>
                 </div>
                 <div class="thu-tiddler-body">
@@ -556,7 +547,7 @@
                 </a>
             </div>
             <div class="thu-topbar thu-topbar-left" v-else>
-                <router-link to="info"><i class="fa fa-address-card fa-fw" aria-hidden="true"></i>个人信息</router-link>
+                <router-link to="/school/manage_console/info"><i class="fa fa-address-card fa-fw" aria-hidden="true"></i>个人信息</router-link>
                 <a href="javascript:;" @click="logout()"><i class="fa fa-external-link-square fa-fw" aria-hidden="true"></i>注销</a>
             </div>
             <div class="thu-topbar thu-topbar-right">
@@ -566,7 +557,7 @@
         <div class="thu-sidebar-scrollable" style="overflow: auto;">
             <div class="thu-sidebar-header">
                 <div style="height: auto; transition: none;">
-                    <router-link to="/">
+                    <router-link to="/school/manage_console/">
                         <h1 class="thu-site-title">美丽清华</h1>
                     </router-link>
                     <div class="thu-site-subtitle">一个很厉害的网站，不管你信不信，反正我是信了</div>
@@ -582,20 +573,20 @@
                         <div class="thu-table-of-contents">
                             <ol class="thu-toc toc-selective-expandable">
                                 <li class="toc-item-selected">
-                                    <router-link to="/introduction" :class="{active:curr.view=='introduction'}">
+                                    <router-link to="/school/manage_console/introduction" :class="{active:curr.view=='introduction'}">
                                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         <span>使用指南与介绍</span>
                                     </router-link>
                                 </li>
                                 <li class="toc-item-selected">
                                 <!--<li class="toc-item-selected" v-if="curr.is_login">-->
-                                    <router-link to="/questions" :class="{active:curr.view=='questions'}">
+                                    <router-link to="/school/manage_console/questions" :class="{active:curr.view=='questions'}">
                                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         <span>问题管理</span>
                                     </router-link>
                                 </li>
                                 <li class="toc-item-selected">
-                                    <router-link to="/contact" :class="{active:curr.view=='contact'}">
+                                    <router-link to="/school/manage_console/contact" :class="{active:curr.view=='contact'}">
                                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         <span>通讯录</span>
                                     </router-link>
@@ -612,5 +603,7 @@
     </div>
 </body>
 
+<script src="/script/jquery.min.js"></script>
+<script src="/script/index.js"></script>
 
 </html>
