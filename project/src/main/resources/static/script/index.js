@@ -162,7 +162,8 @@ const questions = {
             } else {
                 path = '/qa/del/';
             }
-            this.$http.post('/qa/add/' + localStorage.token, handle_req(temp)).then(res => {
+            //this.$http.post('/qa/add/' + localStorage.token, handle_req(temp)).then(res => {
+            this.$http.post(path + localStorage.token, handle_req(temp)).then(res => {
                 res = handle_res(res);
                 if (res.success === false) {
                     alert(res.msg);
