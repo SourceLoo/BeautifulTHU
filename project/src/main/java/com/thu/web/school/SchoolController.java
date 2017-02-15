@@ -168,6 +168,15 @@ public class SchoolController{
         return result.toString();
     }
 
+    @RequestMapping(value = "/auth/login/{token:.+}", method = RequestMethod.POST)
+    @ResponseBody
+    public String login( @PathVariable String token) throws JSONException {
+        if (!checkPermissionWithoutName(token, roleALL)){
+            return invalidTokenMsg;
+        }
+        return successMsg;
+    }
+
     /*  done
     *  every one can log out
     *  log out
