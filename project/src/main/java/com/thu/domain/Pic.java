@@ -13,6 +13,7 @@ public class Pic {
 
     protected Pic() {}
     @Id
+    //@GeneratedValue
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "picGenerator")
     @SequenceGenerator(name = "picGenerator", sequenceName = "picSequence", allocationSize=1)
     private Long id;

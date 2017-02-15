@@ -10,6 +10,7 @@ import java.util.*;
 @Entity
 public class Question {
     @Id
+    //@GeneratedValue
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionGenerator")
     @SequenceGenerator(name = "questionGenerator", sequenceName = "questionSequence", allocationSize=1)
     private Long questionId;
