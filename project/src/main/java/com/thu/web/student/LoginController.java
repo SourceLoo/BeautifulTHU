@@ -1,7 +1,6 @@
 package com.thu.web.student;
 
 import com.thu.domain.Role;
-import com.thu.domain.User;
 import com.thu.service.RoleService;
 import com.thu.service.UserService;
 import org.apache.http.client.ClientProtocolException;
@@ -50,15 +49,18 @@ public class LoginController {
     @Autowired
     private JWTService jwtService;
 
+    private final String errorMsg = "{\"success\":false,\"msg\":\"用户名密码不正确\"}";
+
 
     @GetMapping(value = "auth")
     public Object doAuth(@RequestParam(name = "token", required = false, defaultValue = "") String token)
     {
-        boolean flag = jwtService.checkToken(token);
+        Long userId = jwtService.getUserId(token);
 
-        if (flag) // 本地有缓存 成功认证
+        if (userId != null) // 本地有缓存 成功认证
         {
-            session.setAttribute("userId", 1L);
+            session.setAttribute("userId", userId);
+            System.out.println(session.getAttribute("userId"));
             return "redirect:/student/question/list";
         }
         else // 没有则跳转idTsinghua 重新认证
@@ -99,9 +101,11 @@ public class LoginController {
         }
         catch (ClientProtocolException e) {
             e.printStackTrace();
+            return errorMsg;
         }
         catch (IOException e) {
             e.printStackTrace();
+            return errorMsg;
         }
 
         String uname = "";
@@ -110,6 +114,8 @@ public class LoginController {
         String email = "";
         String idNumber = "";
 
+
+        content = "code=0:zjh=2011980001:yhm=lqx:xm=刘启新:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
         String [] arr = content.split(":");
         for(String pairs : arr)
         {
@@ -122,16 +128,38 @@ public class LoginController {
             }
         }
 
+        String random = String.valueOf(System.currentTimeMillis());
+        idNumber = random;
+        uname = uname + "_" +  random;
+        email = email + "_" +  random;
+
         try {
             token = jwtService.creatToken(idNumber);
         } catch (Exception e) {
             e.printStackTrace();
+            return errorMsg;
         }
+
+        System.out.println(uname);
+        System.out.println(token);
+        System.out.println(role);
+        System.out.println(email);
+        System.out.println(idNumber);
 
         userService.saveStudent(uname, token, role, email, idNumber);
 
         JSONObject result = new JSONObject();
         result.put("token", token);
-        return result.toString();
+
+        // 登录成功
+        Long userId = jwtService.getUserId(token);
+        session.setAttribute("userId", userId);
+
+        System.out.println("login: userId=" + userId);
+
+        String info = "登录成功，获得token" + result.toString() + "\n" +
+                "请再次访问根目录进入主页！";
+
+        return info;
     }
 }

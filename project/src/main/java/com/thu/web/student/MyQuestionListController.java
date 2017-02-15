@@ -1,8 +1,7 @@
 package com.thu.web.student;
 
 import com.thu.domain.Question;
-import com.thu.domain.Status;
-import com.thu.domain.User;
+import com.thu.domain.TUser;
 import com.thu.domain.UserRepository;
 import com.thu.service.QuestionService;
 import org.json.JSONArray;
@@ -52,7 +51,6 @@ public class MyQuestionListController {
 
         Long userId = null;
         userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
 
         questionPage = questionService.findMyQuestions(pageNum, pageSize, userId, orders);
 
@@ -63,7 +61,7 @@ public class MyQuestionListController {
         JSONArray jsonArray = new JSONArray();
         jsonObject.put("question_list", jsonArray);
 
-        User user = userRepository.findById(userId);
+        TUser TUser = userRepository.findById(userId);
 
 
         for (Question question : questions)
@@ -75,12 +73,12 @@ public class MyQuestionListController {
             tmp.put("question_location", question.getCreatedLocation());
             tmp.put("like_num", question.getLikes());
 
-            tmp.put("liked", user.getLikedQuestions().contains(question) ? 1 : 0);
+            tmp.put("liked", TUser.getLikedQuestions().contains(question) ? 1 : 0);
 
             // 问题作者，问题创建时间
-            tmp.put("author", question.getUser().getUname());
+            tmp.put("author", question.getTUser().getUname());
             tmp.put("createdTime", question.getCreatedTime().toLocalDate());
-            tmp.put("unread", user.getUnreadQuestions().contains(question) ? 1 : 0);
+            tmp.put("unread", TUser.getUnreadQuestions().contains(question) ? 1 : 0);
 
             jsonArray.put(tmp);
         }

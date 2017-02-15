@@ -1,9 +1,7 @@
 package com.thu.web.school;//school;
 
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.thu.domain.*;
 import com.thu.service.*;
-import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,7 @@ public class SchoolPartController {
     public static final String Erro_Responder="{'success':false,'msg':'Invalid Responder'}";
     public static final String Erro_Response="{'success':false,'msg':'Invalid Responce'}";
     public static final String Erro_Role="{'success':false,'msg':'Invalid Role'}";
-    public static final String Erro_User="{'success':false,'msg':'Invalid User'}";
+    public static final String Erro_User="{'success':false,'msg':'Invalid TUser'}";
     public static final String Erro_DDL="{'success':false,'msg':'Invalid DeadLine'}";
     public static final String Erro_TIMESTAMP1="{'success':false,'msg':'Invalid TIMESTAMP1'}";
     public static final String Erro_TIMESTAMP2="{'success':false,'msg':'Invalid TIMESTAMP2'}";
@@ -260,7 +258,7 @@ public class SchoolPartController {
 
 
 
-//        User hah = userRepository.findUser("hah");
+//        TUser hah = userRepository.findUser("hah");
 //        return "[{'question_id':'question_id', 'created_time':'created_time', 'timestamp1':'timestamp1', 'timestamp2':'timestamp2', 'timestamp3':'timestamp3' 'status':'status', 'resp_role':'resp_role',"+
 //            "'is_common':false, 'content':'content', 'delay_days':3, 'delay_reason':'delay_reason'," +
 //            "'is_common_top':false, 'reclassify_reason':'reclassify_reason', 'created_location':'created_location', 'likes':20}]";
@@ -328,7 +326,7 @@ public class SchoolPartController {
         String username=getUsername(token);
         if(username==null)
             return Erro_User;
-        User responder= userService.findUser(username);           //userRepository.findUserbyName(username);
+        TUser responder= userService.findUser(username);           //userRepository.findUserbyName(username);
         if(responder==null)
             return Erro_Responder;
         Response respon= responseService.respond(content,responder);//                 responseRepository.insertResponse(content,responder,new Date());
@@ -622,7 +620,7 @@ public class SchoolPartController {
         String role=getRole(token);
         if(role==null)
             return Erro_Role;
-        User responder=  userService.findUser(username);     //userRepository.findUserbyName(username);
+        TUser responder=  userService.findUser(username);     //userRepository.findUserbyName(username);
         if(responder==null)
             return Erro_Responder;
         Response respon= responseService.respond(r_content,responder);           //responseRepository.insertResponse(r_content,responder,new Date());

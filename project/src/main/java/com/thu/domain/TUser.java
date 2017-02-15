@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * Created by JasonLee on 16/12/1.
  */
 @Entity
-public class User {
+public class TUser {
     static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Id
     @GeneratedValue
@@ -47,7 +47,7 @@ public class User {
     @OneToMany
     private Set<Response> likedRespones = new HashSet<Response>();
 
-    protected User () {}
+    protected TUser() {}
 
     public Long getId() {
         return id;
@@ -129,7 +129,7 @@ public class User {
         this.likedRespones = likedRespones;
     }
 
-    public User(String uname, String passwd, Role role, String mobileNumber, String fixedNumber, String email, String idNumber) {
+    public TUser(String uname, String passwd, Role role, String mobileNumber, String fixedNumber, String email, String idNumber) {
         this.uname = uname;
         setPasswd(passwd);
         this.role = role;
@@ -140,12 +140,14 @@ public class User {
     }
 
     //add by luyq
-    public User(String uname, String passwd, Role role, String email, String idNumber) {
+    public TUser(String uname, String passwd, Role role, String email, String idNumber) {
         this.uname = uname;
         this.passwd = passwd;
         this.role = role;
         this.email = email;
         this.idNumber = idNumber;
+
+        this.mobileNumber = "未知";
     }
 }
 

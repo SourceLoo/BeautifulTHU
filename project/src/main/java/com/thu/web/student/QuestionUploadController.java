@@ -2,11 +2,8 @@ package com.thu.web.student;
 
 import com.thu.domain.*;
 import com.thu.service.QuestionService;
-import com.thu.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,15 +83,14 @@ public class QuestionUploadController {
 
 
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
-        User user = userRepository.findById(userId);
+        TUser TUser = userRepository.findById(userId);
 
-        //public boolean insertQuestion(String title, String content, User user, String createdLocation, Date createdTime, List<Pic> pics) {
+        //public boolean insertQuestion(String title, String content, TUser TUser, String createdLocation, Date createdTime, List<Pic> pics) {
 
         System.out.println(title);
         System.out.println(content);
         System.out.println(location);
-        questionService.saveQuestion(user, title, content, location, paths);
+        questionService.saveQuestion(TUser, title, content, location, paths);
 
         return successMsg;
     }

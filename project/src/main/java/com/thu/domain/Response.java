@@ -13,13 +13,13 @@ public class Response {
     private Long responseId;
     private String responseContent;
     @ManyToOne
-    private User responder;
+    private TUser responder;
     private LocalDateTime respondTime = LocalDateTime.now();
     private Long likes = 0L;
 
     protected Response() {}
 
-    public Response(String responseContent, User responder) {
+    public Response(String responseContent, TUser responder) {
         this.responseContent = responseContent;
         this.responder = responder;
     }
@@ -36,11 +36,11 @@ public class Response {
         this.responseContent = responseContent;
     }
 
-    public User getResponder() {
+    public TUser getResponder() {
         return responder;
     }
 
-    public void setResponder(User responder) {
+    public void setResponder(TUser responder) {
         this.responder = responder;
     }
 

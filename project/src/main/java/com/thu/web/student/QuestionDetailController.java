@@ -65,12 +65,12 @@ public class QuestionDetailController {
 
         Long userId = (Long) session.getAttribute("userId");
         userId = new Long(1);
-        User user = userRepository.findById(userId);
+        TUser TUser = userRepository.findById(userId);
 
         List<UserResponse> userResponses = new ArrayList<>();
         for(Response response: question.getResponses())
         {
-            String liked = user.getLikedRespones().contains(response) ? "已赞" : "赞";
+            String liked = TUser.getLikedRespones().contains(response) ? "已赞" : "赞";
             UserResponse userResponse = new UserResponse(liked, response);
             userResponses.add(userResponse);
         }

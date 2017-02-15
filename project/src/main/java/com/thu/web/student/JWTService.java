@@ -1,6 +1,6 @@
 package com.thu.web.student;
 
-import com.thu.domain.User;
+import com.thu.domain.TUser;
 import com.thu.domain.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -35,23 +35,23 @@ public class JWTService {
         return claims;
     }
 
-    public boolean checkToken(String token){
+    public Long getUserId(String token){
         String idNumber;
         try{
             Claims claims = parseToken(token);
             idNumber = claims.get("idNumber").toString();
         }
         catch (Exception e){
-            return false;
+            return null;
         }
-        User user = userRepository.findByIdNumber(idNumber);
-        if(user != null && user.getPasswd().equals(token))
+        TUser TUser = userRepository.findByIdNumber(idNumber);
+        if(TUser != null && TUser.getPasswd().equals(token))
         {
-            return true;
+            return TUser.getId();
         }
         else
         {
-            return false;
+            return null;
         }
     }
 }

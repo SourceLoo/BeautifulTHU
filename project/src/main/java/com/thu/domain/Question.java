@@ -15,7 +15,7 @@ public class Question {
     private String title;
     private String content;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+    private TUser TUser;
     @OneToOne
     private Role leaderRole;
     @OneToMany
@@ -57,14 +57,15 @@ public class Question {
         this.content = content;
     }
 
-    public Question(String title, String content, User user, String createdLocation, List<String> picPaths) {
+    public Question(String title, String content, TUser TUser, String createdLocation, List<String> picPaths) {
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.TUser = TUser;
         this.createdLocation = createdLocation;
         for (String path: picPaths) {
             pics.add(new Pic(path));
         }
+
         this.setStatus(Status.UNAPPROVED);
         //this.responses.add(new Response("回复1"));
     }
@@ -89,12 +90,12 @@ public class Question {
         this.content = content;
     }
 
-    public User getUser() {
-        return user;
+    public TUser getTUser() {
+        return TUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setTUser(TUser TUser) {
+        this.TUser = TUser;
     }
 
     public Role getLeaderRole() {

@@ -2,19 +2,39 @@ To老师端
 
 ```java
 //当user的问题状态改变时，执行下面语句，将问题加入未读中
-questionService.modifyUnreadQuestions(user, quetionId, true);
+questionService.modifyUnreadQuestions(TUser, quetionId, true);
 ```
 
 
 
 To sunji
 
-```
+```json
 1. 上传问题后，跳转至第一视角的问题列表页面
 
 2. 第一视角的问题列表页面，去掉所有的筛选条件
 
 3. 第三视角的问题列表的筛选条件失效，js出错了应该。
+
+4. 
+/student/login?ticket=xxx # 获取服务端签发的token， 成功获取后跳转至第三视角 问题列表，否则跳转认证auth
+receive:
+{
+   "success":false, // 判断是否有此字段，无则表示正常返回token
+   "msg":"用户名密码不正确",
+   "token": xxx, 
+}
+
+5.
+/student/auth?token=xxx # 从localstorage 获取token发送，可空。
+
+6.
+测试方法
+先get
+/student/login?ticket=123
+得到token后，再get
+/student/auth?token={token}
+即可登录成功
 ```
 
 
@@ -36,6 +56,10 @@ student/auth
 ```
 
 
+
+
+
+done
 
 接口
 

@@ -1,14 +1,10 @@
 package com.thu.web.school;
 
 import com.thu.domain.Role;
-import com.thu.domain.User;
+import com.thu.domain.TUser;
 import com.thu.domain.UserRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import net.sf.json.JSONException;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,12 +14,9 @@ import com.thu.service.QuestionService;
 import com.thu.service.ResponseService;
 import com.thu.service.RoleService;
 import com.thu.service.UserService;
-import com.thu.web.school.Jwt;
 
 import javax.websocket.server.PathParam;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
 
 @RestController
@@ -33,7 +26,7 @@ public class SchoolController{
     private final String loginErrorMsg = "{'success':false,'msg':'Invalid Name Or Passwd'}";
     private final String invalidInputMsg = "{'success':false,'msg':'Invalid Input'}";
     private final String invalidTokenMsg = "{'success':false,'msg':'Invalid Token'}";
-    private final String userNotLogMsg = "{'success':false,'msg':'User Not Log In'}";
+    private final String userNotLogMsg = "{'success':false,'msg':'TUser Not Log In'}";
     private final String errorMsg = "{'success':false,'msg':'Fail'}";
     private final String successMsg = "{'success':true,'msg':'Done'}";
     //private final ArrayList<String> roles_TW = new ArrayList(Arrays.asList("tuanwei"));
@@ -156,7 +149,7 @@ public class SchoolController{
         //String passwd = "111";
         if (uname.equals("") || ! userService.containsUname(uname))
             return loginErrorMsg;
-        User usr = userService.findUser(uname);
+        TUser usr = userService.findUser(uname);
 
         if (!usr.checkPasswd(passwd))
             return loginErrorMsg;
@@ -173,6 +166,15 @@ public class SchoolController{
         result.put("token", token);
         result.put("role", usr.getRole().getRole());
         return result.toString();
+    }
+
+    @RequestMapping(value = "/auth/login/{token:.+}", method = RequestMethod.POST)
+    @ResponseBody
+    public String login( @PathVariable String token) throws JSONException {
+        if (!checkPermissionWithoutName(token, roleALL)){
+            return invalidTokenMsg;
+        }
+        return successMsg;
     }
 
     /*  done
@@ -201,7 +203,7 @@ public class SchoolController{
         boolean success = tokenMap.removeUname(tokenName);
         if (success){
             JSONObject result = new JSONObject();
-            User usr = userService.findUser(tokenName);
+            TUser usr = userService.findUser(tokenName);
             result.put("role", usr.getRole().getRole());
             result.put("resp_person", usr.getRole().getRespPerson());
             result.put("fixed_phone", usr.getFixedNumber());
@@ -228,7 +230,7 @@ public class SchoolController{
             return invalidTokenMsg;
         }
         JSONObject result = new JSONObject();
-        User usr = userService.findUser(tokenName);
+        TUser usr = userService.findUser(tokenName);
         result.put("uname", tokenName);
         result.put("resp_person", usr.getRole().getRespPerson());
         result.put("display_name", usr.getRole().getDisplayName());
@@ -285,7 +287,7 @@ public class SchoolController{
         if (!userService.containsUname(uname)){
             return invalidInputMsg;
         }
-        User usr = userService.findUser(uname);
+        TUser usr = userService.findUser(uname);
 
         usr.setFixedNumber("");
         usr.setMobileNumber("");
@@ -310,10 +312,10 @@ public class SchoolController{
     public String getContact(@PathVariable String token) throws JSONException{
        if (!checkPermissionWithoutName(token, roleTW))
            return invalidTokenMsg;
-        List<User> userList = userService.findAll();
+        List<TUser> TUserList = userService.findAll();
         String result = "[";
         boolean flag = true;
-        for (User usr:userList) {
+        for (TUser usr: TUserList) {
             JSONObject mem = new JSONObject();
             mem.put("display_name", usr.getRole().getDisplayName());
             mem.put("uname", usr.getUname());
