@@ -1,8 +1,6 @@
 package com.thu.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by JasonLee on 16/12/3.
@@ -15,7 +13,8 @@ public class Pic {
 
     protected Pic() {}
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "picGenerator")
+    @SequenceGenerator(name = "picGenerator", sequenceName = "picSequence", allocationSize=1)
     private Long id;
     private String path;
 

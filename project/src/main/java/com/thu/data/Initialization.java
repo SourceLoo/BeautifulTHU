@@ -46,22 +46,22 @@ public class Initialization implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
 
-        roleRepository.save(new Role("xuesheng", "学生", "xueshengResp"));
+        roleRepository.save(new Role("student", "学生", "studentResp"));
         roleRepository.save(new Role("zongban", "综办", "老师甲"));
         roleRepository.save(new Role("xiaoban", "校办", "老师乙"));
         roleRepository.save(new Role("tuanwei", "团委", "老师丙"));
 
-        userService.insertUser("学生甲", "mobile", "fix", "984", "110@qq.com", roleService.findByRole("xuesheng"), "passwd");
-        userService.insertUser("学生乙", "mobile", "fix", "984", "110@qq.com", roleService.findByRole("xuesheng"), "passwd");
+        userService.insertUser("学生甲", "mobile", "fix", "984", "110@qq.com", roleService.findByRole("student"), "passwd");
+        userService.insertUser("学生乙", "mobile", "fix", "984", "110@qq.com", roleService.findByRole("student"), "passwd");
         userService.insertUser("老师甲", "mobile", "fix", "000", "000@qq.com", roleService.findByRole("zongban"), "passwd");
         userService.insertUser("老师乙", "mobile", "fix", "001", "001@qq.com", roleService.findByRole("xiaoban"), "passwd");
         userService.insertUser("老师丙", "mobile", "fix", "002", "002@qq.com", roleService.findByRole("tuanwei"), "passwd");
 
-        TUser s1 = userRepository.findById(new Long(1));
+        TUser s1 = userRepository.findById(1L);
         TUser s2 = userRepository.findById(2L);
-        TUser t1 = userRepository.findById(new Long(3));
-        TUser t2 = userRepository.findById(new Long(4));
-        TUser t3 = userRepository.findById(new Long(5));
+        TUser t1 = userRepository.findById(3L);
+        TUser t2 = userRepository.findById(4L);
+        TUser t3 = userRepository.findById(5L);
 
         List<String> paths = new ArrayList<>();
         paths.add("/upload/image/20161214194625_138940119.jpg");
@@ -81,8 +81,7 @@ public class Initialization implements CommandLineRunner {
         questionService.saveQuestion(s2, "这是标题5", "这是内容5", "这是清华大学", paths.subList(0,1));
         questionService.saveQuestion(s2, "这是标题6", "这是内容6\n测试", "这是清华大学", paths.subList(0,1));
 
-        question = questionService.findById(19L);
-        System.out.println("lyq");
+        question = questionService.findById(1L);
         System.out.println(roleService.findByRole("zongban"));
         question.setLeaderRole(roleService.findByRole("zongban"));
         question.setLikes(4L);
@@ -90,13 +89,13 @@ public class Initialization implements CommandLineRunner {
 
 
 
-        question = questionService.findById(10L);
+        question = questionService.findById(2L);
         question.setLeaderRole(roleService.findByRole("zongban"));
         question.setLikes(2L);
         question.setStatus(Status.UNCLASSIFIED);
         questionRepository.save(question);
 
-        question = questionService.findById(13L);
+        question = questionService.findById(3L);
         question.setLeaderRole(roleService.findByRole("xiaoban"));
         question.setCommon(true);
         question.setDdl(LocalDateTime.now().plusDays(2));
@@ -104,7 +103,7 @@ public class Initialization implements CommandLineRunner {
         question.setStatus(Status.UNSOLVED);
         questionRepository.save(question);
 
-        question = questionService.findById(15L);
+        question = questionService.findById(4L);
         question.setLeaderRole(roleService.findByRole("xiaoban"));
         question.setDdl(LocalDateTime.now().plusDays(4));
         question.setLikes(4L);
@@ -112,7 +111,7 @@ public class Initialization implements CommandLineRunner {
         questionRepository.save(question);
 
 
-        question = questionService.findById(17L);
+        question = questionService.findById(5L);
         question.setCommon(true);
         question.setLeaderRole(roleService.findByRole("tuanwei"));
         question.setLikes(3L);
@@ -120,7 +119,7 @@ public class Initialization implements CommandLineRunner {
         questionRepository.save(question);
 
 
-        question = questionService.findById(19L);
+        question = questionService.findById(6L);
         question.setCommon(true);
         question.setLeaderRole(roleService.findByRole("tuanwei"));
         question.setLikes(0L);
@@ -128,9 +127,10 @@ public class Initialization implements CommandLineRunner {
         question.setRejectReason("问题不在处理范围");
         questionRepository.save(question);
 
-        questionService.responsibleDeptRespond(new Long(15), response1); // 解决中
-        questionService.responsibleDeptRespond(new Long(17), response1); // 解决中
-        questionService.responsibleDeptRespond(new Long(17), response2);
+        questionService.responsibleDeptRespond(new Long(4), response1); // 解决中
+        questionService.responsibleDeptRespond(new Long(5), response1); // 解决中
+        questionService.responsibleDeptRespond(new Long(5), response2);
+
     }
 
 }

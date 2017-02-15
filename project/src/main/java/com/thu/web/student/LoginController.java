@@ -110,7 +110,7 @@ public class LoginController {
 
         String uname = "";
         String token = "";
-        Role role = roleService.findByRole("xuesheng");
+        Role role = roleService.findByRole("student");
         String email = "";
         String idNumber = "";
 

@@ -84,7 +84,7 @@ public class GetStatusAndDepartController {
         List<Role> roles = roleRepository.findAll();
         for(Role role: roles)
         {
-            if("xuesheng".equals(role.getRole()))
+            if("student".equals(role.getRole()))
                 continue;
 
             JSONObject tmp = new JSONObject();
