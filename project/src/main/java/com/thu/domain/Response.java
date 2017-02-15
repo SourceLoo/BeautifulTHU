@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Response {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "responseGenerator")
+    @SequenceGenerator(name = "responseGenerator", sequenceName = "responseSequence", allocationSize=1)
     private Long responseId;
     private String responseContent;
     @ManyToOne

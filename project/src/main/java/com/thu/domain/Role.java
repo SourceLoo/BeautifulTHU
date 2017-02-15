@@ -1,7 +1,6 @@
 package com.thu.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by JasonLee on 16/12/2.
