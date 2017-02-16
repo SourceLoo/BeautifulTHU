@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -114,10 +116,13 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
+        //TODO: excuse me?
         question.setLeaderRole(leaderRole);
         question.setOtherRoles(otherRoles);
+        question.setTransferRole(null);
         question.setStatus(Status.UNSOLVED);
-        question.setTransferRole(leaderRole);
+        question.setDdl(LocalDateTime.ofInstant(Instant.ofEpochMilli(ddl.getTime()), ZoneOffset.UTC));
+        question.setInstruction(instruction);
         try {
             questionRepository.save(question);
             return true;

@@ -115,7 +115,7 @@ public class LoginController {
         String idNumber = "";
 
 
-        content = "code=0:zjh=2011980001:yhm=lqx:xm=刘启新:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
+        content = "code=0:zjh=2011980001:yhm=stu:xm=test_stu:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
         String [] arr = content.split(":");
         for(String pairs : arr)
         {

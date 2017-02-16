@@ -1,4 +1,4 @@
-const common_props = ['curr', 'data', 'is_tuanwei', 'is_xiaoban', 'is_zongban', 'is_main'];
+const common_props = ['curr', 'data', 'is_xiaoban', 'is_zongban', 'is_main'];
 const display_status = ['待审核', '待分类', '待解决', '解决中', '申请重分类', '申请延期', '已解决', '无效']
 var handle_res = function(data) {
     //return data;
@@ -41,7 +41,7 @@ const info = {
 const questions = {
     name: 'questions',
     template: '#questions',
-    props: ['update_questions'].concat(common_props),
+    props: [].concat(common_props),
     data: function() {
         return {
             options: this.data.display_name[1],
@@ -78,7 +78,7 @@ const questions = {
             return display_status[status];
         },
         question_for_main: function(status) {
-            return (status == 0 && this.is_tuanwei) || (status == 1 && (this.is_xiaoban || this.is_zongban));
+            return (status == 0 && this.is_xiaoban) || (status == 1 && this.is_zongban);
         },
         question_for_related: function(status) {
             return ([2, 3, 4, 5, 6].indexOf(status) != -1);
@@ -154,7 +154,7 @@ const questions = {
                 question_id: id,
             };
             var path = '';
-            if (is_common) {
+            if (!is_common) {
                 path = '/qa/add/';
             } else {
                 path = '/qa/del/';
@@ -174,7 +174,7 @@ const questions = {
                 question_id: id,
             };
             var path = '';
-            if (is_common_top) {
+            if (!is_common_top) {
                 path = '/qa/top/';
             } else {
                 path = '/qa/notop/';
@@ -399,7 +399,7 @@ var app = new Vue({
             this.$http.post('/auth/login/' + localStorage.token).then(res => {
                 res = handle_res(res);
                 if (res.success === false) {
-                    alert(res.msg);
+                    //alert(res.msg);
                     localStorage.setItem('token', '')
                     localStorage.setItem('role', '')
                     this.curr.role = '';
@@ -455,9 +455,6 @@ var app = new Vue({
         },
     },
     computed: {
-        is_tuanwei: function() {
-            return this.curr.role == 'tuanwei';
-        },
         is_xiaoban: function() {
             return this.curr.role == 'xiaoban';
         },
@@ -465,7 +462,7 @@ var app = new Vue({
             return this.curr.role == 'zongban';
         },
         is_main: function() {
-            return this.is_tuanwei || this.is_xiaoban || this.is_zongban;
+            return this.is_xiaoban || this.is_zongban;
         },
     },
     methods: {
@@ -473,7 +470,6 @@ var app = new Vue({
             this.curr.view = view;
         },
         login: function() {
-            //TODO: md5 passwd?
             var temp = {
                 uname: this.curr.uname,
                 passwd: this.curr.passwd
@@ -550,7 +546,7 @@ var app = new Vue({
                     var _role = this.curr.role;
                     //TODO: remove after combined.
                     this.data.questions = res.filter(function(question) {
-                        return _role == 'tuanwei' || _role == 'xiaoban' || question.resp_role.indexOf(_role) != -1;
+                        return _role == 'xiaoban' || question.resp_role.indexOf(_role) != -1;
                     });
                     this.set_curr_view('questions');
                     this.curr.question_modify = -1;

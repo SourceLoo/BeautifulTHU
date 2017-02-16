@@ -225,28 +225,28 @@
                 <div class="thu-tiddler-title">
                     <div class="thu-titlebar" v-if="curr.question_modify!=index">
                         <div class="thu-tiddler-controls" v-if="question.status!=7">
-                            <a href="javascript:;" @click="question_reclassify(question.question_id, true)" class="small" v-if="question.status==4 && is_tuanwei">
+                            <a href="javascript:;" @click="question_reclassify(question.question_id, true)" class="small" v-if="question.status==4 && is_xiaoban">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>同意重分类</span>
                             </a>
-                            <a href="javascript:;" @click="question_reclassify(question.question_id, false)" class="small" v-if="question.status==4 && is_tuanwei">
+                            <a href="javascript:;" @click="question_reclassify(question.question_id, false)" class="small" v-if="question.status==4 && is_xiaoban">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>拒绝</span>
                             </a>
-                            <a href="javascript:;" @click="question_delay(question.question_id, true)" class="small" v-if="question.status==5 && is_tuanwei">
+                            <a href="javascript:;" @click="question_delay(question.question_id, true)" class="small" v-if="question.status==5 && is_xiaoban">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>同意延期</span>
                             </a>
-                            <a href="javascript:;" @click="question_delay(question.question_id, false)" class="small" v-if="question.status==5 && is_tuanwei">
+                            <a href="javascript:;" @click="question_delay(question.question_id, false)" class="small" v-if="question.status==5 && is_xiaoban">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span>拒绝</span>
                             </a>
-                            <a href="javascript:;" @click="question_common(question.question_id, question.is_common)" class="small" v-if="is_tuanwei">
+                            <a href="javascript:;" @click="question_common(question.question_id, question.is_common)" class="small" v-if="is_xiaoban">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span v-if="!question.is_common">设为常见</span>
                                 <span v-else>取消常见</span>
                             </a>
-                            <a href="javascript:;" @click="question_common_top(question.question_id, question.is_common_top)" class="small" v-if="is_tuanwei && question.is_common">
+                            <a href="javascript:;" @click="question_common_top(question.question_id, question.is_common_top)" class="small" v-if="is_xiaoban && question.is_common">
                                 <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
                                 <span v-if="!question.is_common_top">常见置顶</span>
                                 <span v-else>取消置顶</span>
@@ -328,7 +328,7 @@
                                 <template v-if="curr.question_modify==index">
                                     <!--main-->
                                     <template v-if="question_for_main(question.status)">
-                                        <tr class="thu-edit-field" v-if="is_tuanwei">
+                                        <tr class="thu-edit-field" v-if="is_xiaoban">
                                             <td class="thu-edit-field-name">
                                                 直接回复处理：
                                             </td>
@@ -336,7 +336,7 @@
                                                 <textarea placeholder="回复内容" v-model="response_text"></textarea>
                                             </td>
                                             <td class="thu-edit-field-submit">
-                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_response(question.question_id)">
+                                                <a href="javascript:void(0)" class="thu-btn-invisible" @click="question_response(question.question_id)">
                                                     <i class="fa fa-reply" aria-hidden="true"></i> 确认
                                                 </a>
                                             </td>
@@ -366,15 +366,14 @@
                                                 <!--<multiselect :selected="selected_ones" :options="options" @update="updateSelected"> </multiselect>-->
                                             </td>
                                             <td class="thu-edit-field-submit">
-                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_classify(question.question_id)">
+                                                <a href="javascript:void(0)" class="thu-btn-invisible" @click="question_classify(question.question_id)">
                                                     <i class="fa fa-reply" aria-hidden="true"></i> 确认
                                                 </a>
                                             </td>
                                         </tr>
                                     </template>
-                                    <!--related-->
-                                    <template v-if="question_for_related(question.status)">
-                                        <tr class="thu-edit-field">
+                                    <template>
+                                        <tr class="thu-edit-field" v-if="question.opinion">
                                             <td class="thu-edit-field-name">
                                                 主责部门意见：
                                             </td>
@@ -384,14 +383,14 @@
                                         </tr>
                                         <tr class="thu-edit-field" v-for="(response, index_res) in question.responses">
                                             <td class="thu-edit-field-name">
-                                                回复{{index_res+1}}：
+                                                部门回复({{index_res+1}})：
                                             </td>
                                             <td class="thu-edit-field-value">
-                                                <span v-if="response_modify!=response.id">{{response.content}}</span>
-                                                <input v-else type="text" v-model="response.content">
+                                                <span v-if="response_modify!=response.response_id">{{response.response_content}}</span>
+                                                <input v-else type="text" v-model="response.response_content">
                                             </td>
                                             <td class="thu-edit-field-submit" v-if="!is_main && question.status==3">
-                                                <a href="javasrcipt:;" v-if="response_modify!=response.id" @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
+                                                <a href="javasrcipt:;" v-if="response_modify!=response.response_id" @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
                                                     <i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> 修改
                                                 </a>
                                                 <a href="javasrcipt:;" v-else @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
@@ -399,6 +398,9 @@
                                                 </a>
                                             </td>
                                         </tr>
+                                    </template>
+                                    <!--related-->
+                                    <template v-if="question_for_related(question.status)">
                                         <tr class="thu-edit-field" v-if="!is_main && ([2,3,6].indexOf(question.status) != -1)">
                                             <td class="thu-edit-field-name">
                                                 添加回复：
@@ -439,6 +441,8 @@
                                                 </a>
                                             </td>
                                         </tr>
+                                    </template>
+                                    <template>
                                         <tr class="thu-edit-field" v-if="question.status==6">
                                             <td class="thu-edit-field-name">
                                                 学生评价：
@@ -457,7 +461,7 @@
                                                     <span>无评价</span>
                                                 </div>
                                                 <div v-if="question.student_score!=0">
-                                                    <span>学生评价：{{question.student_comment}}</span>
+                                                    <span>评价内容：{{question.student_comment}}</span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -468,13 +472,10 @@
                     </div>
                     <!--modify-only-->
                     <div class="thu-editor-toolbar" v-if="curr.question_modify==index && question_for_main(question.status)">
-                        <a href="javascript:;" v-if="is_tuanwei" @click="question_forward(question.question_id,'xiaoban')">
-                            <i class="fa fa-mail-forward fa-fw" aria-hidden="true"></i> 转交校办处理
-                        </a>
-                        <a href="javascript:;" v-if="!is_zongban" @click="question_forward(question.question_id,'zongban')" :style="is_xiaoban?'display:block;margin:0 auto;':''">
+                        <a href="javascript:;" v-if="!is_zongban" @click="question_forward(question.question_id,'zongban')">
                             <i class="fa fa-mail-forward fa-fw" aria-hidden="true"></i> 转交总办处理
                         </a>
-                        <a href="javascript:;" v-if="is_tuanwei" @click="question_reject(question.question_id)"  style="color:red">
+                        <a href="javascript:;" v-if="is_xiaoban" @click="question_reject(question.question_id)"  style="color:red">
                             <i class="fa fa-trash fa-fw" aria-hidden="true"></i> 拒绝
                         </a>
                     </div>
@@ -488,7 +489,7 @@
             <div class="thu-tiddler-frame">
                 <div class="thu-tiddler-title">
                     <div class="thu-titlebar">
-                        <div class="thu-tiddler-controls" v-if="is_tuanwei">
+                        <div class="thu-tiddler-controls" v-if="is_xiaoban">
                             <a href="javascript:;" @click="contact_new()">
                                 <i class="fa fa-plus-circle" aria-hidden="true"></i>
                                 <span>新增用户</span>
@@ -507,36 +508,36 @@
                         <thead>
                             <tr>
                                 <td>部门</td>
-                                <td v-if="is_tuanwei">帐号</td>
+                                <td v-if="is_xiaoban">帐号</td>
                                 <td>责任人</td>
                                 <td>座机</td>
                                 <td>手机</td>
-                                <td v-if="is_tuanwei">密码</td>
-                                <td v-if="is_tuanwei" style="width:45px">操作</td>
+                                <td v-if="is_xiaoban">密码</td>
+                                <td v-if="is_xiaoban" style="width:45px">操作</td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(line, index) in data.contact">
                                 <template v-if="curr.contact_modify!=index">
                                     <td>{{line.display_name}}</td>
-                                    <td v-if="is_tuanwei">{{line.uname}}</td>
+                                    <td v-if="is_xiaoban">{{line.uname}}</td>
                                     <td>{{line.resp_person}}</td>
                                     <td>{{line.fixed_phone}}</td>
                                     <td>{{line.mobile_phone}}</td>
-                                    <td v-if="is_tuanwei">可修改</td>
-                                    <td v-if="is_tuanwei" align="right">
+                                    <td v-if="is_xiaoban">可修改</td>
+                                    <td v-if="is_xiaoban" align="right">
                                         <a href="javascript:;" @click="contact_modify(index)">修改</a>
                                         <a href="javascript:;" @click="contact_delete(index)" style="color:red">删除</a>
                                     </td>
                                 </template>
                                 <template v-else>
                                     <td><input v-model="line.display_name"></td>
-                                    <td v-if="is_tuanwei"><input v-model="line.uname"></td>
+                                    <td v-if="is_xiaoban"><input v-model="line.uname"></td>
                                     <td><input v-model="line.resp_person"></td>
                                     <td><input v-model="line.fixed_phone"></td>
                                     <td><input v-model="line.mobile_phone"></td>
-                                    <td v-if="is_tuanwei"><input v-model="line.passwd"></td>
-                                    <td v-if="is_tuanwei" align="right">
+                                    <td v-if="is_xiaoban"><input v-model="line.passwd"></td>
+                                    <td v-if="is_xiaoban" align="right">
                                         <a href="javascript:;" @click="contact_save(index)">保存</a>
                                         <a href="javascript:;" @click="contact_discard(index)">舍弃</a>
                                     </td>
@@ -615,7 +616,7 @@
             </div>
         </div>
 
-        <router-view :curr="curr" :data="data" :is_tuanwei="is_tuanwei" :is_xiaoban="is_xiaoban" :is_zongban="is_zongban" :is_main="is_main"></router-view>
+        <router-view :curr="curr" :data="data" :is_xiaoban="is_xiaoban" :is_zongban="is_zongban" :is_main="is_main"></router-view>
 
     </div>
 </body>

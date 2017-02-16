@@ -34,10 +34,8 @@ public class SchoolPartController {
 
     TokenMap tokenMap = new TokenMap();
 
-    public  static final String tuanwei="tuanwei";
     public static final String xiaoban="xiaoban";
     public static final String zongban="zongban";
-    private final String roleTW = "tuanwei";
     private final String roleZB = "zongban";
     private final String roleXB = "xiaoban";
     private final String roleALL = "all";
@@ -59,7 +57,7 @@ public class SchoolPartController {
     //判断是否是主责部分
     private boolean checkMain(String role){
 
-        if (role.equals(roleTW)||role.equals(roleXB)||role.equals(roleZB))
+        if (role.equals(roleXB)||role.equals(roleZB))
             return true;
         else
             return false;
@@ -152,7 +150,7 @@ public class SchoolPartController {
         if(role==null)
             return Erro_Role;
         List<Question> questions=new ArrayList<>();
-        if(role.equals(tuanwei)||role.equals(xiaoban)){
+        if(role.equals(xiaoban)){
             questions= questionService.getAllQuestions();          //questionRepository.getQuestions();
         }else if(role.equals(zongban)){
             questions=questionService.getAllQuestionsForRole(roleService.findByRole(role));  //questionRepository.getQuestionsbyRole(roleReposiroty.findRole(role));
@@ -188,10 +186,11 @@ public class SchoolPartController {
             List<String> role_role=new ArrayList<>();
             List<String> role_res_name=new ArrayList<>();
 
+            //TODO:修改判定逻辑，使用transferRole
             if(question.getTransferRole()==null||question.getStatus() ==Status.UNAPPROVED||(question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
             {
-                role_role.add(tuanwei);
-                role_res_name.add(roleService.findByRole(tuanwei).getDisplayName());
+                role_role.add(xiaoban);
+                role_res_name.add(roleService.findByRole(xiaoban).getDisplayName());
             }else if ((role.equals(zongban)||role.equals(xiaoban))&&question.getStatus()==Status.UNCLASSIFIED){
                 Role forward_role=question.getTransferRole();
                 if(forward_role.getRole().equals(role)) {
@@ -264,47 +263,6 @@ public class SchoolPartController {
 //            "'is_common_top':false, 'reclassify_reason':'reclassify_reason', 'created_location':'created_location', 'likes':20}]";
     }
 
-    //主责部门获取具体问题
-//    {'opinion':'', 'pic_path':['',''],
-//        'responses':[{'response_id':'', 'response_content':''}]}
-    @RequestMapping(value = "/questions/main/get_detail/{token:.+}",method = RequestMethod.POST)
-    public String getMainQueDetail(@RequestParam(name="question_id") String q_id,@PathVariable String token){
-        if(!CheckToken(token))
-            return Error_Msg;
-        Long qid=Long.parseLong("-1");
-        try{
-            qid= Long.parseLong(q_id);
-        }catch (Exception e){
-            return Erro_Parse;
-        }
-        if(!checkMain(getRole(token)))
-            return Erro_Role;
-//        String role=getRole(token);
-//        List<Question> questions=null;
-        Question question= questionService.getQuestionDetail(qid);               //questionRepository.getQuestionbyId(qid);
-        JSONObject jsonObject=new JSONObject();
-        jsonObject.put("opinion",question.getInstruction());
-
-//        List<Pic> pics=question.getPics();
-//        List<String> pics_path=new ArrayList<>();
-//        for(Pic pic:pics){
-//            pics_path.add(pic.getPath());
-//        }
-//        jsonObject.put("pic_path",pics_path);
-        JSONArray ja_response=new JSONArray();
-        for(Response response:question.getResponses()){
-            JSONObject jo=new JSONObject();
-            jo.put("response_id",response.getResponseId());
-            jo.put("response_content",response.getResponseContent());
-            ja_response.add(jo);
-        }
-        jsonObject.put("responses",ja_response);
-        return jsonObject.toString();
-
-//        return "{'opinion':'opinion', 'pic_path':['pic_path_0','pic_path_1'],"+
-//        "'responses':[{'response_id':'response_id', 'response_content':'response_content'}]}";
-    }
-
     //主责部门直接回复
     // {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/main/response/{token:.+}",method = RequestMethod.POST)
@@ -319,7 +277,7 @@ public class SchoolPartController {
         }
         //产生一条回复
         String role=getRole(token);
-        if(!role.equals(tuanwei))
+        if(!role.equals(xiaoban))
             return Erro_Role;
 //        if(role==null)
 //            return Erro_Role;
@@ -335,7 +293,7 @@ public class SchoolPartController {
         //将回复插入到问题中
         Boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);      //questionRepository.responsebyMain(qid,respon,respon.getRespondTime());
         if(insertResponse) {
-            Boolean updateRole= roleService.updateNumber(tuanwei,null,null,null,Long.parseLong("1"));     //updateDirectRespondNumber(tuanwei,Long.parseLong("1"));
+            Boolean updateRole= roleService.updateNumber(xiaoban,null,null,null,Long.parseLong("1"));
             if(!updateRole)
                 return Erro_Role;
 
@@ -388,14 +346,10 @@ public class SchoolPartController {
         if(transfer_ok) {
             //更新forword_role表的信息
             //更新timestamp1
-            if(role.equals(tuanwei)) {
+            if(role.equals(xiaoban)) {
                 Boolean setTimeStamp1 = questionService.updateTimestamp(qid, LocalDateTime.now(), null, null);
                 if (!setTimeStamp1)
                     return Erro_TIMESTAMP1;
-            }else if(role.equals(xiaoban)){
-                Boolean setTimeStamp2 = questionService.updateTimestamp(qid, null,LocalDateTime.now(),  null);
-                if (!setTimeStamp2)
-                    return Erro_TIMESTAMP2;
             }else{
                 return Erro_Role;
             }
@@ -414,7 +368,7 @@ public class SchoolPartController {
 
     //主责部门的对问题分类
     //{'success':bool, 'msg':''}
-    @RequestMapping(value = "/quesitons/main/classify/{token:.+}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/classify/{token:.+}",method = RequestMethod.POST)
     public String MainClassify(@RequestParam("question_id") String q_id,
                                @RequestParam("leader_role") String lead_role,
                                @RequestParam("other_roles") String other_roles,
@@ -444,7 +398,7 @@ public class SchoolPartController {
                 return Erro_Role;
             others.add(oth);
         }
-        SimpleDateFormat sdf  =   new  SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
+        SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd" );
         Date date= new Date();
         try {
             date= sdf.parse(ddl);
@@ -453,18 +407,14 @@ public class SchoolPartController {
         }
         Boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,date,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
         Boolean setTimeStamp=Boolean.FALSE;
-        if(role.equals(tuanwei)){
+        if(role.equals(xiaoban)){
             setTimeStamp=questionService.updateTimestamp(qid,LocalDateTime.now(),null,null);
             if(!setTimeStamp)
                 return Erro_TIMESTAMP1;
-        }else if(role.equals(xiaoban)){
+        }else if(role.equals(zongban)){
             setTimeStamp=questionService.updateTimestamp(qid,null,LocalDateTime.now(),null);
             if(!setTimeStamp)
                 return Erro_TIMESTAMP2;
-        }else if(role.equals(zongban)){
-            setTimeStamp=questionService.updateTimestamp(qid,null,null,LocalDateTime.now());
-            if(!setTimeStamp)
-                return Erro_TIMESTAMP3;
         }else{
             return Erro_Role;
         }
@@ -575,7 +525,7 @@ public class SchoolPartController {
         }catch (Exception e){
             return Erro_Parse;
         }
-        Role tuan= roleService.findByRole(tuanwei);    //roleReposiroty.findRole(tuanwei);
+        Role tuan= roleService.findByRole(xiaoban);
         String cur_role=getRole(token);
         if(cur_role==null)
             return Erro_Role;

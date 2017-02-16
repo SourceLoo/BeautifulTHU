@@ -29,8 +29,6 @@ public class SchoolController{
     private final String userNotLogMsg = "{\"success\":false,\"msg\":\"TUser Not Log In\"}";
     private final String errorMsg = "{\"success\":false,\"msg\":\"Fail\"}";
     private final String successMsg = "{\"success\":true,\"msg\":\"Done\"}";
-    //private final ArrayList<String> roles_TW = new ArrayList(Arrays.asList("tuanwei"));
-    private final String roleTW = "tuanwei";
     private final String roleZB = "zongban";
     private final String roleXB = "xiaoban";
     private final String roleALL = "all";
@@ -74,6 +72,7 @@ public class SchoolController{
         return true;
     }
 
+    //TODO: compare String or Role
     private boolean checkPermissionWithoutName(String token, String role){
         String tokenName, tokenRole;
         try{
@@ -282,7 +281,7 @@ public class SchoolController{
     @ResponseBody
     public String delContact(@PathVariable String token,
                              @PathParam("uname") String uname) throws JSONException{
-        if (!checkPermissionWithoutName( token, roleTW))
+        if (!checkPermissionWithoutName(token, roleXB))
             return invalidTokenMsg;
         if (!userService.containsUname(uname)){
             return invalidInputMsg;
@@ -302,7 +301,7 @@ public class SchoolController{
 
 
     /* done
-    * only TuanWei get contact
+    * NOT only xiaoban get contact
     * no param
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
@@ -310,15 +309,15 @@ public class SchoolController{
    @RequestMapping(value = "/contact/get/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
     public String getContact(@PathVariable String token) throws JSONException{
-       if (!checkPermissionWithoutName(token, roleTW))
-           return invalidTokenMsg;
+        // By chenzhenhuan 2017.2.17
+        boolean is_xiaoban = checkPermissionWithoutName(token, roleXB);
         List<TUser> TUserList = userService.findAll();
         String result = "[";
         boolean flag = true;
         for (TUser usr: TUserList) {
             JSONObject mem = new JSONObject();
             mem.put("display_name", usr.getRole().getDisplayName());
-            mem.put("uname", usr.getUname());
+            if (is_xiaoban) mem.put("uname", usr.getUname());
             mem.put("resp_person", usr.getRole().getRespPerson());
             mem.put("fixed_phone", usr.getFixedNumber());
             mem.put("mobile_phone", usr.getMobileNumber());
@@ -336,7 +335,7 @@ public class SchoolController{
 
 
     /*  done
-    * only Tuanwei set contact
+    * only xiaoban set contact
     * param role, uname, resp_person, fixed_phone, mobile_phone, passwd, is_new
     * department(uname = role)
     * return success, msg
@@ -351,7 +350,7 @@ public class SchoolController{
                              @RequestParam("mobile_phone") String mobile_phone,
                              @RequestParam("passwd") String passwd,
                              @RequestParam("is_new") boolean is_new) throws JSONException{
-        if (!checkPermissionWithoutName( token, roleTW))
+        if (!checkPermissionWithoutName( token, roleXB))
             return invalidTokenMsg;
 
         boolean success;
@@ -372,7 +371,7 @@ public class SchoolController{
 
 
     /*
-    * only tuanwei can set
+    * only xiaoban can set
     * param question_id
     * return {success, msg}
     * */
@@ -380,7 +379,7 @@ public class SchoolController{
     @ResponseBody
     public String setDelay(@PathVariable String token,
                             @RequestParam("question_id") String question_id) throws JSONException{
-        if (!checkPermissionWithoutName(token, roleTW))
+        if (!checkPermissionWithoutName(token, roleXB))
             return invalidTokenMsg;
         boolean success = questionService.mergeDelay(Long.parseLong(question_id));
         if (success){
@@ -417,7 +416,7 @@ public class SchoolController{
     }
 
     /*
-    *  Only Tuanwei can add QA
+    *  Only xiaoban can add QA
     *  param question_id
     *  return {success, msg}
     * */
@@ -425,7 +424,7 @@ public class SchoolController{
     @ResponseBody
     public String addQA(@PathVariable String token,
                         @RequestParam("question_id") String question_id) throws JSONException{
-        if (!checkPermissionWithoutName(token, roleTW)){
+        if (!checkPermissionWithoutName(token, roleXB)){
             return invalidTokenMsg;
         }
         boolean success = questionService.setCommon(Long.parseLong(question_id) , true);
@@ -437,7 +436,7 @@ public class SchoolController{
     }
 
     /*
-    *  Only Tuanwei can del QA
+    *  Only xiaoban can del QA
     *  param question_id
     *  return {success, msg}
     * * */
@@ -445,7 +444,7 @@ public class SchoolController{
     @ResponseBody
     public String delQA(@PathVariable String token,
                         @RequestParam("question_id") String question_id) throws JSONException{
-        if (!checkPermissionWithoutName(token, roleTW)){
+        if (!checkPermissionWithoutName(token, roleXB)){
             return invalidTokenMsg;
         }
         boolean success = questionService.setCommon(Long.parseLong(question_id), false);
@@ -457,20 +456,35 @@ public class SchoolController{
     }
 
     /*
-    * only tuanwei can set
+    * only xiaoban can set
     * param question_id
     * return {success, msg}
     * **/
-
 
     @RequestMapping(value = "/qa/top/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
     public String setTopQA(@PathVariable String token,
                             @RequestParam("question_id") String question_id) throws JSONException{
-        if (!checkPermissionWithoutName( token, roleTW)){
+        if (!checkPermissionWithoutName( token, roleXB)){
             return invalidTokenMsg;
         }
         boolean success = questionService.setTop(Long.parseLong(question_id), true);
+        if (success){
+            return successMsg;
+        }else{
+            return errorMsg;
+        }
+    }
+
+
+    @RequestMapping(value = "/qa/notop/{token:.+}", method = RequestMethod.POST)
+    @ResponseBody
+    public String setNoTopQA(@PathVariable String token,
+                            @RequestParam("question_id") String question_id) throws JSONException{
+        if (!checkPermissionWithoutName( token, roleXB)){
+            return invalidTokenMsg;
+        }
+        boolean success = questionService.setTop(Long.parseLong(question_id), false);
         if (success){
             return successMsg;
         }else{
