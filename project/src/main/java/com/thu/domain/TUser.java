@@ -45,7 +45,7 @@ public class TUser {
         this.unreadQuestions = unreadQuestions;
     }
 
-    @OneToMany
+    @ManyToMany
     private Set<Response> likedRespones = new HashSet<Response>();
 
     protected TUser() {}

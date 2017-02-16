@@ -157,8 +157,8 @@ public class LoginController {
 
         System.out.println("login: userId=" + userId);
 
-        String info = "登录成功，获得token" + result.toString() + "\n" +
-                "请再次访问根目录进入主页！";
+        String info = "登录成功，获得token" + result.toString() + "</br>" +
+                "<h1><a href='/'>进入主页</a></h1>";
 
         return info;
     }
