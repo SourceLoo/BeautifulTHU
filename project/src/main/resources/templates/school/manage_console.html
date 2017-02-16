@@ -50,9 +50,27 @@
                     </div>
                 </div>
                 <div class="thu-tiddler-body">
-                    <p><strong>Have you ever had the feeling that your head is not quite big enough to hold everything you need to remember?</strong></p>
-                    <p>Use it to keep your , to plan an , or to organise your wedding. Record every thought that crosses your brain, or build a flexible and responsive website.</p>
-                    <p>Unlike conventional online services, lets you choose where to keep your data, guaranteeing that in the decades to come you will still be able to use the notes you take today.</p>
+                    <p>工作人员分为主责部门工作人员和相关部门工作人员。</p>
+                    <p>主责部门的职责是对收到的提问进行审核分类,并监督整个网站运营过程。主责部门包括:校团委、总办和校办。</p>
+                    <p>相关部门的职责是回答问题。针对每一个问题,有相应的牵头部门和非牵头部门。牵头部门的职责是回答问题。非牵头部门的职责是配合牵头部门回答问题,它只有浏览问题的权限。</p>
+                    <p>状态分类说明：</p>
+                    <p>- 0-待审核</p>
+                    <p>问题提出的初始状态，校团委下放后进入1-待分类，直接分类后进入2-待解决，直接回复后进入3-解决中，拒绝后进入7-无效。</p>
+                    <p>- 1-待分类</p>
+                    <p>等待校办或总办进行分类，校办下放给总办不改变状态，分类后进入2-待解决。</p>
+                    <p>- 2-待解决</p>
+                    <p>等待相关部门回复处理，回复后进入3-解决中，申请再分类、延期后分别进入4和5。</p>
+                    <p>- 3-解决中</p>
+                    <p>已回复完毕，等待学生评价，此时可以修改回复或者再添加回复，但不能申请再分类和延期。</p>
+                    <p>- 4-申请重分类</p>
+                    <p>等待校团委处理，如果同意再分类则进入1-待分类，可以进行和之前一样的分类操作，同意分类前相关部门不能操作可以查看。</p>
+                    <p>- 5-申请延期</p>
+                    <p>等待校团委处理，如果同意延期则返回2-待解决并延长期限，这之前相关部门不能操作。</p>
+                    <p>- 6-已解决</p>
+                    <p>学生已回复，负责部门可以视情况追加回复。</p>
+                    <p>- 7-无效</p>
+                    <p>无效的问题学生端不显示。</p>
+
                 </div>
             </div>
         </section>
@@ -331,14 +349,14 @@
                                                 牵头部门：
                                                 <select v-model="selected_leader">
                                                   <option v-for="option in options" :value="option.role">
-                                                    {{ option.display_name }}
+                                                    {{ option.label }}
                                                   </option>
                                                 </select>
                                                 <br>
                                                 关联部门：
                                                 <select v-model="selected_ones" multiple>
                                                   <option v-for="option in options" :value="option.role" v-show="option.role!=selected_leader">
-                                                    {{ option.display_name }}
+                                                    {{ option.label }}
                                                   </option>
                                                 </select>
                                                 截止日期：
@@ -564,10 +582,10 @@
                 </div>
             </div>
             <div class="thu-sidebar-lists">
-                <div class="thu-search">
+                <!--<div class="thu-search">
                     <input type="search" class="thu-popup-handle">
                     <a href="javascript:;"><i class="fa fa-search" aria-hidden="true"></i></a>
-                </div>
+                </div>-->
                 <div class="thu-tab-set">
                     <div class="thu-tab-content ">
                         <div class="thu-table-of-contents">
@@ -578,8 +596,7 @@
                                         <span>使用指南与介绍</span>
                                     </router-link>
                                 </li>
-                                <li class="toc-item-selected">
-                                <!--<li class="toc-item-selected" v-if="curr.is_login">-->
+                                <li class="toc-item-selected" v-if="curr.is_login">
                                     <router-link to="/school/manage_console/questions" :class="{active:curr.view=='questions'}">
                                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         <span>问题管理</span>

@@ -44,17 +44,17 @@ public class SchoolPartController {
 //    @RequestMapping(value = "/test/login",method = RequestMethod.POST)
 //    public  String Login(@RequestBody)
 
-    public static final String Error_Msg="{'success':false,'msg':'Invalid Token'}";
-    public static final String Erro_Parse="{'success':false,'msg':'Invalid Question_id'}";
-    public static final String Erro_Responder="{'success':false,'msg':'Invalid Responder'}";
-    public static final String Erro_Response="{'success':false,'msg':'Invalid Responce'}";
-    public static final String Erro_Role="{'success':false,'msg':'Invalid Role'}";
-    public static final String Erro_User="{'success':false,'msg':'Invalid TUser'}";
-    public static final String Erro_DDL="{'success':false,'msg':'Invalid DeadLine'}";
-    public static final String Erro_TIMESTAMP1="{'success':false,'msg':'Invalid TIMESTAMP1'}";
-    public static final String Erro_TIMESTAMP2="{'success':false,'msg':'Invalid TIMESTAMP2'}";
-    public static final String Erro_TIMESTAMP3="{'success':false,'msg':'Invalid TIMESTAMP3'}";
-    public static final String Erro_Status="{'success':false,'msg':'Wrong Question Status'}";
+    public static final String Error_Msg="{\"success\":false,\"msg\":\"Invalid Token\"}";
+    public static final String Erro_Parse="{\"success\":false,\"msg\":\"Invalid Question_id\"}";
+    public static final String Erro_Responder="{\"success\":false,\"msg\":\"Invalid Responder\"}";
+    public static final String Erro_Response="{\"success\":false,\"msg\":\"Invalid Responce\"}";
+    public static final String Erro_Role="{\"success\":false,\"msg\":\"Invalid Role\"}";
+    public static final String Erro_User="{\"success\":false,\"msg\":\"Invalid TUser\"}";
+    public static final String Erro_DDL="{\"success\":false,\"msg\":\"Invalid DeadLine\"}";
+    public static final String Erro_TIMESTAMP1="{\"success\":false,\"msg\":\"Invalid TIMESTAMP1\"}";
+    public static final String Erro_TIMESTAMP2="{\"success\":false,\"msg\":\"Invalid TIMESTAMP2\"}";
+    public static final String Erro_TIMESTAMP3="{\"success\":false,\"msg\":\"Invalid TIMESTAMP3\"}";
+    public static final String Erro_Status="{\"success\":false,\"msg\":\"Wrong Question Status\"}";
 
     //判断是否是主责部分
     private boolean checkMain(String role){
@@ -339,16 +339,16 @@ public class SchoolPartController {
             if(!updateRole)
                 return Erro_Role;
 
-            return "{'success':true, 'msg':'main response ok'}";
+            return "{\"success\":true, \"msg\":\"main response ok\"}";
         }
         else
-            return "{'success':false, 'msg':'main response failure'}";
+            return "{\"success\":false, \"msg\":\"main response failure\"}";
     }
 
     //主责部门直接拒绝
     //{'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/main/reject/{token:.+}",method = RequestMethod.POST)
-    public String MainReject(@RequestParam("question_id") String q_id,@RequestParam("response_content") String content,@PathVariable String token) {
+    public String MainReject(@RequestParam("question_id") String q_id,@PathVariable String token) {
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -357,17 +357,18 @@ public class SchoolPartController {
         }catch (Exception e){
             return Erro_Parse;
         }
+        String content = "问题未通过审核";
         Boolean reject_ok=   questionService.responsibleDeptReject(qid,content);                      //questionRepository.rejectbyMain(qid,content,new Date());
         if(reject_ok)
-            return "{'success':true, 'msg':'main reject ok'}";
+            return "{\"success\":true, \"msg\":\"main reject ok\"}";
         else
-            return "{'success':false, 'msg':'main reject failure'}";
+            return "{\"success\":false, \"msg\":\"main reject failure\"}";
     }
 
     //主责部门转发问题
     //{'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/main/forward/{token:.+}",method = RequestMethod.POST)
-    public String MainForward(@RequestParam("question_id")String q_id,@RequestParam("forward") String for_role,@PathVariable String token) {
+    public String MainForward(@RequestParam("question_id")String q_id,@RequestParam("role") String for_role,@PathVariable String token) {
         if(!CheckToken(token))
             return Error_Msg;
 
@@ -399,10 +400,10 @@ public class SchoolPartController {
                 return Erro_Role;
             }
 
-            return "{'success':true, 'msg':'main transfer ok'}";
+            return "{\"success\":true, \"msg\":\"main transfer ok\"}";
         }
         else
-            return "{'success':false, 'msg':'main transfer failure'}";
+            return "{\"success\":false, \"msg\":\"main transfer failure\"}";
     }
 
 
@@ -416,9 +417,10 @@ public class SchoolPartController {
     @RequestMapping(value = "/quesitons/main/classify/{token:.+}",method = RequestMethod.POST)
     public String MainClassify(@RequestParam("question_id") String q_id,
                                @RequestParam("leader_role") String lead_role,
-                               @RequestParam("other_roles") List<String> other_roles,
+                               @RequestParam("other_roles") String other_roles,
                                @RequestParam("deadline") String ddl,
-                               @RequestParam("opinion") String opinion,@PathVariable String token){
+                               @RequestParam("opinion") String opinion,@PathVariable String token)
+	{
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -435,7 +437,8 @@ public class SchoolPartController {
             return Erro_Role;
         List<Role> others=new ArrayList<>();
 
-        for(String role_str:other_roles){
+        String[] _other_roles = other_roles.split(",");
+        for(String role_str:_other_roles){
             Role oth= roleService.findByRole(role_str) ;   //.findRole(role_str);
             if(oth==null)
                 return Erro_Role;
@@ -470,10 +473,10 @@ public class SchoolPartController {
             Boolean updateRole= roleService.updateNumber(lead_role,Long.parseLong("1"),null,null,null); //roleReposiroty.updateReceivedNumber(lead_role,Long.parseLong("1"));
             if(!updateRole)
                 return Erro_Role;
-            return "{'success':true, 'msg':'main classify ok'}";
+            return "{\"success\":true, \"msg\":\"main classify ok\"}";
         }
         else
-            return "{'success':false, 'msg':'main classify failure'}";
+            return "{\"success\":false, \"msg\":\"main classify failure\"}";
     }
 
     //相关部门获取问题列表
@@ -583,10 +586,10 @@ public class SchoolPartController {
             Boolean updateRole =  roleService.updateNumber(cur_role,Long.parseLong("-1"),null,null,null);  //roleReposiroty.updateReceivedNumber(cur_role, Long.parseLong("-1"));
             if (!updateRole)
                 return Erro_Role;
-            return "{'success':true, 'msg':'require have been send successfully'}";
+            return "{\"success\":true, \"msg\":\"require have been send successfully\"}";
         }
         else
-            return "{'success':false, 'msg':'require have not been send'}";
+            return "{\"success\":false, \"msg\":\"require have not been send\"}";
     }
 
 //    @RequestMapping(value = "/quesitons/related/delay",method = RequestMethod.POST)
@@ -642,10 +645,10 @@ public class SchoolPartController {
                 }
 
             }
-            return "{'success':true, 'msg':'respond successfully'}";
+            return "{\"success\":true, \"msg\":\"respond successfully\"}";
         }
         else
-            return "{'success':false, 'msg':'respond unsuccessfully'}";
+            return "{\"success\":false, \"msg\":\"respond unsuccessfully\"}";
     }
 
     //相关部门修改回复
@@ -673,9 +676,9 @@ public class SchoolPartController {
 
         Boolean modify_ok=  responseService.editResponse(rid,r_content);      //responseRepository.modifyResponse(rid,r_content,new Date());
         if(modify_ok)
-            return "{'success':true, 'msg':'modify response successfully'}";
+            return "{\"success\":true, \"msg\":\"modify response successfully\"}";
         else
-            return "{'success':false, 'msg':'modify response unsuccessfully'}";
+            return "{\"success\":false, \"msg\":\"modify response unsuccessfully\"}";
 
     }
 

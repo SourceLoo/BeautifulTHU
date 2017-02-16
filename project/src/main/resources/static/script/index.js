@@ -117,8 +117,8 @@ const questions = {
                 ddl = new Date(question.deadline);
                 ddl = Math.trunc(ddl.getTime() / 1000);
             }
-            console.log(ddl);
-            console.log(this.curr.time);
+            //console.log(ddl);
+            //console.log(this.curr.time);
             return this._days(ddl) + this._hours(ddl) + this._minutes(ddl) + this._seconds(ddl);
         },
         question_filter: function(status) {
@@ -131,17 +131,14 @@ const questions = {
         question_filter_used: function(status) {
             return this.curr.question_filter == status ? 'active' : '';
         },
-        _update_questions: res => {
+        _update_questions: function(res) {
             res = handle_res(res);
             if (res.success === false) {
                 alert(handle_res(res).msg);
                 return false;
             } else {
-                this.$router.app.update_questions().then(function(result) {
-                    if (resullt) {
-                        this.curr.question_modify = -1;
-                    }
-                });
+                alert("操作成功");
+                this.$router.app.update_questions()
             }
         },
         question_statistics: function(role) {
@@ -217,7 +214,7 @@ const questions = {
             var temp = {
                 question_id: id,
                 leader_role: this.selected_leader,
-                other_roles: this.selected_ones,
+                other_roles: this.selected_ones.join(','),
                 deadline: this.selected_ddl,
                 opinion: this.selected_opinion,
             };
@@ -373,7 +370,7 @@ var router = new VueRouter({
                     if (res.success === false) {
                         alert(res.msg);
                     } else {
-                        this.data.statistics = res;
+                        this.app.data.statistics = res;
                     }
                 })
             }
@@ -400,7 +397,6 @@ var app = new Vue({
     created: function() {
         if (localStorage.token != undefined && localStorage.token != '') {
             this.$http.post('/auth/login/' + localStorage.token).then(res => {
-                console.log('login');
                 res = handle_res(res);
                 if (res.success === false) {
                     alert(res.msg);
@@ -504,12 +500,12 @@ var app = new Vue({
                 if (res.success === false) {
                     alert(res.msg);
                 } else {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('role');
+                    localStorage.setItem('token', '')
+                    localStorage.setItem('role', '')
                     this.curr.role = '';
                     this.curr.is_login = false;
                     alert('注销成功');
-                    router.push('/');
+                    router.push('/school/manage_console');
                 }
             });
         },
@@ -557,6 +553,7 @@ var app = new Vue({
                         return _role == 'tuanwei' || _role == 'xiaoban' || question.resp_role.indexOf(_role) != -1;
                     });
                     this.set_curr_view('questions');
+                    this.curr.question_modify = -1;
                     return true;
                 }
             })

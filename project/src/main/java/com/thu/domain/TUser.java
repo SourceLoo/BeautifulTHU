@@ -15,8 +15,7 @@ import java.util.stream.Stream;
 public class TUser {
     static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userGenerator")
-    @SequenceGenerator(name = "userGenerator", sequenceName = "userSequence", allocationSize=1)
+    @GeneratedValue
     private Long id;
 
     @Column(nullable = false, unique = true)

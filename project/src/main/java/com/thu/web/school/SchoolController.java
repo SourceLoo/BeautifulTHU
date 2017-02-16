@@ -23,12 +23,12 @@ import java.util.List;
 public class SchoolController{
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    private final String loginErrorMsg = "{'success':false,'msg':'Invalid Name Or Passwd'}";
-    private final String invalidInputMsg = "{'success':false,'msg':'Invalid Input'}";
-    private final String invalidTokenMsg = "{'success':false,'msg':'Invalid Token'}";
-    private final String userNotLogMsg = "{'success':false,'msg':'TUser Not Log In'}";
-    private final String errorMsg = "{'success':false,'msg':'Fail'}";
-    private final String successMsg = "{'success':true,'msg':'Done'}";
+    private final String loginErrorMsg = "{\"success\":false,\"msg\":\"Invalid Name Or Passwd\"}";
+    private final String invalidInputMsg = "{\"success\":false,\"msg\":\"Invalid Input\"}";
+    private final String invalidTokenMsg = "{\"success\":false,\"msg\":\"Invalid Token\"}";
+    private final String userNotLogMsg = "{\"success\":false,\"msg\":\"TUser Not Log In\"}";
+    private final String errorMsg = "{\"success\":false,\"msg\":\"Fail\"}";
+    private final String successMsg = "{\"success\":true,\"msg\":\"Done\"}";
     //private final ArrayList<String> roles_TW = new ArrayList(Arrays.asList("tuanwei"));
     private final String roleTW = "tuanwei";
     private final String roleZB = "zongban";
