@@ -1,7 +1,6 @@
 package com.thu.service;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
 import com.thu.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +10,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Question> getAllQuestions() {
         List<Sort.Order> orders = new ArrayList<Sort.Order>();
@@ -58,10 +62,17 @@ public class QuestionService {
         }
         try {
             question.addResponse(response);
-            question.setStatus(Status.SOLVED);
+
+            // modified by luyq 第一次回复 设置为解决中
+            if(question.getResponses().size() == 1)
+            {
+                question.setStatus(Status.SOLVING);
+            }
+
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -71,7 +82,9 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
-        question.setStatus(Status.UNAPPROVED);
+
+        // luyq
+        question.setStatus(Status.INVALID);
         question.setRejectReason(rejectReason);
         try {
             questionRepository.save(question);
@@ -86,7 +99,7 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
-        question.setStatus(Status.UNSOLVED);
+        question.setStatus(Status.UNCLASSIFIED);
         question.setTransferRole(to);
         question.setRead(false);
         try {
@@ -98,13 +111,18 @@ public class QuestionService {
     }
 
     @Transactional
-    public boolean classifyQuestion(Long id, Role leaderRole, List<Role> otherRoles, Date ddl, String instruction) {
+    public boolean classifyQuestion(Long id, Role leaderRole, List<Role> otherRoles, LocalDateTime ddl, String instruction) {
         Question question = questionRepository.findByQuestionId(id);
         if (question == null) {
             return false;
         }
+        //TODO: excuse me?
         question.setLeaderRole(leaderRole);
         question.setOtherRoles(otherRoles);
+        question.setTransferRole(null);
+        question.setStatus(Status.UNSOLVED);
+        question.setDdl(ddl);
+        question.setInstruction(instruction);
         try {
             questionRepository.save(question);
             return true;
@@ -182,63 +200,108 @@ public class QuestionService {
         }
     }
 
-    public Page<Question> findByState(Integer pageNum, Integer pageSize, Status state, String orderType, String searchKey, boolean isCommon)
-    {
-        // TODO: orderType validation:
-        QQuestion question = QQuestion.question;
-        BooleanBuilder booleanBuilder = new BooleanBuilder(question.status.eq(state));
 
+    private Pageable makeBuilderAndPageable(BooleanBuilder booleanBuilder, String searchKey, boolean isCommon, int pageNum, int pageSize, List<String> orders) {
+        QQuestion question = QQuestion.question;
         if (isCommon) {
             booleanBuilder.and(question.isCommon.eq(Boolean.TRUE));
-//            predicate = question.status.eq(state).and();
         }
-
         if (!searchKey.isEmpty()) {
-            Predicate searchPredict = question.title.contains(searchKey).or(question.content.contains(searchKey));
-            booleanBuilder.and(searchPredict);
+            booleanBuilder.and(question.title.contains(searchKey).or(question.content.contains(searchKey)));
         }
-        Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, orderType));
+        // TODO: 16/12/10 orders validation
+        //Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, orders)); modified by luyq
+        Sort sort = new Sort(Sort.Direction.DESC, orders);
+        System.out.println(orders);
+        return new PageRequest(pageNum, pageSize, sort);
+    }
+
+    // add by luyq
+    public Page<Question> filterQuestions(Integer pageNum, Integer pageSize, List<Status> statuses, String depart, String searchKey, boolean isCommon, List<String> orders)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        if(statuses != null){
+            for (Status status: statuses)
+            {
+                booleanBuilder.or(question.status.eq(status));
+            }
+        }
+        if(depart != null){
+            booleanBuilder.and(question.leaderRole.displayName.eq(depart));
+        }
+        if (searchKey != null) {
+            booleanBuilder.and(question.title.contains(searchKey).or(question.content.contains(searchKey)));
+        }
+        if (isCommon) {
+            booleanBuilder.and(question.isCommon.eq(Boolean.TRUE));
+        }
+        System.out.println(booleanBuilder);
+        System.out.println(pageNum);
+        System.out.println(pageSize);
+
+        // orders 定不为空
+        Sort sort = new Sort(Sort.Direction.DESC, orders);
+        // System.out.println(orders);
+        Pageable pageable = new PageRequest(pageNum, pageSize, sort);
+
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
+    }
+
+    // add by luyq
+    public Page<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, List<String> orders)
+    {
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(question.TUser.id.eq(userId));
+
+        System.out.println(booleanBuilder);
+        System.out.println(pageNum);
+        System.out.println(pageSize);
+
+        // orders 定不为空
+        Sort sort = new Sort(Sort.Direction.DESC, orders);
         Pageable pageable = new PageRequest(pageNum, pageSize, sort);
         return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
-    List<Question> findByDepart(Integer pageNum, Integer pageSize, String Depart, String orderType, String searchKey, boolean isCommon)
+    public Page<Question> findByState(Integer pageNum, Integer pageSize, Status state, List<String> orders, String searchKey, boolean isCommon)
     {
-        //判断是否是QAA
-        // 按牵头部分查询，按orderType排序{提问时间 或 附议数量}，在问题内容与标题内匹配searchKey 允许空
-        return  null;
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.status.eq(state));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
-    List<Question> findMyQuestions(Integer pageNum, Integer pageSize, Long userId, String orderType, String searchKey, boolean isCommon)
+    public Page<Question> findByDepart(Integer pageNum, Integer pageSize, String Depart, List<String> orders, String searchKey, boolean isCommon)
     {
-        //判断是否是QAA
-        // 查询当前用户所有提问，按orderType排序{提问时间 或 附议数量}，在问题内容与标题内匹配searchKey 允许空
-        return  null;
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder(question.leaderRole.role.eq(Depart));
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
-    List<Question> findAll(Integer pageNum, Integer pageSize, String orderType, String searchKey, boolean isCommon)
+    public Page<Question> findAll(Integer pageNum, Integer pageSize, List<String> orders, String searchKey, boolean isCommon)
     {
-        // 判断是否是QAA
-        // 查询所有问题，按orderType排序{提问时间 或 附议数量}，在问题内容与标题内匹配searchKey 允许空
-        return  null;
+        QQuestion question = QQuestion.question;
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        Pageable pageable = makeBuilderAndPageable(booleanBuilder, searchKey, isCommon, pageNum, pageSize, orders);
+        return questionRepository.findAll(booleanBuilder.getValue(), pageable);
     }
 
 
-    Question findById(Long questionId)
+    public Question findById(Long questionId)
     {
-        // 得到问题
-        return null;
+        return questionRepository.findByQuestionId(questionId);
     }
 
 //    public List<Question> lala() {
 //        return questionRepository.lala();
 //    }
 
-//    protected QuestionService() {}
-
-    public boolean insertQuestion(String title, String content, User user, String createdLocation, Date createdTime, List<Pic> pics) {
-
-        Question question = new Question(title, content, user, createdLocation, createdTime, pics);
+    @Transactional
+    public boolean saveQuestion(TUser TUser, String title, String content, String location, List<String> paths) {
+        Question question = new Question(title, content, TUser, location, paths);
         try {
             questionRepository.save(question);
             return true;
@@ -247,4 +310,121 @@ public class QuestionService {
         }
     }
 
+    public boolean saveStudentResponse(Long questionId, EvaluationType evaluationType, String evaluationDetail)
+    {
+        Question question = findById(questionId);
+        if (question == null || question.getEvaluationType() != null) {
+            return false;
+        }
+
+        // add by luyq
+        question.setStatus(Status.SOLVED);
+
+        question.setEvaluationType(evaluationType);
+        question.setEvaluationDetail(evaluationDetail);
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean modifyQuestionLike(TUser TUser, Long questionId, boolean op)
+    {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        if (op) {
+            if (TUser.getLikedQuestions().contains(question)) {
+                return false;
+            }
+            question.incrementLikes();
+            TUser.getLikedQuestions().add(question);
+        }
+        else {
+            if (!TUser.getLikedQuestions().contains(question)) {
+                return false;
+            }
+            question.decrementLikes();
+            TUser.getLikedQuestions().remove(question);
+        }
+        try {
+            questionRepository.save(question);
+            userRepository.save(TUser);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // add by luyq 当op为真，增加user未读的question
+    @Transactional
+    public boolean modifyUnreadQuestions(TUser TUser, Long questionId, boolean op)
+    {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        if (op) {
+            if (TUser.getUnreadQuestions().contains(question)) {
+                return false;
+            }
+            TUser.getUnreadQuestions().add(question);
+        }
+        else {
+            if (!TUser.getUnreadQuestions().contains(question)) {
+                return false;
+            }
+            TUser.getUnreadQuestions().remove(question);
+        }
+        try {
+            userRepository.save(TUser);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean mergeDelay(Long questionId) {
+        Question question = findById(questionId);
+        if (question == null || question.getDdl() == null || question.getDelayDays() == null) {
+            return false;
+        }
+        question.setDdl(question.getDdl().plusDays(question.getDelayDays()));
+        question.setDelayDays(0);
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean updateTimestamp(Long questionId, LocalDateTime timestamp1, LocalDateTime timestamp2, LocalDateTime timestamp3) {
+        Question question = findById(questionId);
+        if (question == null) {
+            return false;
+        }
+        if (timestamp1 != null) {
+            question.setTimestamp1(timestamp1);
+        }
+        if (timestamp2 != null) {
+            question.setTimestamp2(timestamp2);
+        }
+        if (timestamp3 != null) {
+            question.setTimestamp3(timestamp3);
+        }
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
+

@@ -1,7 +1,7 @@
 package com.thu.domain;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Created by JasonLee on 16/12/3.
@@ -9,17 +9,17 @@ import java.util.Date;
 @Entity
 public class Response {
     @Id
+    @GeneratedValue
     private Long responseId;
     private String responseContent;
     @ManyToOne
-    private User responder;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date respondTime = new Date();
+    private TUser responder;
+    private LocalDateTime respondTime = LocalDateTime.now();
     private Long likes = 0L;
 
     protected Response() {}
 
-    public Response(String responseContent, User responder) {
+    public Response(String responseContent, TUser responder) {
         this.responseContent = responseContent;
         this.responder = responder;
     }
@@ -36,19 +36,19 @@ public class Response {
         this.responseContent = responseContent;
     }
 
-    public User getResponder() {
+    public TUser getResponder() {
         return responder;
     }
 
-    public void setResponder(User responder) {
+    public void setResponder(TUser responder) {
         this.responder = responder;
     }
 
-    public Date getRespondTime() {
+    public LocalDateTime getRespondTime() {
         return respondTime;
     }
 
-    public void setRespondTime(Date respondTime) {
+    public void setRespondTime(LocalDateTime respondTime) {
         this.respondTime = respondTime;
     }
 
@@ -58,5 +58,15 @@ public class Response {
 
     public void setLikes(Long likes) {
         this.likes = likes;
+    }
+
+    public void incrementLikes() {
+        this.likes += 1;
+    }
+
+    public void decrementLikes() {
+        if (this.likes > 0) {
+            this.likes -= 1;
+        }
     }
 }

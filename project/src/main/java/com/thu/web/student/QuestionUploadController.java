@@ -4,12 +4,7 @@ import com.thu.domain.*;
 import com.thu.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +21,7 @@ import java.util.*;
  */
 
 @RestController
+@RequestMapping("/student")
 public class QuestionUploadController {
 
     //获得property文件的变量
@@ -37,34 +33,34 @@ public class QuestionUploadController {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private PicRepository picRepository;
+
     @Autowired
     private QuestionService questionService;
 
+    private final String errorMsg = "{\"success\":false,\"msg\":\"创建失败\"}";
+    private final String successMsg = "{\"success\":true,\"msg\":\"Done\"}";
 
     @PostMapping(value = "/question/upload")
-    public ResponseEntity<?> uploadQuestion(
+    @ResponseBody
+    public String uploadQuestion(
             @RequestParam("uploadfiles") MultipartFile[] uploadfiles,
             @RequestParam("title") String title,
             @RequestParam("content") String content,
-            @RequestParam(name="location", required=false, defaultValue="清华大学") String location
-            )
+            @RequestParam(name="location", required=false, defaultValue="清华大学") String location,
+            HttpServletRequest request)
     {
-        List<Pic> pics = new ArrayList<>();
+        List<String> paths = new ArrayList<>();
 
         // 拷贝到本地
-        System.out.println("Begin to upload...");
         for (MultipartFile uploadfile : uploadfiles)
         {
             try
             {
-                String directory = env.getProperty("BeautifulTHU.uploadedImgs");
+                String directory = env.getProperty("image.localpath");
                 String originalFilename = uploadfile.getOriginalFilename();
-                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + new Random().nextInt()+originalFilename.substring(originalFilename.lastIndexOf("."));
+                String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + Math.abs(new Random().nextInt())+originalFilename.substring(originalFilename.lastIndexOf("."));
 
 
-                directory = "img";
                 String filepath = Paths.get(directory, fileName).toString();
 
                 // Save the file locally
@@ -74,31 +70,28 @@ public class QuestionUploadController {
 
                 System.out.println(originalFilename + "\t" + filepath);
 
-                Pic pic = new Pic(filepath);
-                pics.add(pic);
-                picRepository.save(pic);
+                paths.add(env.getProperty("image.webpath") + "/" + fileName);
 
             }
             catch (Exception e)
             {
                 System.out.println(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return errorMsg;
             }
 
         }
-        System.out.println("Uploading done.");
 
 
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1024);
-        User user = userRepository.findById(userId);
+        TUser TUser = userRepository.findById(userId);
 
-        //public boolean insertQuestion(String title, String content, User user, String createdLocation, Date createdTime, List<Pic> pics) {
+        //public boolean insertQuestion(String title, String content, TUser TUser, String createdLocation, Date createdTime, List<Pic> pics) {
 
         System.out.println(title);
         System.out.println(content);
-        questionService.insertQuestion(title, content, user, location, new Date(), pics);
+        System.out.println(location);
+        questionService.saveQuestion(TUser, title, content, location, paths);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return successMsg;
     }
 }

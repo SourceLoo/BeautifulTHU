@@ -1,7 +1,6 @@
 package com.thu.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by JasonLee on 16/12/2.
@@ -25,6 +24,7 @@ public class Role {
     private Long directRespondNumber = 0L;
     private Float goodRate = 0f;
     private Float badRate = 0f;
+    private Boolean byZongban = false;
 
     protected Role() {}
 
@@ -162,20 +162,27 @@ public class Role {
         this.badRate = badRate;
     }
 
+    public Boolean getByZongban() {
+        return byZongban;
+    }
+
+    public void setByZongban(Boolean byZongban) {
+        this.byZongban = byZongban;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Role)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Role role1 = (Role) o;
 
-        return getRole().equals(role1.getRole());
+        return getRole() != null ? getRole().equals(role1.getRole()) : role1.getRole() == null;
 
     }
 
     @Override
     public int hashCode() {
-        return getRole().hashCode();
+        return getRole() != null ? getRole().hashCode() : 0;
     }
-
 }

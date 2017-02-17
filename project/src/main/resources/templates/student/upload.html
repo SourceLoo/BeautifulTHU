@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,User-scalable=0">
+    <title>WeUI</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="/style/weui.css"/>
+    <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
+    <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <!-- <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
+    <!-- <script src="https://weui.io/weui.min.js"></script> -->
+    <!-- <script src="https://weui.io/example.js"></script> -->
+    <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
+
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
+
+        .page, body {
+            background-color: #f8f8f8;
+        }
+    </style>
+    <style>
+        .page__hd {
+            padding: 0px;
+        }
+
+        .page__bd_spacing {
+            padding: 0 15px;
+        }
+
+        .page__ft.j_bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .page__ft {
+           padding-top: 40px;
+           padding-bottom: 10px;
+           text-align: center;
+        }
+
+        .page.js_show {
+            opacity: 1;
+        }
+
+        .page {
+           overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .container, .page {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+    <script type="text/javascript">
+        function addPosition(ele) {
+            position = prompt("请输入地址", "")
+            $("#position").append('<option value="'+position+'">'+position+'</option>')
+        }
+    </script>
+    <script type="text/javascript" class="uploader js_show">
+        function getLocation2() {
+            var geolocation = new BMap.Geolocation();
+            geolocation.getCurrentPosition(function(r){
+                if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                    var myGeo = new BMap.Geocoder();
+                    // 根据坐标得到地址描述
+                    myGeo.getLocation(new BMap.Point(r.point.lng, r.point.lat), function(result){
+                        var loc = result.address
+                        $("#position").empty()
+                        $("#position").append('<option value="'+loc+'">'+loc+'</option>')
+                        var surround = result.surroundingPois
+                        for (i=0;i<surround.length;i++) {
+                            $("#position").append('<option value="'+surround[i].title+'">'+surround[i].title+'</option>')
+                        }
+                    });
+                }
+                else {
+                    alert('failed'+this.getStatus());
+                }
+            });
+        }
+        $(document).ready(function(){
+            $.ajax({
+                type: 'GET',
+                url: '/student/home/status',
+                dataType: 'json',
+                data: {},
+                success: function(data){
+                    if (data.unread == 1) {
+                        $('#my').children('span').append('<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>')
+                    }
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+           getLocation2()
+        });
+
+    </script>
+</head>
+
+<body ontouchstart>
+<div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg"></span>
+    <div class="weui-gallery__opr">
+        <a href="javascript:" class="weui-gallery__del">
+            <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+        </a>
+    </div>
+</div>
+<div class="container" id="container"><div class="page tabbar js_show">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+            <div class="weui-tab__panel">
+                <!--<div class="page__hd">-->
+                    <!--<h1 class="page__title">-->
+                        <!--<img src="./images/logo.png" alt="WeUI" height="21px">-->
+                    <!--</h1>-->
+                <!--</div>-->
+                <div class="page__bd">
+                    <div class="weui-cells weui-cells_form">
+                        <div class="weui-cell">
+                            <div class="weui-cell__bd">
+                                <div class="weui-uploader">
+                                    <div class="weui-uploader__hd">
+                                        <p class="weui-uploader__title">图片上传</p>
+                                        <p><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" id="showTooltips">确定</a> </p>
+                                        <!--<div class="weui-uploader__info">0/2</div>-->
+                                    </div>
+                                    <div class="weui-uploader__bd">
+                                        <ul class="weui-uploader__files" id="uploaderFiles">
+                                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                                            <!--<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
+                                            <!--<div class="weui-uploader__file-content">-->
+                                            <!--<i class="weui-icon-warn"></i>-->
+                                            <!--</div>-->
+                                            <!--</li>-->
+                                            <!--<li class="weui-uploader__file weui-uploader__file_status" style="background-image:url(./images/pic_160.png)">-->
+                                            <!--<div class="weui-uploader__file-content">50%</div>-->
+                                            <!--</li>-->
+                                        </ul>
+                                        <div class="weui-uploader__input-box">
+                                            <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple="multiple">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                            <div class="weui-cells__title">问题标题</div>
+                            <div class="weui-cells">
+                                <div class="weui-cell">
+                                    <div class="weui-cell__bd">
+                                        <input name="title" id="title" class="weui-input" type="text" placeholder="请输入文本">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weui-cells__title">问题详情</div>
+                            <div class="weui-cells weui-cells_form">
+                                <div class="weui-cell">
+                                    <div class="weui-cell__bd">
+                                        <textarea name="content" id="content" class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weui-cell weui-cell_select weui-cell_select-after">
+                                <div class="weui-cell__hd">
+                                    <label for="" class="weui-label">当前定位</label>
+                                </div>
+                                <div class="weui-cell__bd">
+                                    <select class="weui-select" id="position" name="position">
+                                        <option value="none">没有位置信息</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <div><a href="javascript:;" onclick="addPosition(this)">没有需要的位置? 点此添加</a></div>
+                </div>
+            </div>
+            <div class="weui-tabbar">
+                <a href="/student/question/list" class="weui-tabbar__item">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_form.png" alt="" class="weui-tabbar__icon">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">问题</p>
+                </a>
+                <a href="/student/question/upload" class="weui-tabbar__item weui-bar__item_on">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_nav.png" alt="" class="weui-tabbar__icon">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">创建问题</p>
+                </a>
+                <a href="/student/home" class="weui-tabbar__item" id="my">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_layout.png" alt="" class="weui-tabbar__icon">
+                    </span>
+                    <p class="weui-tabbar__label">我</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" class="uploader js_show">
+    var file_list = [];
+    var file_style_list = [];
+    var xhr;
+
+    $(function(){
+        var src, url, files
+
+        var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"></li>',
+            $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
+            $uploaderInput = $("#uploaderInput"),
+            $uploaderFiles = $("#uploaderFiles");
+
+        $uploaderInput.on("change", function(e){
+            url = window.URL || window.webkitURL || window.mozURL;
+            files = e.target.files;
+            for (var i = 0, len = files.length; i < len; ++i) {
+                var file = files[i];
+                file_list.push(file);
+                if (url) {
+                    src = url.createObjectURL(file);
+                } else {
+                    src = e.target.result;
+                }
+                console.log(file.name)
+                file_style_list.push("background-image:url("+src+")");
+                $uploaderFiles.append($(tmpl.replace('#url#', src)));
+            }
+        });
+        $uploaderFiles.on("click", "li", function(){
+            $galleryImg = $("#galleryImg")
+            $galleryImg.attr("style", this.getAttribute("style"));
+            $gallery.fadeIn(100);
+        });
+        $gallery.on("click", function(){
+            $gallery.fadeOut(100);
+        });
+
+        var $uploadAction = $("#showTooltips")
+        $uploadAction.on("click", function(){
+            if (file_list.length > 0) {
+                uploadFile()
+            }
+        });
+
+        function uploadFile() {
+            var fd = new FormData();
+            console.log(file_list);
+            for (i=0; i<file_list.length; i++) {
+                //fd.append(file_list[i].name, file_list[i]);
+                fd.append("uploadfiles", file_list[i]);
+            }
+
+            var title = $("#title").val();
+            var content = $("#content").val();
+            var position = $("#position option:selected").val()
+            if (title.length == 0) {
+                alert("请输入问题标题");
+            } else if (content.length == 0) {
+                alert("请输入问题内容");
+            } else {
+                fd.append("title", title)
+                fd.append("content", content)
+                fd.append("location", position)
+
+                xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener("progress", uploadProgress, false);
+                xhr.addEventListener("load", uploadComplete, false);
+                xhr.addEventListener("error", uploadFailed, false);
+                xhr.addEventListener("abort", uploadCanceled, false);
+                xhr.open("POST", "/student/question/upload"); //修改成自己的接口
+                xhr.send(fd);
+            }
+        }
+        function cancelFile() {
+            xhr.abort();
+            $('.js_progress').css('width','0');
+        }
+
+        function uploadProgress(e) {
+            if (e.lengthComputable) {
+                var percentComplete = Math.round(e.loaded * 100 / e.total);
+                $('.js_progress').css('width',percentComplete.toString() + '%');
+            } else {
+                return false
+            }
+        }
+
+        function deleteFile(style) {
+            $gallery.fadeOut(100);
+            var tag;
+            for (i=0; i<file_style_list.length; i++) {
+                if (file_style_list[i] == style) {
+                    file_list.splice(i, 1);
+                    tag = i;
+                    break;
+                }
+            }
+            file_style_list.splice(tag, 1);
+            $('li[style="'+style+'"]').remove();
+        }
+
+        function uploadComplete(e) {
+            var response = JSON.parse(xhr.responseText)
+            if (response.success == true) {
+                console.log(e);
+                // alert('上传成功');
+                window.location.href="/student/question/upload_success"
+            } else {
+                alert(response.msg)
+            }
+        }
+
+        function uploadFailed(e) {
+            console.log(e);
+            alert("上传失败");
+        }
+
+        function uploadCanceled(e) {
+            console.log(e);
+            alert("上传取消");
+        }
+
+        $(".weui-gallery__del").click(function(){
+            deleteFile($("#galleryImg").attr("style"));
+        });
+
+    });</script>
+    <script type="text/javascript" class="tabbar js_show">
+    $(function(){
+        $('.weui-tabbar__item').on('click', function () {
+            $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        });
+    });</script>
+<!--<div class="page__bd">
+
+    <div class="weui-cells__title">问题标题</div>
+    <div class="weui-cells">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" placeholder="请输入文本">
+            </div>
+        </div>
+    </div>
+
+    <div class="weui-cells__title">问题详情</div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请输入文本" rows="3"></textarea>
+                <div class="weui-textarea-counter"><span>0</span>/200</div>
+            </div>
+        </div>
+    </div>
+
+
+    <ul class="weui-media-box__info">
+        <li class="weui-media-box__info__meta">文字来源</li>
+        <li class="weui-media-box__info__meta">时间</li>
+        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">其它信息</li>
+    </ul>
+</div>-->
+<!-- 使用 -->
+</body>
+</html>

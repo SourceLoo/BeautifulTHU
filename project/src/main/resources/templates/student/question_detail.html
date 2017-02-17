@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,TUser-scalable=0">
+    <title>WeUI</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="/style/weui.css"/>
+    <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
+    <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <!-- <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
+    <!-- <script src="https://weui.io/weui.min.js"></script> -->
+    <!-- <script src="https://weui.io/example.js"></script> -->
+    <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
+
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
+
+        .page, body {
+            background-color: #f8f8f8;
+        }
+    </style>
+    <script>
+        function clicklike(ele){
+            var liked
+            var response_id = $("#response_id").text()
+            if ($(ele).text() == "已赞") {
+                liked = false
+            } else {
+                liked = true
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/student/response/like',
+                dataType: 'json',
+                data: {
+                    response_id : response_id,
+                    liked : liked
+                },
+                success: function(data) {
+                    if (liked == true) {
+                        $(ele).text("已赞")
+                        $(ele).parent('li').parent('ul').children("#likenum").text(data.likenum)
+                    } else {
+                        $(ele).text("赞")
+                        $(ele).parent('li').parent('ul').children("#likenum").text(data.likenum)
+                    }
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+        }
+    </script>
+</head>
+<body ontouchstart>
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>当前状态</p>
+        </div>
+        <div class="weui-cell__ft" th:text="${status}">{状态}</div>
+    </div>
+</div>
+<div class="page__bd">
+    <article class="weui-article">
+        <h1>问题详情</h1>
+        <section>
+            <h2 class="title" th:text="${question.title}">{问题标题}</h2>
+            <section>
+                <h3 class="title">
+                    <ul class="weui-media-box__info">
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.TUser.uname}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>
+                    </ul>
+                </h3>
+                <p th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                    {问题内容}
+                </p>
+            </section>
+        </section>
+    </article>
+</div>
+
+<div class="weui-gallery" id="gallery">
+    <span class="weui-gallery__img" id="galleryImg"></span>
+</div>
+
+<div class="weui-grids">
+    <img href="javascript:;" style="
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 185px;
+" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
+</div>
+
+<script type="text/javascript" class="uploader js_show">
+    $(function(){
+        $galleryImg = $("#galleryImg")
+        $gallery = $("#gallery")
+        //$galleryImg.attr("style", this.getAttribute("style"));
+        $('img').click(function(){
+           $gallery.fadeIn(100);
+           $galleryImg.append('<img style="height:100%;width:100%" src='+$(this).attr("src")+'/>')
+        });
+
+        $gallery.on("click", function(){
+            $galleryImg.children().remove()
+            $gallery.fadeOut(100);
+        });
+
+    });</script>
+
+
+<div class="weui-cells">
+    <div class="weui-cell">
+        <div class="weui-cell__bd">
+            <p>受理部门</p>
+        </div>
+        <div class="weui-cell__ft" th:text="${leaderRoleName}">{受理部门}</div>
+    </div>
+</div>
+<div class="page__bd">
+    <article class="weui-article">
+        <h1>回复内容</h1>
+        <section>
+            <!--开始循环-->
+            <section th:each="userResponse: ${userResponses}">
+                <h3 class="title">
+                    <ul class="weui-media-box__info">
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${userResponse.response.responseId}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(userResponse.response.respondTime, 'yyyy-MM-dd')}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.uname}"></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
+                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum" th:text="${userResponse.response.likes}"></li>
+                    </ul>
+                </h3>
+                <p th:utext="${#strings.replace( #strings.escapeXml( userResponse.response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                    {回复内容}
+                </p>
+
+            </section>
+            <!--循环结束-->
+        </section>
+    </article>
+</div>
+<!-- 使用 -->
+</body>
+</html>

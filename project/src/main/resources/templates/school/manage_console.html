@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Dash Chen" />
+    <title>美丽清华</title>
+    <link rel="shortcut icon" href="/image/favicon.ico" type="image/x-icon" />
+    <link type="text/css" href="/style/font-awesome.min.css" rel="stylesheet" />
+    <link type="text/css" href="/style/application.css" rel="stylesheet" />
+    <script src="/script/vue.js"></script>
+    <script src="/script/vue-router.js"></script>
+</head>
+
+<body class="thu-body thu-dirty">
+
+    <!--Component Part-->
+    <script type="text/x-template" id="error">
+        <section class="thu-story-river">
+            <div class="thu-tiddler-frame">
+                <div class="thu-tiddler-title">
+                    <div class="thu-titlebar">
+                        <span class="thu-tiddler-controls"> <a href="javascript:;"> <i class="fa fa-info-circle" aria-hidden="true"></i> </a> </span>
+                        <span> <h2 class="thu-title"> 该页面无法访问 </h2> </span>
+                    </div>
+                </div>
+                <div class="thu-tiddler-body">
+                    <p><strong>请尝试以下操作</strong></p>
+                    <p>确保您已获取正确的网址</p>
+                    <p>重新登录</p>
+                    <p>联络相关技术人员</p>
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <script type="text/x-template" id="introduction">
+        <section class="thu-story-river">
+            <div class="thu-tiddler-frame">
+                <div class="thu-tiddler-title">
+                    <div class="thu-titlebar">
+                        <div>
+                            <h2 class="thu-title"> 使用指南与介绍 </h2>
+                        </div>
+                    </div>
+                    <div class="thu-subtitle">
+                        更新日期：25th July 2016 at 4:48pm
+                    </div>
+                </div>
+                <div class="thu-tiddler-body">
+                    <p>工作人员分为主责部门工作人员和相关部门工作人员。</p>
+                    <p>主责部门的职责是对收到的提问进行审核分类,并监督整个网站运营过程。主责部门包括:校团委、总办和校办。</p>
+                    <p>相关部门的职责是回答问题。针对每一个问题,有相应的牵头部门和非牵头部门。牵头部门的职责是回答问题。非牵头部门的职责是配合牵头部门回答问题,它只有浏览问题的权限。</p>
+                    <p>状态分类说明：</p>
+                    <p>- 0-待审核</p>
+                    <p>问题提出的初始状态，校团委下放后进入1-待分类，直接分类后进入2-待解决，直接回复后进入3-解决中，拒绝后进入7-无效。</p>
+                    <p>- 1-待分类</p>
+                    <p>等待校办或总办进行分类，校办下放给总办不改变状态，分类后进入2-待解决。</p>
+                    <p>- 2-待解决</p>
+                    <p>等待相关部门回复处理，回复后进入3-解决中，申请再分类、延期后分别进入4和5。</p>
+                    <p>- 3-解决中</p>
+                    <p>已回复完毕，等待学生评价，此时可以修改回复或者再添加回复，但不能申请再分类和延期。</p>
+                    <p>- 4-申请重分类</p>
+                    <p>等待校团委处理，如果同意再分类则进入1-待分类，可以进行和之前一样的分类操作，同意分类前相关部门不能操作可以查看。</p>
+                    <p>- 5-申请延期</p>
+                    <p>等待校团委处理，如果同意延期则返回2-待解决并延长期限，这之前相关部门不能操作。</p>
+                    <p>- 6-已解决</p>
+                    <p>学生已回复，负责部门可以视情况追加回复。</p>
+                    <p>- 7-无效</p>
+                    <p>无效的问题学生端不显示。</p>
+
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <script type="text/x-template" id="info">
+        <section class="thu-story-river">
+            <div class="thu-tiddler-frame">
+                <div class="thu-tiddler-title">
+                    <div class="thu-titlebar">
+                        <div class="thu-tiddler-controls">
+                            <a href="javascript:;" @click="info_modify()" v-if="!curr.info_modify">
+                                <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                                <span>修改</span>
+                            </a>
+                            <a href="javascript:;" @click="info_save()" v-if="curr.info_modify">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                                <span>保存</span>
+                            </a>
+                            <a href="javascript:;" @click="info_discard()" v-if="curr.info_modify">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                                <span>舍弃</span>
+                            </a>
+                        </div>
+                        <div>
+                            <h2 class="thu-title"> 个人信息 </h2>
+                        </div>
+                    </div>
+                    <div class="thu-subtitle">
+                        <a class="thu-link thu-link-missing" href="#"> </a> 25th July 2016 at 4:48pm
+                    </div>
+                </div>
+                <div class="thu-tiddler-body">
+                    <table style="width: 100%">
+                        <thead>
+                            <tr>
+                                <td>帐号</td>
+                                <td>{{ data.info.uname }}</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>所属部门</td>
+                                <td>{{ data.info.display_name }}</td>
+                            </tr>
+                            <template v-if="!curr.info_modify">
+                            <tr>
+                                <td>责任人</td>
+                                <td>{{ data.info.resp_person }}</td>
+                            </tr>
+                            <tr>
+                                <td>座机</td>
+                                <td>{{ data.info.fixed_phone }}</td>
+                            </tr>
+                            <tr>
+                                <td>手机</td>
+                                <td>{{ data.info.mobile_phone }}</td>
+                            </tr>
+                            </template>
+                            <template v-else>
+                            <tr>
+                                <td>责任人</td>
+                                <td><input v-model="data.info.resp_person"></td>
+                            </tr>
+                            <tr>
+                                <td>座机</td>
+                                <td><input v-model="data.info.fixed_phone"></td>
+                            </tr>
+                            <tr>
+                                <td>手机</td>
+                                <td><input v-model="data.info.mobile_phone"></td>
+                            </tr>
+                            <tr>
+                                <td>密码</td>
+                                <td><input v-model="data.info.passwd"></td>
+                            </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <script type="text/x-template" id="questions">
+        <section class="thu-story-river">
+            <div class="thu-tiddler-frame">
+                <div class="thu-tiddler-title">
+                    <div class="thu-titlebar">
+                        <div class="thu-tiddler-controls">
+                            <a href="javascript:;" @click="question_filter(1)" class="small" :class="question_filter_used(1)">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                                <span>未分类</span>
+                            </a>
+                            <a href="javascript:;" @click="question_filter(2)" class="small" :class="question_filter_used(2)">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                                <span>未答复</span>
+                            </a>
+                            <a href="javascript:;" @click="question_filter(3)" class="small" :class="question_filter_used(3)">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                                <span>未完结</span>
+                            </a>
+                            <a href="javascript:;" @click="question_filter(4)" class="small" :class="question_filter_used(4)">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                                <span>重分类</span>
+                            </a>
+                            <a href="javascript:;" @click="question_filter(5)" class="small" :class="question_filter_used(5)">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                                <span>延期</span>
+                            </a>
+                            <a href="javascript:;" @click="filter_common=!filter_common" class="small" :class="filter_common?'active':''">
+                                <i class="fa fa-filter" aria-hidden="true"></i>
+                                <span>常见</span>
+                            </a>
+                        </div>
+                        <div>
+                            <h2 class="thu-title"> 问题管理 </h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="thu-tiddler-body" v-if="is_xiaoban || is_zongban">
+                    <table style="width: 100%">
+                        <thead>
+                            <tr>
+                                <td>部门</td>
+                                <td>收到问题总数</td>
+                                <td>按时完成</td>
+                                <td>超时完成</td>
+                                <td>拒绝问题</td>
+                                <td>直接回复</td>
+                                <td style="width:90px">查看详情</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(line, index) in data.statistics">
+                                <td>{{line.display_name}}</td>
+                                <td>{{line.question_num}}</td>
+                                <td>{{line.intime_num}}</td>
+                                <td>{{line.outdate_num}}</td>
+                                <td>{{line.reject_num}}</td>
+                                <td>{{line.response_num}}</td>
+                                <td align="right">
+                                    <a href="javascript:;" v-if="filter_statistics!=line.role" @click="question_statistics(line.role)">点击筛选</a>
+                                    <a href="javascript:;" v-else @click="question_statistics(line.role)">取消筛选</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="thu-tiddler-frame" v-for="(question, index) in data.questions" v-show="question_is_show(question.status, question.is_common, question.resp_role)">
+                <div class="thu-tiddler-title">
+                    <div class="thu-titlebar" v-if="curr.question_modify!=index">
+                        <div class="thu-tiddler-controls" v-if="question.status!=7">
+                            <a href="javascript:;" @click="question_reclassify(question.question_id, true)" class="small" v-if="question.status==4 && is_xiaoban">
+                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
+                                <span>同意重分类</span>
+                            </a>
+                            <a href="javascript:;" @click="question_reclassify(question.question_id, false)" class="small" v-if="question.status==4 && is_xiaoban">
+                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
+                                <span>拒绝</span>
+                            </a>
+                            <a href="javascript:;" @click="question_delay(question.question_id, true)" class="small" v-if="question.status==5 && is_xiaoban">
+                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
+                                <span>同意延期</span>
+                            </a>
+                            <a href="javascript:;" @click="question_delay(question.question_id, false)" class="small" v-if="question.status==5 && is_xiaoban">
+                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
+                                <span>拒绝</span>
+                            </a>
+                            <a href="javascript:;" @click="question_common(question.question_id, question.is_common)" class="small" v-if="is_xiaoban">
+                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
+                                <span v-if="!question.is_common">设为常见</span>
+                                <span v-else>取消常见</span>
+                            </a>
+                            <a href="javascript:;" @click="question_common_top(question.question_id, question.is_common_top)" class="small" v-if="is_xiaoban && question.is_common">
+                                <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
+                                <span v-if="!question.is_common_top">常见置顶</span>
+                                <span v-else>取消置顶</span>
+                            </a>
+                            <a href="javascript:;" @click="question_modify(index)" class="small">
+                                <i class="fa fa-pencil-square fa-fw" aria-hidden="true"></i>
+                                <span>查看</span>
+                            </a>
+                        </div>
+                        <div>
+                            <h2 class="thu-title" style="font-size:20px"> {{question.title}} </h2>
+                        </div>
+                    </div>
+                    <div class="thu-titlebar" v-else>
+                        <div class="thu-tiddler-controls">
+                            <a href="javascript:;" @click="question_discard(index)" class="small">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                                <span>取消</span>
+                            </a>
+                        </div>
+                        <div>
+                            <h2 class="thu-title" style="font-size:20px"> 查看详情：{{question.title}} </h2>
+                        </div>
+                    </div>
+                    <div class="thu-improvement-banner" v-if="question_is_urgent(question)">
+                        <a class="thu-image-star-filled thu-image-button" width="22pt" height="22pt" viewBox="0 0 128 128">
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                        </a>
+                        <span>倒计时：{{question_count_down(question.created_time)}}</span>
+                    </div>
+                    <div class="thu-subtitle">
+                        <span>时间：{{question.created_time}}</span>
+                        <span>地点：{{question.created_location}}</span>
+                    </div>
+                    <div class="thu-tags-wrapper">
+                        <span class="thu-tag-list-item">
+                        <span class="thu-tag-label" style="background-color:orange">
+                            {{question_status(question.status)}}
+                        </span>
+                        <span class="thu-tag-label">
+                            负责：{{question.resp_role_name.join(',')}}
+                        </span>
+                        <span class="thu-tag-label" v-if="question.status != 7">
+                            附议：{{question.likes}}
+                        </span>
+                        <span class="thu-tag-label" style="background-color:red" v-if="question.is_common">
+                            常见{{question.is_common_top?'置顶':''}}
+                        </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="thu-tiddler-body">
+                    <p> {{question.content}} </p>
+                    <div class="thu-pic-grids">
+                        <img class="thu-pic-grid" v-for="path in question.pic_path" :src="path">
+                    </div>
+                    <div class="thu-edit-fields">
+                        <table class="thu-edit-fields">
+                            <tbody>
+                                <!--modify&non-modify-->
+                                <tr class="thu-edit-field" v-if="question.status==4">
+                                    <td class="thu-edit-field-name">
+                                        申请重新分类：
+                                    </td>
+                                    <td class="thu-edit-field-value" colspan="2">
+                                        <span>原因：{{question.reclassify_reason}}</span>
+                                    </td>
+                                </tr>
+                                <tr class="thu-edit-field" v-if="question.status==5">
+                                    <td class="thu-edit-field-name">
+                                        申请延期{{question.delay_days}}天：
+                                    </td>
+                                    <td class="thu-edit-field-value" colspan="2">
+                                        <span>原因：{{question.delay_reason}}</span>
+                                    </td>
+                                </tr>
+                                <!--modify-only-->
+                                <template v-if="curr.question_modify==index">
+                                    <!--main-->
+                                    <template v-if="question_for_main(question.status)">
+                                        <tr class="thu-edit-field" v-if="is_xiaoban">
+                                            <td class="thu-edit-field-name">
+                                                直接回复处理：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <textarea placeholder="回复内容" v-model="response_text"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javascript:void(0)" class="thu-btn-invisible" @click="question_response(question.question_id)">
+                                                    <i class="fa fa-reply" aria-hidden="true"></i> 确认
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field">
+                                            <td class="thu-edit-field-name">
+                                                选取受理部门：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                牵头部门：
+                                                <select v-model="selected_leader">
+                                                  <option v-for="option in options" :value="option.role">
+                                                    {{ option.label }}
+                                                  </option>
+                                                </select>
+                                                <br>
+                                                关联部门：
+                                                <select v-model="selected_ones" multiple>
+                                                  <option v-for="option in options" :value="option.role" v-show="option.role!=selected_leader">
+                                                    {{ option.label }}
+                                                  </option>
+                                                </select>
+                                                截止日期：
+                                                <input type="date" v-model="selected_ddl">
+                                                办理意见：
+                                                <input type="text" v-model="selected_opinion">
+                                                <!--<multiselect :selected="selected_ones" :options="options" @update="updateSelected"> </multiselect>-->
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javascript:void(0)" class="thu-btn-invisible" @click="question_classify(question.question_id)">
+                                                    <i class="fa fa-reply" aria-hidden="true"></i> 确认
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template>
+                                        <tr class="thu-edit-field" v-if="question.opinion">
+                                            <td class="thu-edit-field-name">
+                                                主责部门意见：
+                                            </td>
+                                            <td class="thu-edit-field-value" colspan="2">
+                                                <span>{{question.opinion}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-for="(response, index_res) in question.responses">
+                                            <td class="thu-edit-field-name">
+                                                部门回复({{index_res+1}})：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <span v-if="response_modify!=response.response_id">{{response.response_content}}</span>
+                                                <input v-else type="text" v-model="response.response_content">
+                                            </td>
+                                            <td class="thu-edit-field-submit" v-if="!is_main && question.status==3">
+                                                <a href="javasrcipt:;" v-if="response_modify!=response.response_id" @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
+                                                    <i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> 修改
+                                                </a>
+                                                <a href="javasrcipt:;" v-else @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
+                                                    <i class="fa fa-save fa-fw" aria-hidden="true"></i> 保存
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <!--related-->
+                                    <template v-if="question_for_related(question.status)">
+                                        <tr class="thu-edit-field" v-if="!is_main && ([2,3,6].indexOf(question.status) != -1)">
+                                            <td class="thu-edit-field-name">
+                                                添加回复：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <textarea placeholder="回复内容" v-model="response_text"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_response(question.question_id)">
+                                                    <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-if="!is_main && question.status==2">
+                                            <td class="thu-edit-field-name">
+                                                申请重新分类：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <textarea placeholder="申请原因" v-model="reclassify_reason"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_reclassify(question.question_id)">
+                                                    <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr class="thu-edit-field" v-if="!is_main && question.status==2">
+                                            <td class="thu-edit-field-name">
+                                                申请延长日期：
+                                            </td>
+                                            <td class="thu-edit-field-value">
+                                                <div>延长天数：<input type="number" v-model="delay_days" style="display:inline-block; width:100px; float:right"></div>
+                                                <textarea placeholder="申请原因" v-model="delay_reason"></textarea>
+                                            </td>
+                                            <td class="thu-edit-field-submit">
+                                                <a href="javasrcipt:;" class="thu-btn-invisible" @click="question_related_delay(question.question_id)">
+                                                    <i class="fa fa-reply fa-fw" aria-hidden="true"></i> 提交
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template>
+                                        <tr class="thu-edit-field" v-if="question.status==6">
+                                            <td class="thu-edit-field-name">
+                                                学生评价：
+                                            </td>
+                                            <td class="thu-edit-field-value" colspan="2">
+                                                <div class="thu-student-score" :class="question.student_score==1?'active':''">
+                                                    <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
+                                                    <span>满意</span>
+                                                </div>
+                                                <div class="thu-student-score" :class="question.student_score==-1?'active':''">
+                                                    <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
+                                                    <span>不满意</span>
+                                                </div>
+                                                <div class="thu-student-score" :class="question.student_score==0?'active':''">
+                                                    <i class="fa fa-meh-o fa-fw" aria-hidden="true"></i>
+                                                    <span>无评价</span>
+                                                </div>
+                                                <div v-if="question.student_score!=0">
+                                                    <span>评价内容：{{question.student_comment}}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--modify-only-->
+                    <div class="thu-editor-toolbar" v-if="curr.question_modify==index && question_for_main(question.status)">
+                        <a href="javascript:;" v-if="!is_zongban" @click="question_forward(question.question_id,'zongban')">
+                            <i class="fa fa-mail-forward fa-fw" aria-hidden="true"></i> 转交总办处理
+                        </a>
+                        <a href="javascript:;" v-if="is_xiaoban" @click="question_reject(question.question_id)"  style="color:red">
+                            <i class="fa fa-trash fa-fw" aria-hidden="true"></i> 拒绝
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <script type="text/x-template" id="contact">
+        <section class="thu-story-river">
+            <div class="thu-tiddler-frame">
+                <div class="thu-tiddler-title">
+                    <div class="thu-titlebar">
+                        <div class="thu-tiddler-controls" v-if="is_xiaoban">
+                            <a href="javascript:;" @click="contact_new()">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                <span>新增用户</span>
+                            </a>
+                        </div>
+                        <div>
+                            <h2 class="thu-title"> 通讯录 </h2>
+                        </div>
+                    </div>
+                    <div class="thu-subtitle">
+                        更新时间：25th July 2016 at 4:48pm
+                    </div>
+                </div>
+                <div class="thu-tiddler-body">
+                    <table style="width: 100%">
+                        <thead>
+                            <tr>
+                                <td>部门</td>
+                                <td v-if="is_xiaoban">帐号</td>
+                                <td>责任人</td>
+                                <td>座机</td>
+                                <td>手机</td>
+                                <td v-if="is_xiaoban">密码</td>
+                                <td v-if="is_xiaoban" style="width:45px">操作</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(line, index) in data.contact">
+                                <template v-if="curr.contact_modify!=index">
+                                    <td>{{line.display_name}}</td>
+                                    <td v-if="is_xiaoban">{{line.uname}}</td>
+                                    <td>{{line.resp_person}}</td>
+                                    <td>{{line.fixed_phone}}</td>
+                                    <td>{{line.mobile_phone}}</td>
+                                    <td v-if="is_xiaoban">可修改</td>
+                                    <td v-if="is_xiaoban" align="right">
+                                        <a href="javascript:;" @click="contact_modify(index)">修改</a>
+                                        <a href="javascript:;" @click="contact_delete(index)" style="color:red">删除</a>
+                                    </td>
+                                </template>
+                                <template v-else>
+                                    <td><input v-model="line.display_name"></td>
+                                    <td v-if="is_xiaoban"><input v-model="line.uname"></td>
+                                    <td><input v-model="line.resp_person"></td>
+                                    <td><input v-model="line.fixed_phone"></td>
+                                    <td><input v-model="line.mobile_phone"></td>
+                                    <td v-if="is_xiaoban"><input v-model="line.passwd"></td>
+                                    <td v-if="is_xiaoban" align="right">
+                                        <a href="javascript:;" @click="contact_save(index)">保存</a>
+                                        <a href="javascript:;" @click="contact_discard(index)">舍弃</a>
+                                    </td>
+                                </template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </script>
+
+    <!--Main Part-->
+    <div class="thu-page-container thu-page-view-classic" id="app">
+
+        <div class="thu-dropzone">
+            <div class="thu-topbar thu-topbar-left" v-if="!curr.is_login">
+                <a>
+                    <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                    <input class="form-control" v-model="curr.uname" type="text" placeholder="Username"></input>
+                    <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                    <input class="form-control" v-model="curr.passwd" type="password" placeholder="Password"></input>
+                </a>
+                <a href="javascript:;" @click="login()">
+                    <i class="fa fa-external-link-square fa-fw" aria-hidden="true"></i> 登录
+                </a>
+            </div>
+            <div class="thu-topbar thu-topbar-left" v-else>
+                <router-link to="/school/manage_console/info"><i class="fa fa-address-card fa-fw" aria-hidden="true"></i>个人信息</router-link>
+                <a href="javascript:;" @click="logout()"><i class="fa fa-external-link-square fa-fw" aria-hidden="true"></i>注销</a>
+            </div>
+            <div class="thu-topbar thu-topbar-right">
+                <a href="javascript:;"> <i aria-hidden="true" class="fa fa-angle-double-right fa-2x"></i> </a>
+            </div>
+        </div>
+        <div class="thu-sidebar-scrollable" style="overflow: auto;">
+            <div class="thu-sidebar-header">
+                <div style="height: auto; transition: none;">
+                    <router-link to="/school/manage_console/">
+                        <h1 class="thu-site-title">美丽清华</h1>
+                    </router-link>
+                    <div class="thu-site-subtitle">一个很厉害的网站，不管你信不信，反正我是信了</div>
+                </div>
+            </div>
+            <div class="thu-sidebar-lists">
+                <!--<div class="thu-search">
+                    <input type="search" class="thu-popup-handle">
+                    <a href="javascript:;"><i class="fa fa-search" aria-hidden="true"></i></a>
+                </div>-->
+                <div class="thu-tab-set">
+                    <div class="thu-tab-content ">
+                        <div class="thu-table-of-contents">
+                            <ol class="thu-toc toc-selective-expandable">
+                                <li class="toc-item-selected">
+                                    <router-link to="/school/manage_console/introduction" :class="{active:curr.view=='introduction'}">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>使用指南与介绍</span>
+                                    </router-link>
+                                </li>
+                                <li class="toc-item-selected" v-if="curr.is_login">
+                                    <router-link to="/school/manage_console/questions" :class="{active:curr.view=='questions'}">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>问题管理</span>
+                                    </router-link>
+                                </li>
+                                <li class="toc-item-selected">
+                                    <router-link to="/school/manage_console/contact" :class="{active:curr.view=='contact'}">
+                                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        <span>通讯录</span>
+                                    </router-link>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <router-view :curr="curr" :data="data" :is_xiaoban="is_xiaoban" :is_zongban="is_zongban" :is_main="is_main"></router-view>
+
+    </div>
+</body>
+
+<script src="/script/jquery.min.js"></script>
+<script src="/script/index.js"></script>
+
+</html>

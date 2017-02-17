@@ -1,7 +1,7 @@
 package com.thu.service;
 
 import com.thu.domain.Role;
-import com.thu.domain.User;
+import com.thu.domain.TUser;
 import com.thu.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,15 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User findUser(String name) {
+    public TUser findUser(String name) {
         return userRepository.findByUname(name);
     }
 
-    public List<User> findUserByRole(Role role) {
+    public List<TUser> findAll() {
+        return userRepository.findAll();
+    }
+
+    public List<TUser> findUserByRole(Role role) {
         return userRepository.findByRole(role);
     }
 
@@ -28,13 +32,26 @@ public class UserService {
         return userRepository.countByUname(uname) > 0;
     }
 
+    // add by luyq
+    public boolean saveStudent(String uname, String passwd, Role role, String email, String idNumber)
+    {
+        TUser TUser = new TUser(uname, passwd, role, email, idNumber);
+        try {
+            // 会自动更新passwd
+            userRepository.save(TUser);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public boolean insertUser(String uname, String mobileNumber, String fixedNumber, String idNumber, String email, Role role, String passwd) {
         if (userRepository.countByUname(uname) > 0) {
             return false;
         }
-        User user = new User(uname, passwd, role, mobileNumber, fixedNumber, email, idNumber);
+        TUser TUser = new TUser(uname, passwd, role, mobileNumber, fixedNumber, email, idNumber);
         try {
-            userRepository.save(user);
+            userRepository.save(TUser);
             return true;
         } catch (Exception e) {
             return false;
@@ -42,16 +59,16 @@ public class UserService {
     }
 
     public boolean updateUser(String uname, String mobileNumber, String fixedNumber, Role role, String passwd) {
-        User user = userRepository.findByUname(uname);
-        if (user == null) {
+        TUser TUser = userRepository.findByUname(uname);
+        if (TUser == null) {
             return false;
         }
-        user.setMobileNumber(mobileNumber);
-        user.setFixedNumber(fixedNumber);
-        user.setRole(role);
-        user.setPasswd(passwd);
+        TUser.setMobileNumber(mobileNumber);
+        TUser.setFixedNumber(fixedNumber);
+        TUser.setRole(role);
+        TUser.setPasswd(passwd);
         try {
-            userRepository.save(user);
+            userRepository.save(TUser);
             return true;
         } catch (Exception e) {
             return false;

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,TUser-scalable=0">
+    <title>WeUI</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="/style/weui.css"/>
+
+    <script src="/script/zepto.min.js"></script>
+    <script src="/script/updown.js"></script>
+    <script>
+    $(document).ready(function(){
+        $.ajax({
+                type: 'GET',
+                url: '/student/getDept/all/',
+                dataType: 'json',
+                data: {},
+                success: function(data){
+                    var result = '';
+                    result+='<option value="all">所有部门</option>';
+                    for(var i = 0; i < data.dept_list.length; i++){
+                        result+='<option value="'+data.dept_list[i].name+'">'+data.dept_list[i].name+'</option>';
+                    }
+                    $('#dept').html(result);
+                    // alert(result);
+                },
+                error: function(xhr, type) {
+                    alert('Ajax error!');
+                }
+            });
+        $.ajax({
+                type: 'GET',
+                url: '/student/getStatus/all',
+                dataType: 'json',
+                data: {},
+                success: function(data){
+                    var result = '';
+                    result+='<option value="all">所有状态</option>';
+                    for(var i = 0; i < data.status_list.length; i++){
+                        result+='<option value="'+data.status_list[i].name+'">'+data.status_list[i].name+'</option>';
+                    }
+                    $('#status').html(result);
+                    // alert(result);
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+        $.ajax({
+                type: 'GET',
+                url: '/student/home/status',
+                dataType: 'json',
+                data: {},
+                success: function(data){
+                    if (data.unread == 1) {
+                        $('#my').children('span').append('<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>')
+                    }
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+    });
+    function clicklike(ele){
+            var liked
+            var question_id = $(ele).attr('question_id')
+            if ($(ele).attr('state') == "1") {
+                liked = false
+            } else {
+                liked = true
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/student/question/like',
+                dataType: 'json',
+                data: {
+                    question_id : question_id,
+                    liked : liked
+                },
+                success: function(data) {
+                    if (liked == true) {
+                        $(ele).attr("state", "1")
+                        $(ele).text("已赞")
+                        $(ele).parent('li').parent('ul').children('#likenum').text("点赞数: "+data.likenum)
+                    } else {
+                        $(ele).attr("state", "0")
+                        $(ele).text("赞")
+                        $(ele).parent('li').parent('ul').children('#likenum').text("点赞数: "+data.likenum)
+                    }
+                },
+                error: function(xhr, type){
+                    alert('Ajax error!');
+                }
+            });
+        }
+    </script>
+    <script src="/script/controller2.js"></script>
+    <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
+
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
+    </style>
+    <style>
+        .page__hd {
+            padding: 0px;
+        }
+
+        .page__bd_spacing {
+            padding: 0 15px;
+        }
+
+        .page__ft.j_bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .page__ft {
+           padding-top: 40px;
+           padding-bottom: 10px;
+           text-align: center;
+        }
+
+        .weui-cell {
+            position: relative;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            float: left;
+            width: 25%;
+        }
+
+        .weui-cell_select-after {
+            padding-left: 0px;
+        }
+
+        .weui-cell_select-after .weui-select {
+            padding-left: 10px;
+            font-size: small;
+        }
+
+        .page.js_show {
+            opacity: 1;
+        }
+
+        .page {
+           overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .container, .page {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+    </style>
+</head>
+
+
+<body ontouchstart>
+<div class="container" id="container"><div class="page tabbar js_show">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+            <div class="weui-tab__panel">
+                <div class="weui_panel weui_panel_access" >
+                <div class="page__hd">
+                    <!--<h1 class="page__title">-->
+                    <!--<img src="./images/logo.png" alt="WeUI" height="21px">-->
+                    <!--</h1>-->
+                    <!--<p class="page__desc">WeUI 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。</p>-->
+                </div>
+                <div class="page__bd page__bd_spacing">
+
+                        <div class="weui_panel_bd">
+
+                        </div>
+
+                </div>
+            </div>
+            </div>
+            <div class="weui-tabbar">
+                <a href="/student/question/list" class="weui-tabbar__item">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_form.png" alt="" class="weui-tabbar__icon">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">问题</p>
+                </a>
+                <a href="/student/question/upload" class="weui-tabbar__item">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_nav.png" alt="" class="weui-tabbar__icon">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">创建问题</p>
+                </a>
+                <a href="/student/home" class="weui-tabbar__item weui-bar__item_on" id="my">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="/image/icon_nav_layout.png" alt="" class="weui-tabbar__icon">
+                    </span>
+                    <p class="weui-tabbar__label">我</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script type="text/javascript" class="searchbar js_show">
+    $(function(){
+        var $searchBar = $('#searchBar'),
+            $searchResult = $('#searchResult'),
+            $searchText = $('#searchText'),
+            $searchInput = $('#searchInput'),
+            $searchClear = $('#searchClear'),
+            $searchCancel = $('#searchCancel');
+
+        function hideSearchResult(){
+            $searchResult.hide();
+            $searchInput.val('');
+        }
+        function cancelSearch(){
+            hideSearchResult();
+            $searchBar.removeClass('weui-search-bar_focusing');
+            $searchText.show();
+        }
+
+        $searchText.on('click', function(){
+            $searchBar.addClass('weui-search-bar_focusing');
+            $searchInput.focus();
+        });
+
+        $searchInput
+            .on('blur', function () {
+                if(!this.value.length) cancelSearch();
+            })
+            .on('input', function() {
+                if(this.value.length) {
+                    $searchResult.show();
+                } else {
+                    $searchResult.hide();
+                }
+            });
+
+        $searchClear.on('click', function(){
+            hideSearchResult();
+            $searchInput.focus();
+        });
+
+        $searchCancel.on('click', function(){
+            cancelSearch();
+            $searchInput.blur();
+        });
+
+    });</script>
+    <script type="text/javascript" class="tabbar js_show">
+    $(function(){
+        $('.weui-tabbar__item').on('click', function () {
+            $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        });
+    });</script></div>

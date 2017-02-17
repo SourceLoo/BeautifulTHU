@@ -1,8 +1,6 @@
 package com.thu.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by JasonLee on 16/12/3.
@@ -18,6 +16,10 @@ public class Pic {
     @GeneratedValue
     private Long id;
     private String path;
+
+    public Long getId() {
+        return id;
+    }
 
     public String getPath() {
         return path;
