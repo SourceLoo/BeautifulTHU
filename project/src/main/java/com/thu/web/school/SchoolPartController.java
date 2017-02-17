@@ -398,14 +398,38 @@ public class SchoolPartController {
                 return Erro_Role;
             others.add(oth);
         }
-        SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd" );
-        Date date= new Date();
-        try {
-            date= sdf.parse(ddl);
-        } catch (ParseException e) {
+//        SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd" );
+//        Date date= new Date();
+//        try {
+//            date= sdf.parse(ddl);
+//        } catch (ParseException e) {
+//            return Erro_DDL;
+//        }
+        String[] timeArray=ddl.split("-");
+        int[] times=new int[6];
+        if(timeArray.length<3||timeArray.length>6)
             return Erro_DDL;
+        else{
+            for(int i=0;i<6;i++){
+                if(i<timeArray.length){
+                    try {
+                        times[i] = Integer.parseInt(timeArray[i]);
+                    }catch (Exception e){
+                        return Erro_Parse;
+                    }
+                }else
+                    times[i]=0;
+            }
         }
-        Boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,date,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
+
+        LocalDateTime ldt= LocalDateTime.now();
+        try {
+           ldt= LocalDateTime.of(times[0], times[1], times[2], times[3], times[4], times[5]);
+        }catch (Exception e){
+            return Erro_DDL+";"+Erro_Parse;
+        }
+
+        Boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,ldt,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
         Boolean setTimeStamp=Boolean.FALSE;
         if(role.equals(xiaoban)){
             setTimeStamp=questionService.updateTimestamp(qid,LocalDateTime.now(),null,null);

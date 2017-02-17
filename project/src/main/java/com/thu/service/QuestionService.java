@@ -111,7 +111,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public boolean classifyQuestion(Long id, Role leaderRole, List<Role> otherRoles, Date ddl, String instruction) {
+    public boolean classifyQuestion(Long id, Role leaderRole, List<Role> otherRoles, LocalDateTime ddl, String instruction) {
         Question question = questionRepository.findByQuestionId(id);
         if (question == null) {
             return false;
@@ -121,7 +121,7 @@ public class QuestionService {
         question.setOtherRoles(otherRoles);
         question.setTransferRole(null);
         question.setStatus(Status.UNSOLVED);
-        question.setDdl(LocalDateTime.ofInstant(Instant.ofEpochMilli(ddl.getTime()), ZoneOffset.UTC));
+        question.setDdl(ddl);
         question.setInstruction(instruction);
         try {
             questionRepository.save(question);
