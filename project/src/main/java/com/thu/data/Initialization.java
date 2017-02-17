@@ -53,9 +53,11 @@ public class Initialization implements CommandLineRunner {
         roleRepository.save(new Role("other1", "相关部门1", "老师4"));
         roleRepository.save(new Role("other2", "相关部门2", "老师5"));
 
-        userService.insertUser("tuanwei", "mobile", "fix", "000", "000@qq.com", roleService.findByRole("tuanwei"), "passwd");
+        //userService.insertUser("tuanwei", "mobile", "fix", "000", "000@qq.com", roleService.findByRole("tuanwei"), "passwd");
         userService.insertUser("xiaoban", "mobile", "fix", "001", "001@qq.com", roleService.findByRole("xiaoban"), "passwd");
         userService.insertUser("zongban", "mobile", "fix", "002", "002@qq.com", roleService.findByRole("zongban"), "passwd");
+        userService.insertUser("other1", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("other1"), "passwd");
+        userService.insertUser("other2", "mobile", "fix", "004", "004@qq.com", roleService.findByRole("other2"), "passwd");
 
         //TUser s1 = userRepository.findById(1L);
         //TUser s2 = userRepository.findById(2L);

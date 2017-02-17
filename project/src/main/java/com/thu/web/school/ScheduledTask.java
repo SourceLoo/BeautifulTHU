@@ -25,7 +25,7 @@ public class ScheduledTask {
         }
         else {
             tokenMap.clear();
-            System.out.println("SacheduledTask: token pool is cleared!" );
+            System.out.println("ScheduledTask: token pool is cleared!" );
         }
     }
 
