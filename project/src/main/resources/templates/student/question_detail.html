@@ -31,6 +31,7 @@
             background-color: #f8f8f8;
         }
     </style>
+    <link rel="stylesheet" href="/style/navigator.css"/>
     <script>
         function clicklike(ele){
             var liked
@@ -65,51 +66,62 @@
     </script>
 </head>
 <body ontouchstart>
-<div class="weui-cells">
-    <div class="weui-cell">
-        <div class="weui-cell__bd">
-            <p>当前状态</p>
-        </div>
-        <div class="weui-cell__ft" th:text="${status}">{状态}</div>
-    </div>
-</div>
-<div class="page__bd">
-    <article class="weui-article">
-        <h1>问题详情</h1>
-        <section>
-            <h2 class="title" th:text="${question.title}">{问题标题}</h2>
-            <section>
-                <h3 class="title">
-                    <ul class="weui-media-box__info">
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.TUser.uname}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>
-                    </ul>
-                </h3>
-                <p th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
-                    {问题内容}
-                </p>
-            </section>
-        </section>
-    </article>
-</div>
 
-<div class="weui-gallery" id="gallery">
-    <span class="weui-gallery__img" id="galleryImg"></span>
-</div>
 
-<div class="weui-grids">
-    <img href="javascript:;" style="
+<div class="container" id="container"><div class="page tabbar js_show">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab">
+            <div class="weui-tab__panel">
+                <div class="weui_panel weui_panel_access">
+                    <div class="page__hd">
+
+                        <div class="weui-cells">
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>当前状态</p>
+                                </div>
+                                <div class="weui-cell__ft" th:text="${status}">{状态}</div>
+                            </div>
+                        </div>
+                        <!--<h1 class="page__title">-->
+                        <!--<img src="./images/logo.png" alt="WeUI" height="21px">-->
+                        <!--</h1>-->
+                        <!--<p class="page__desc">WeUI 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。</p>-->
+                    </div>
+                    <div class="page__bd page__bd_spacing">
+                        <article class="weui-article">
+                            <h1>问题详情</h1>
+                            <section>
+                                <h2 class="title" th:text="${question.title}">{问题标题}</h2>
+                                <section>
+                                    <h3 class="title">
+                                        <ul class="weui-media-box__info">
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.TUser.uname}"></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>
+                                        </ul>
+                                    </h3>
+                                    <p th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                        {问题内容}
+                                    </p>
+                                </section>
+                            </section>
+                        </article>
+                        <div class="weui-gallery" id="gallery">
+                            <span class="weui-gallery__img" id="galleryImg"></span>
+                        </div>
+                        <div class="weui-grids">
+                            <img href="javascript:;" style="
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 5px;
     padding-right: 5px;
     height: 185px;
 " class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
-</div>
+                        </div>
 
-<script type="text/javascript" class="uploader js_show">
+                        <script type="text/javascript" class="uploader js_show">
     $(function(){
         $galleryImg = $("#galleryImg")
         $gallery = $("#gallery")
@@ -125,39 +137,64 @@
         });
 
     });</script>
+                        <div class="weui-cells">
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>受理部门</p>
+                                </div>
+                                <div class="weui-cell__ft" th:text="${leaderRoleName}">{受理部门}</div>
+                            </div>
+                        </div>
+                        <article class="weui-article">
+                            <h1>回复内容</h1>
+                            <section>
+                                <!--开始循环-->
+                                <section th:each="userResponse: ${userResponses}">
+                                    <h3 class="title">
+                                        <ul class="weui-media-box__info">
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${userResponse.response.responseId}"></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(userResponse.response.respondTime, 'yyyy-MM-dd')}"></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.uname}"></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum" th:text="${userResponse.response.likes}"></li>
+                                        </ul>
+                                    </h3>
+                                    <p th:utext="${#strings.replace( #strings.escapeXml( userResponse.response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                        {回复内容}
+                                    </p>
 
-
-<div class="weui-cells">
-    <div class="weui-cell">
-        <div class="weui-cell__bd">
-            <p>受理部门</p>
+                                </section>
+                                <!--循环结束-->
+                            </section>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-tabbar">
+                <a class="weui-tabbar__item weui-bar__item_on" href="/student/question/list">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_form.png">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">问题</p>
+                </a>
+                <a class="weui-tabbar__item" href="/student/question/upload">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_nav.png">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">创建问题</p>
+                </a>
+                <a class="weui-tabbar__item" href="/student/home" id="my">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_layout.png">
+                    </span>
+                    <p class="weui-tabbar__label">我</p>
+                </a>
+            </div>
         </div>
-        <div class="weui-cell__ft" th:text="${leaderRoleName}">{受理部门}</div>
     </div>
 </div>
-<div class="page__bd">
-    <article class="weui-article">
-        <h1>回复内容</h1>
-        <section>
-            <!--开始循环-->
-            <section th:each="userResponse: ${userResponses}">
-                <h3 class="title">
-                    <ul class="weui-media-box__info">
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${userResponse.response.responseId}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(userResponse.response.respondTime, 'yyyy-MM-dd')}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.uname}"></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
-                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum" th:text="${userResponse.response.likes}"></li>
-                    </ul>
-                </h3>
-                <p th:utext="${#strings.replace( #strings.escapeXml( userResponse.response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
-                    {回复内容}
-                </p>
-
-            </section>
-            <!--循环结束-->
-        </section>
-    </article>
 </div>
 <!-- 使用 -->
 </body>

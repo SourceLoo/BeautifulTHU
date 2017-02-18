@@ -14,55 +14,106 @@
     <!-- <script src="https://weui.io/weui.min.js"></script> -->
     <!-- <script src="https://weui.io/example.js"></script> -->
     <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
-.en-markup-crop-options {
-    top: 18px !important;
-    left: 50% !important;
-    margin-left: -100px !important;
-    width: 200px !important;
-    border: 2px rgba(255,255,255,.38) solid !important;
-    border-radius: 4px !important;
-}
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
 
-.en-markup-crop-options div div:first-of-type {
-    margin-left: 0px !important;
-}
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
 
-.page, body {
-    background-color: #f8f8f8;
-}
-</style>
+        .page, body {
+            background-color: #f8f8f8;
+        }
+    </style>
+    <link rel="stylesheet" href="/style/navigator.css"/>
 </head>
 <body ontouchstart>
-<div class="weui-cells">
-    <div class="weui-cell">
-        <div class="weui-cell__bd">
-            <p>受理部门</p>
+
+
+<div class="container" id="container"><div class="page tabbar js_show">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab" style="position: absolute">
+            <div class="weui-tab__panel">
+                <div class="weui_panel weui_panel_access">
+                    <div class="page__hd">
+                        <div class="weui-cells">
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>受理部门</p>
+                                </div>
+                                <div class="weui-cell__ft" th:text="${question.leaderRole.displayName}">{部门}</div>
+                            </div>
+                        </div>
+                        <!--<h1 class="page__title">-->
+                        <!--<img src="./images/logo.png" alt="WeUI" height="21px">-->
+                        <!--</h1>-->
+                        <!--<p class="page__desc">WeUI 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。</p>-->
+                    </div>
+                    <div class="page__bd page__bd_spacing">
+                        <div class="weui_panel_bd">
+                            <div class="page__bd" response_id={response_id}>
+                                <div class="weui-panel weui-panel_access">
+                                    <div class="weui-panel__bd">
+                                        <div class="weui-media-box weui-media-box_text">
+                                            <h4 class="weui-media-box__title">答复流程</h4>
+                                            <p class="weui-media-box__desc">
+                                                <img src="/image/append_progress.jpg" width="100%;height=21px">
+                                            </p>
+                                        </div>
+                                        <div class="weui-media-box weui-media-box_text">
+                                            <h4 class="weui-media-box__title">问题</h4>
+                                            <p id="question_content"  class="weui-media-box__desc" th:text="${question.content}">{问题内容}</p>
+                                        </div>
+                                        <div class="weui-media-box weui-media-box_text" th:each="response: ${question.responses}">
+                                            <h4 class="weui-media-box__title">答复</h4>
+                                            <p id="reply_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                                {答复内容}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-tabbar">
+                <a class="weui-tabbar__item weui-bar__item_on" href="/student/question/list">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_form.png">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">问题</p>
+                </a>
+                <a class="weui-tabbar__item" href="/student/question/upload">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_nav.png">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">创建问题</p>
+                </a>
+                <a class="weui-tabbar__item" href="/student/home" id="my">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_layout.png">
+                    </span>
+                    <p class="weui-tabbar__label">我</p>
+                </a>
+            </div>
         </div>
-        <div class="weui-cell__ft" th:text="${question.leaderRole.displayName}">{部门}</div>
     </div>
 </div>
-<div class="page__bd" response_id={response_id}>
-    <div class="weui-panel weui-panel_access">
-        <div class="weui-panel__bd">
-            <div class="weui-media-box weui-media-box_text">
-                <h4 class="weui-media-box__title">答复流程</h4>
-                <p class="weui-media-box__desc">
-                    <img src="/image/append_progress.jpg" width="100%;height=21px">
-                </p>
-            </div>
-            <div class="weui-media-box weui-media-box_text">
-                <h4 class="weui-media-box__title">问题</h4>
-                <p id="question_content"  class="weui-media-box__desc" th:text="${question.content}">{问题内容}</p>
-            </div>
-            <div class="weui-media-box weui-media-box_text" th:each="response: ${question.responses}">
-                <h4 class="weui-media-box__title">答复</h4>
-                <p id="reply_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
-                    {答复内容}
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+    <script class="tabbar js_show" type="text/javascript">
+    $(function(){
+        $('.weui-tabbar__item').on('click', function () {
+            $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        });
+    });</script></div>
 <script type="text/javascript" class="tabbar js_show">
     $(function(){
         $('#question_content').on('click', function () {

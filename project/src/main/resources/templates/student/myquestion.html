@@ -33,121 +33,172 @@
     </style>
 </head>
 <body ontouchstart>
-<div class="weui-cells">
-    <div class="weui-cell">
-        <div class="weui-cell__bd">
-            <p>受理部门</p>
+<div class="container" id="container"><div class="page tabbar js_show">
+    <div class="page__bd" style="height: 100%;">
+        <div class="weui-tab" style="position: absolute">
+            <div class="weui-tab__panel">
+                <div class="weui_panel weui_panel_access">
+                    <div class="page__hd">
+                        <div class="weui-cells">
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>受理部门</p>
+                                </div>
+                                <div class="weui-cell__ft" th:text="${leaderRoleName}">{部门}</div>
+                            </div>
+                        </div>
+                        <!--<h1 class="page__title">-->
+                        <!--<img src="./images/logo.png" alt="WeUI" height="21px">-->
+                        <!--</h1>-->
+                        <!--<p class="page__desc">WeUI 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。</p>-->
+                    </div>
+                    <div class="page__bd page__bd_spacing">
+                        <div class="weui_panel_bd">
+                            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status)} != 'INVALID'">
+                                <h4 class="weui-media-box__title">答复流程</h4>
+                                <p class="weui-media-box__desc" th:switch="${#strings.toString(question.status)}">
+                                    <img src="/image/handle_progress.jpg" width="100%;height=21px" th:case="'UNAPPROVED'">
+                                    <img src="/image/classify_progress.jpg" width="100%;height=21px" th:case="'UNCLASSIFIED'">
+                                    <img src="/image/reply_progress.jpg" width="100%;height=21px" th:case="*">
+                                </p>
+                            </div>
+
+                            <div class="weui-media-box weui-media-box_text">
+                                <h4 class="weui-media-box__title">问题</h4>
+                                <h4 class="weui-media-box__title" th:text="${question.title}">{问题标题}</h4>
+
+                                <ul class="weui-media-box__info">
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.TUser.uname}"></li>
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>
+                                </ul>
+
+                                <br/>
+
+                                <p id="question_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                    {问题内容}
+                                </p>
+
+                                <!--<span th:text="${question.status}">{状态}</span>-->
+                            </div>
+
+
+                            <div class="weui-media-box weui-media-box_text" th:each="response : ${question.responses}" th:object="${response}">
+                                <h4 class="weui-media-box__title">答复</h4>
+                                <ul class="weui-media-box__info">
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{responder.uname}"></li>
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{#temporals.format(respondTime, 'yyyy-MM-dd')}"></li>
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{likes}"></li>
+                                </ul>
+                                <br/>
+
+                                <p id="reply_content"  class="weui-media-box__desc" th:utext="*{#strings.replace( #strings.escapeXml( responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                    {答复内容}
+                                </p>
+                            </div>
+
+                            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'SOLVED'}">
+                                <h4 class="weui-media-box__title">您的评价</h4>
+                                <p id="evaluation_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( question.evaluationDetail ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                    {评价内容}
+                                </p>
+                            </div>
+
+                            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'UNAPPROVED'}">
+                                <h4 class="weui-media-box__title">问题等待审核</h4>
+                            </div>
+
+                            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'UNCLASSIFIED'}">
+                                <h4 class="weui-media-box__title">问题等待分类</h4>
+                            </div>
+
+                            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'INVALID'}">
+                                <h4 class="weui-media-box__title">问题拒绝原因</h4>
+                                <p name="reply_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( question.rejectReason ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                    {拒绝原因}
+                                </p>
+                            </div>
+                            <div th:if="${#strings.toString(question.status) == 'SOLVING'}">
+                                <div class="weui-cells">
+                                    <div class="weui-cell weui-cell_select weui-cell_select-after">
+                                        <div class="weui-cell__hd">
+                                            <label class="weui-label">评价</label>
+                                        </div>
+                                        <div class="weui-cell__bd">
+                                            <select class="weui-select" id="evaluation">
+                                                <option value="无评价">无评价</option>
+                                                <option value="满意">满意</option>
+                                                <option value="不满意">不满意</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weui-cells weui-cells_form">
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <textarea class="weui-textarea" placeholder="请输入评价" rows="3" id="detail"></textarea>
+                                            <div class="weui-textarea-counter"><span>0</span>/200</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weui-btn-area">
+                                    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+                                </div>
+                            </div>
+                            <div th:if="${#strings.toString(question.status) != 'SOLVING'}">
+                                <div class="weui-cells">
+                                    <div class="weui-cell weui-cell_select weui-cell_select-after">
+                                        <div class="weui-cell__hd">
+
+                                        </div>
+                                        <div class="weui-cell__bd">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weui-cells weui-cells_form">
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-tabbar">
+                <a class="weui-tabbar__item weui-bar__item_on" href="/student/question/list">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_form.png">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">问题</p>
+                </a>
+                <a class="weui-tabbar__item" href="/student/question/upload">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_nav.png">
+                        <!--<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>-->
+                    </span>
+                    <p class="weui-tabbar__label">创建问题</p>
+                </a>
+                <a class="weui-tabbar__item" href="/student/home" id="my">
+                    <span style="display: inline-block;position: relative;">
+                        <img alt="" class="weui-tabbar__icon" src="/image/icon_nav_layout.png">
+                    </span>
+                    <p class="weui-tabbar__label">我</p>
+                </a>
+            </div>
         </div>
-        <div class="weui-cell__ft" th:text="${leaderRoleName}">{部门}</div>
     </div>
 </div>
-<div class="page__bd">
-    <div class="weui-panel weui-panel_access">
-        <div class="weui-panel__bd">
-
-            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status)} != 'INVALID'">
-                <h4 class="weui-media-box__title">答复流程</h4>
-                <p class="weui-media-box__desc" th:switch="${#strings.toString(question.status)}">
-                    <img src="/image/handle_progress.jpg" width="100%;height=21px" th:case="'UNAPPROVED'">
-                    <img src="/image/classify_progress.jpg" width="100%;height=21px" th:case="'UNCLASSIFIED'">
-                    <img src="/image/reply_progress.jpg" width="100%;height=21px" th:case="*">
-                </p>
-            </div>
-
-            <div class="weui-media-box weui-media-box_text">
-                <h4 class="weui-media-box__title">问题</h4>
-                <h4 class="weui-media-box__title" th:text="${question.title}">{问题标题}</h4>
-
-                <ul class="weui-media-box__info">
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.TUser.uname}"></li>
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>
-                </ul>
-
-                <br/>
-
-                <p id="question_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
-                    {问题内容}
-                </p>
-
-                <!--<span th:text="${question.status}">{状态}</span>-->
-            </div>
-
-
-            <div class="weui-media-box weui-media-box_text" th:each="response : ${question.responses}" th:object="${response}">
-                <h4 class="weui-media-box__title">答复</h4>
-                <ul class="weui-media-box__info">
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{responder.uname}"></li>
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{#temporals.format(respondTime, 'yyyy-MM-dd')}"></li>
-                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{likes}"></li>
-                </ul>
-                <br/>
-
-                <p id="reply_content"  class="weui-media-box__desc" th:utext="*{#strings.replace( #strings.escapeXml( responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
-                    {答复内容}
-                </p>
-            </div>
-
-            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'SOLVED'}">
-                <h4 class="weui-media-box__title">您的评价</h4>
-                <p id="evaluation_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( question.evaluationDetail ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
-                    {评价内容}
-                </p>
-            </div>
-
-            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'UNAPPROVED'}">
-                <h4 class="weui-media-box__title">问题等待审核</h4>
-            </div>
-
-            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'UNCLASSIFIED'}">
-                <h4 class="weui-media-box__title">问题等待分类</h4>
-            </div>
-
-            <div class="weui-media-box weui-media-box_text" th:if="${#strings.toString(question.status) == 'INVALID'}">
-                <h4 class="weui-media-box__title">问题拒绝原因</h4>
-                <p name="reply_content"  class="weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( question.rejectReason ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
-                    {拒绝原因}
-                </p>
-            </div>
-
-
-
-        </div>
-    </div>
-</div>
-
-<div th:if="${#strings.toString(question.status) == 'SOLVING'}">
-
-    <div class="weui-cells">
-        <div class="weui-cell weui-cell_select weui-cell_select-after">
-            <div class="weui-cell__hd">
-                <label class="weui-label">评价</label>
-            </div>
-            <div class="weui-cell__bd">
-                <select class="weui-select" id="evaluation">
-                    <option value="无评价">无评价</option>
-                    <option value="满意">满意</option>
-                    <option value="不满意">不满意</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="weui-cells weui-cells_form">
-        <div class="weui-cell">
-            <div class="weui-cell__bd">
-                <textarea class="weui-textarea" placeholder="请输入评价" rows="3" id="detail"></textarea>
-                <div class="weui-textarea-counter"><span>0</span>/200</div>
-            </div>
-        </div>
-    </div>
-    <div class="weui-btn-area">
-        <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
-    </div>
-
-</div>
-
-
+    <script class="tabbar js_show" type="text/javascript">
+    $(function(){
+        $('.weui-tabbar__item').on('click', function () {
+            $(this).addClass('weui-bar__item_on').siblings('.weui-bar__item_on').removeClass('weui-bar__item_on');
+        });
+    });</script></div>
 
 <script type="text/javascript" th:inline="javascript">
     var questionId = [[${question.questionId}]];

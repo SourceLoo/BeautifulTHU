@@ -77,6 +77,8 @@
         function addPosition(ele) {
             position = prompt("请输入地址", "")
             $("#position").append('<option value="'+position+'">'+position+'</option>')
+            $("#position").val(position)
+
         }
     </script>
     <script type="text/javascript" class="uploader js_show">
@@ -97,7 +99,7 @@
                     });
                 }
                 else {
-                    alert('failed'+this.getStatus());
+                    alert('当前定位失败,请手动添加');
                 }
             });
         }
@@ -113,7 +115,7 @@
                     }
                 },
                 error: function(xhr, type){
-                    alert('Ajax error!');
+                    alert('当前定位失败,请手动添加');
                 }
             });
            getLocation2()
@@ -201,7 +203,7 @@
                                 </div>
                             </div>
                         </div>
-                    <div><a href="javascript:;" onclick="addPosition(this)">没有需要的位置? 点此添加</a></div>
+                    <div><a href="javascript:;" onclick="addPosition(this)" class="weui-tabbar__label" style="padding-left: 20px;">没有需要的位置? 点此添加</a></div>
                 </div>
             </div>
             <div class="weui-tabbar">
@@ -271,6 +273,8 @@
         $uploadAction.on("click", function(){
             if (file_list.length > 0) {
                 uploadFile()
+            } else {
+                alert("请添加图片")
             }
         });
 

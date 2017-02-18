@@ -1,0 +1,29 @@
+.page__ft {
+   padding-top: 40px;
+   padding-bottom: 10px;
+   text-align: center;
+}
+.weui-cell_select-after {
+    padding-left: 0px;
+}
+.weui-cell_select-after .weui-select {
+    padding-left: 10px;
+    font-size: small;
+}
+.page.js_show {
+    opacity: 1;
+}
+.page {
+   overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    opacity: 0;
+    z-index: 1;
+}
+.container, .page {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+

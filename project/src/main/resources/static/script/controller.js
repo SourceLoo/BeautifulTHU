@@ -10,15 +10,15 @@ $(function(){
         autoLoad : true,
         domDown : {//上拉
             domClass   : 'dropload-down',
-            domRefresh : '<div class="dropload-refresh f15 "><i class="icon icon-20"></i>上拉加载更多</div>',
-            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>',
-            domNoData  : '<div class="dropload-noData">没有更多数据了</div>'
+            domRefresh : '<div class="weui-tabbar__label dropload-refresh f15 " style="text-align: center"><i class="icon icon-20"></i>上拉加载更多</div>',
+            domLoad    : '<div class="weui-tabbar__label dropload-load f15" style="text-align: center"><span class="weui-loading"></span>正在加载中...</div>',
+            domNoData  : '<div class="weui-tabbar__label dropload-noData" style="text-align: center">没有更多数据了</div>'
         },
         domUp : {//下拉
             domClass   : 'dropload-up',
-            domRefresh : '<div class="dropload-refresh"><i class="icon icon-114"></i>上拉加载更多</div>',
-            domUpdate  : '<div class="dropload-load f15"><i class="icon icon-20"></i>释放更新...</div>',
-            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>'
+            domRefresh : '<div class="weui-tabbar__label dropload-refresh" style="text-align: center"><i class="icon icon-114"></i>上拉加载更多</div>',
+            domUpdate  : '<div class="weui-tabbar__label dropload-load f15" style="text-align: center"><i class="icon icon-20"></i>释放更新...</div>',
+            domLoad    : '<div class="weui-tabbar__label dropload-load f15" style="text-align: center"><span class="weui-loading"></span>正在加载中...</div>'
         },
 //        loadUpFn : function(me) {//刷新
 //            counter = 0
