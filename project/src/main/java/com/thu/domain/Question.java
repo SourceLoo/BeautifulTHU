@@ -16,9 +16,9 @@ public class Question {
     private String content;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private TUser TUser;
-    @OneToOne
+    @ManyToOne
     private Role leaderRole;
-    @OneToMany
+    @ManyToMany
     private List<Role> otherRoles = new ArrayList<Role>();
 
     private Status status = Status.UNAPPROVED;

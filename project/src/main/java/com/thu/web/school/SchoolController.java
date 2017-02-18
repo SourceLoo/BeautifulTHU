@@ -315,13 +315,14 @@ public class SchoolController{
         String result = "[";
         boolean flag = true;
         for (TUser usr: TUserList) {
+            if (usr.getRole().getRole().equals("student")) continue;
             JSONObject mem = new JSONObject();
             mem.put("display_name", usr.getRole().getDisplayName());
             if (is_xiaoban) mem.put("uname", usr.getUname());
             mem.put("resp_person", usr.getRole().getRespPerson());
             mem.put("fixed_phone", usr.getFixedNumber());
             mem.put("mobile_phone", usr.getMobileNumber());
-            System.out.println(mem.toString());
+            //System.out.println(mem.toString());
             if (flag) {
                 flag = false;
                 result = result + mem.toString();
@@ -521,7 +522,7 @@ public class SchoolController{
         boolean flag = true;
         for (Role rol: roleList){
             JSONObject mem = new JSONObject();
-            System.out.println(rol.getRole());
+            //System.out.println(rol.getRole());
             mem.put("role", rol.getRole());
             mem.put("display_name", rol.getDisplayName());
             mem.put("question_num", rol.getReceivedNumber().toString());
