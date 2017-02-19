@@ -62,6 +62,18 @@ public class Initialization implements CommandLineRunner {
         userService.insertUser("other1", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("other1"), "passwd");
         userService.insertUser("other2", "mobile", "fix", "004", "004@qq.com", roleService.findByRole("other2"), "passwd");
 
+        /*roleRepository.save(new Role("student", "学生", "studentResp"));
+        roleRepository.save(new Role("zongban", "综办", "老师甲"));
+        roleRepository.save(new Role("xiaoban", "校办", "老师乙"));
+        roleRepository.save(new Role("tuanwei", "团委", "老师丙"));
+
+        userService.insertUser("学生甲", "mobile", "fix", "984", "110@qq.com", roleService.findByRole("student"), "passwd");
+        userService.insertUser("学生乙", "mobile", "fix", "984", "110@qq.com", roleService.findByRole("student"), "passwd");
+        userService.insertUser("老师甲", "mobile", "fix", "000", "000@qq.com", roleService.findByRole("zongban"), "passwd");
+        userService.insertUser("老师乙", "mobile", "fix", "001", "001@qq.com", roleService.findByRole("xiaoban"), "passwd");
+        userService.insertUser("老师丙", "mobile", "fix", "002", "002@qq.com", roleService.findByRole("tuanwei"), "passwd");
+        */
+
         TUser s1 = userRepository.findById(1L);
         TUser s2 = userRepository.findById(2L);
         TUser t1 = userRepository.findById(3L);
@@ -86,7 +98,6 @@ public class Initialization implements CommandLineRunner {
         questionService.saveQuestion(s2, "这是标题5", "这是内容5", "这是清华大学", paths.subList(0,1));
         questionService.saveQuestion(s2, "这是标题6", "这是内容6\n测试", "这是清华大学", paths.subList(0,1));
         questionService.saveQuestion(s2, "这是标题7", "这是内容7\n测试", "这是清华大学", paths.subList(0,1));
-
 
         question = questionService.findById(1L);
         System.out.println(roleService.findByRole("zongban"));
