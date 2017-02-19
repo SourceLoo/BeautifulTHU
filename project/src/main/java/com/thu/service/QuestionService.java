@@ -157,13 +157,14 @@ public class QuestionService {
         return question != null && question.getLeaderRole() != null;
     }
 
-    public boolean setDelay(Long questionId, String delayReason, Integer delayDays) {
+    public boolean setDelay(Long questionId, String delayReason, Integer delayDays,Role tuan) {
         Question question = questionRepository.findByQuestionId(questionId);
         if (question == null) {
             return false;
         }
         question.setDelayReason(delayReason);
         question.setDelayDays(delayDays);
+        question.setTransferRole(tuan);
         try {
             questionRepository.save(question);
             return true;

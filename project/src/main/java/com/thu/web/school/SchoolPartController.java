@@ -187,17 +187,26 @@ public class SchoolPartController {
             List<String> role_res_name=new ArrayList<>();
 
             //TODO:修改判定逻辑，使用transferRole
-            if(question.getTransferRole()==null||question.getStatus() ==Status.UNAPPROVED||(question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
+//            if(question.getTransferRole()==null||question.getStatus() ==Status.UNAPPROVED||(question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
+//            {
+//                role_role.add(xiaoban);
+//                role_res_name.add(roleService.findByRole(xiaoban).getDisplayName());
+//            }else if ((role.equals(zongban)||role.equals(xiaoban))&&question.getStatus()==Status.UNCLASSIFIED){
+//                Role forward_role=question.getTransferRole();
+//                if(forward_role.getRole().equals(role)) {
+//                    role_res_name.add(forward_role.getDisplayName());
+//                    role_role.add(forward_role.getRole());
+//                }
+//            }
+            if(question.getTransferRole()==null||question.getTransferRole().getRole().equals(xiaoban))
             {
                 role_role.add(xiaoban);
                 role_res_name.add(roleService.findByRole(xiaoban).getDisplayName());
-            }else if ((role.equals(zongban)||role.equals(xiaoban))&&question.getStatus()==Status.UNCLASSIFIED){
-                Role forward_role=question.getTransferRole();
-                if(forward_role.getRole().equals(role)) {
-                    role_res_name.add(forward_role.getDisplayName());
-                    role_role.add(forward_role.getRole());
-                }
+            }else{
+                role_role.add(zongban);
+                role_res_name.add(roleService.findByRole(zongban).getDisplayName());
             }
+
             Role lead_role=question.getLeaderRole();
             if(lead_role!=null){
                 role_res_name.add(lead_role.getDisplayName());

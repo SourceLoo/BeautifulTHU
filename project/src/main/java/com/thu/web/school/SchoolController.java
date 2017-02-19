@@ -408,7 +408,8 @@ public class SchoolController{
         if (!checkPermissionWithoutName( token, leaderRole.getRole())){
             return invalidTokenMsg;
         }
-        boolean success = questionService.setDelay(Long.parseLong(question_id),delay_reason,delay_days);
+        Role tuan= roleService.findByRole(roleXB);
+        boolean success = questionService.setDelay(Long.parseLong(question_id),delay_reason,delay_days,tuan);
         if (success){
             return successMsg;
         } else{
