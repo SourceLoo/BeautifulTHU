@@ -387,13 +387,13 @@
                                             </td>
                                             <td class="thu-edit-field-value">
                                                 <span v-if="response_modify!=response.response_id">{{response.response_content}}</span>
-                                                <input v-else type="text" v-model="response.response_content">
+                                                <textarea v-else placeholder="回复内容" v-model="response.response_content"></textarea>
                                             </td>
-                                            <td class="thu-edit-field-submit" v-if="!is_main && question.status==3">
-                                                <a href="javasrcipt:;" v-if="response_modify!=response.response_id" @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
+                                            <td class="thu-edit-field-submit" v-if="!is_main && question.status==3 && question.resp_role[0]==curr.role"">
+                                                <a href="javasrcipt:;" v-if="response_modify!=response.response_id" @click="response_modify=response.response_id" class="thu-btn-invisible">
                                                     <i class="fa fa-pencil-square-o fa-fw" aria-hidden="true"></i> 修改
                                                 </a>
-                                                <a href="javasrcipt:;" v-else @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
+                                                <a href="javasrcipt:;" v-else  @click="question_related_modify(question.question_id,response)" class="thu-btn-invisible">
                                                     <i class="fa fa-save fa-fw" aria-hidden="true"></i> 保存
                                                 </a>
                                             </td>

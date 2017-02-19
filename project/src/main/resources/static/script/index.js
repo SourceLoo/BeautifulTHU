@@ -137,8 +137,19 @@ const questions = {
                 alert(handle_res(res).msg);
                 return false;
             } else {
+                this.response_modify = -1;
+                this.response_text = '';
+
+                this.selected_leader = '';
+                this.selected_ones = [];
+                this.selected_ddl = '';
+                this.selected_opinion = '';
+
+                this.reclassify_reason = '';
+                this.delay_days = 0;
+                this.delay_reason = '';
+                this.$router.app.update_questions();
                 alert("操作成功");
-                this.$router.app.update_questions()
             }
         },
         question_statistics: function(role) {
@@ -159,15 +170,7 @@ const questions = {
             } else {
                 path = '/qa/del/';
             }
-            this.$http.post(path + localStorage.token, handle_req(temp)).then(res => {
-                res = handle_res(res);
-                if (res.success === false) {
-                    alert(res.msg);
-                    return false;
-                } else {
-                    this.$router.app.update_questions();
-                }
-            });
+            this.$http.post(path + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_common_top: function(id, is_common_top) {
             var temp = {
@@ -179,15 +182,7 @@ const questions = {
             } else {
                 path = '/qa/notop/';
             }
-            this.$http.post(path + localStorage.token, handle_req(temp)).then(res => {
-                res = handle_res(res);
-                if (res.success === false) {
-                    alert(res.msg);
-                    return false;
-                } else {
-                    this.$router.app.update_questions();
-                }
-            });
+            this.$http.post(path + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_reclassify: function(id, agree) {
             var temp = {
@@ -218,6 +213,7 @@ const questions = {
                 deadline: this.selected_ddl,
                 opinion: this.selected_opinion,
             };
+            console.log(temp);
             this.$http.post('/questions/main/classify/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_forward: function(id, role) {
@@ -234,28 +230,12 @@ const questions = {
             this.$http.post('/questions/main/reject/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_related_modify: function(id, response) {
-            if (this.response_modify == -1) {
-                this.response_modify = id;
-            } else {
-                var temp = {
-                    question_id: id,
-                    response_id: response.id,
-                    response_content: response.content,
-                };
-                this.$http.post('/questions/related/modify_response/' + localStorage.token, handle_req(temp)).then(res => {
-                    res = handle_res(res);
-                    if (res.success === false) {
-                        alert(res.msg);
-                        return false;
-                    } else {
-                        this.$router.app.update_questions().then(function(result) {
-                            if (resullt) {
-                                this.curr.response_modify = -1;
-                            }
-                        });
-                    }
-                });
-            }
+            var temp = {
+                question_id: id,
+                response_id: response.response_id,
+                response_content: response.response_content,
+            };
+            this.$http.post('/questions/related/modify_response/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_related_response: function(id) {
             var temp = {

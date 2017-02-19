@@ -212,7 +212,7 @@ public class SchoolPartController {
             }
 //            role_role.add(lead_role.);
             List<Role> other_roles=question.getOtherRoles();
-            if(other_roles!=null){
+            if(other_roles.size() != 0){
                 for(Role oother:other_roles){
                     role_res_name.add(oother.getDisplayName());
                     role_role.add(oother.getRole());
@@ -396,14 +396,15 @@ public class SchoolPartController {
         Role leader= roleService.findByRole(lead_role);         //roleReposiroty.findRole(lead_role);
         if(leader==null)
             return Erro_Role;
-        List<Role> others=new ArrayList<>();
-
-        String[] _other_roles = other_roles.split(",");
-        for(String role_str:_other_roles){
-            Role oth= roleService.findByRole(role_str) ;   //.findRole(role_str);
-            if(oth==null)
-                return Erro_Role;
-            others.add(oth);
+        List<Role> others = new ArrayList<>();
+        if (other_roles != "") {
+            String[] _other_roles = other_roles.split(",");
+            for(String role_str:_other_roles){
+                Role oth= roleService.findByRole(role_str) ;   //.findRole(role_str);
+                if(oth==null)
+                    return Erro_Role;
+                others.add(oth);
+            }
         }
 //        SimpleDateFormat sdf  =   new  SimpleDateFormat( "yyyy-MM-dd" );
 //        Date date= new Date();

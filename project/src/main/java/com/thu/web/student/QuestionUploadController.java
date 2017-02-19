@@ -90,6 +90,7 @@ public class QuestionUploadController {
         System.out.println(title);
         System.out.println(content);
         System.out.println(location);
+        if (location == "none") location = "清华大学";
         questionService.saveQuestion(TUser, title, content, location, paths);
 
         return successMsg;
