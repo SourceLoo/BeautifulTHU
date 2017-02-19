@@ -18,14 +18,14 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-    private Role tuanwei;
+    //private Role tuanwei;
     private Role xiaoban;
     private Role zongban;
     private Role student;
 
     @PostConstruct
     public void init() {
-        tuanwei = roleRepository.findByRole("tuanwei");
+        //tuanwei = roleRepository.findByRole("tuanwei");
         xiaoban = roleRepository.findByRole("xiaoban");
         zongban = roleRepository.findByRole("zongban");
         student = roleRepository.findByRole("student");
@@ -70,7 +70,7 @@ public class RoleService {
 
     public List<Role> findMain() {
         List<Role> mainRoles = new ArrayList<Role>();
-        mainRoles.add(tuanwei);
+        //mainRoles.add(tuanwei);
         mainRoles.add(xiaoban);
         mainRoles.add(zongban);
         return mainRoles;
@@ -78,7 +78,7 @@ public class RoleService {
 
     public List<Role> findRelated() {
         List<Role> relatedRoles = roleRepository.findAll();
-        relatedRoles.remove(tuanwei);
+        //relatedRoles.remove(tuanwei);
         relatedRoles.remove(xiaoban);
         relatedRoles.remove(zongban);
         relatedRoles.remove(student);
