@@ -11,6 +11,8 @@ import java.util.*;
 public class Question {
     @Id
     @GeneratedValue
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionGenerator")
+    //@SequenceGenerator(name = "questionGenerator", sequenceName = "questionSequence", allocationSize=1)
     private Long questionId;
     private String title;
     private String content;

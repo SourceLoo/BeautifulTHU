@@ -400,7 +400,7 @@
                                         </tr>
                                     </template>
                                     <!--related-->
-                                    <template v-if="question_for_related(question.status)">
+                                    <template v-if="question_for_related(question.status) && question.resp_role[0]==curr.role">
                                         <tr class="thu-edit-field" v-if="!is_main && ([2,3,6].indexOf(question.status) != -1)">
                                             <td class="thu-edit-field-name">
                                                 添加回复：

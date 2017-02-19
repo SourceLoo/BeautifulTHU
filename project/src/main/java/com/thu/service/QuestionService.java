@@ -26,6 +26,8 @@ public class QuestionService {
     private QuestionRepository questionRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleService roleService;
 
     public List<Question> getAllQuestions() {
         List<Sort.Order> orders = new ArrayList<Sort.Order>();
@@ -116,7 +118,6 @@ public class QuestionService {
         if (question == null) {
             return false;
         }
-        //TODO: excuse me?
         question.setLeaderRole(leaderRole);
         question.setOtherRoles(otherRoles);
         question.setTransferRole(null);
@@ -157,13 +158,14 @@ public class QuestionService {
         return question != null && question.getLeaderRole() != null;
     }
 
-    public boolean setDelay(Long questionId, String delayReason, Integer delayDays) {
+    public boolean setDelay(Long questionId, String delayReason, Integer delayDays,Role tuan) {
         Question question = questionRepository.findByQuestionId(questionId);
         if (question == null) {
             return false;
         }
         question.setDelayReason(delayReason);
         question.setDelayDays(delayDays);
+        question.setTransferRole(tuan);
         try {
             questionRepository.save(question);
             return true;
@@ -303,6 +305,7 @@ public class QuestionService {
     public boolean saveQuestion(TUser TUser, String title, String content, String location, List<String> paths) {
         Question question = new Question(title, content, TUser, location, paths);
         try {
+            question.setTransferRole(roleService.findByRole("xiaoban"));
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
