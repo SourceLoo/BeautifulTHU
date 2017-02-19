@@ -212,7 +212,7 @@ public class SchoolPartController {
             }
 //            role_role.add(lead_role.);
             List<Role> other_roles=question.getOtherRoles();
-            if(other_roles.size() != 0){
+            if(other_roles!=null&&other_roles.size() != 0){
                 for(Role oother:other_roles){
                     role_res_name.add(oother.getDisplayName());
                     role_role.add(oother.getRole());
@@ -365,6 +365,67 @@ public class SchoolPartController {
         }
         else
             return "{\"success\":false, \"msg\":\"main transfer failure\"}";
+    }
+
+    /*    /quesitons/main/reclassify
+   //    send: {'question_id':'', 'agree':bool}
+   //    receive: {'success':bool, 'msg':''}
+   */
+    @RequestMapping(value = "/quesitons/main/reclassify/{token:.+}",method = RequestMethod.POST)
+    public String MainReclassify(@RequestParam("question_id") String q_id,@RequestParam("agree") boolean agree,@PathVariable String token)
+    {
+        if(!CheckToken(token))
+            return Error_Msg;
+
+        Long qid=Long.parseLong("-1");
+        try{
+            qid= Long.parseLong(q_id);
+        }catch (Exception e){
+            return Erro_Parse;
+        }
+        String role=getRole(token);
+        if(role==null)
+            return Erro_Role;
+        //
+        Role forword_role=   roleService.findByRole(xiaoban);
+        Boolean reclassify_ok=  questionService.ReclassifyQuestion(qid,agree,forword_role);
+        if(reclassify_ok) {
+            return "{\"success\":true, \"msg\":\"main agree/refuse reclassify ok\"}";
+        }
+        else
+            return "{\"success\":false, \"msg\":\"main agree/refuse reclassify failure\"}";
+
+    }
+
+    /**
+     * /questions/main/delay
+     send: {'question_id':'', 'agree':bool}
+     receive: {'success':bool, 'msg':''}
+     * @param q_id
+     * @param agree
+     * @param token
+     * @return
+     */
+    @RequestMapping(value = "/questions/main/delay/{token:.+}",method = RequestMethod.POST)
+    public String MainDelay(@RequestParam("question_id") String q_id,@RequestParam("agree") boolean agree,@PathVariable String token) {
+        if (!CheckToken(token))
+            return Error_Msg;
+
+        Long qid = Long.parseLong("-1");
+        try {
+            qid = Long.parseLong(q_id);
+        } catch (Exception e) {
+            return Erro_Parse;
+        }
+        String role = getRole(token);
+        if (role == null)
+            return Erro_Role;
+        Boolean delay_ok=  questionService.DelayQuestion(qid,agree);
+        if(delay_ok) {
+            return "{\"success\":true, \"msg\":\"main agree/refuse delay ok\"}";
+        }
+        else
+            return "{\"success\":false, \"msg\":\"main agree/refuse delay failure\"}";
     }
 
 
@@ -664,4 +725,6 @@ public class SchoolPartController {
 
     }
 
-}
+
+
+    }

@@ -112,6 +112,52 @@ public class QuestionService {
         }
     }
 
+    //ReclassifyQuestion
+    public boolean ReclassifyQuestion(Long id,boolean agree,Role xiaoban){
+        Question question=questionRepository.findByQuestionId(id);
+        if(question==null)
+            return false;
+        if(!agree){
+            question.setStatus(Status.UNSOLVED);
+            question.setTransferRole(null);
+            question.setTransferRole(null);
+        }else{
+            question.setStatus(Status.UNCLASSIFIED);
+            question.setLeaderRole(null);
+            question.setOtherRoles(null);
+            question.setTransferRole(xiaoban);
+
+        }
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    //DelayQuestion
+    public boolean DelayQuestion(Long id,boolean agree){
+        Question question=questionRepository.findByQuestionId(id);
+        if(question==null)
+            return false;
+
+
+        try {
+            if(agree){
+                int delay_days=question.getDelayDays();
+                if(delay_days<=0)
+                    return false;
+                question.setDdl(question.getDdl().plusDays(delay_days));
+            }
+            question.setStatus(Status.UNSOLVED);
+            question.setTransferRole(null);
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Transactional
     public boolean classifyQuestion(Long id, Role leaderRole, List<Role> otherRoles, LocalDateTime ddl, String instruction) {
         Question question = questionRepository.findByQuestionId(id);
@@ -120,7 +166,7 @@ public class QuestionService {
         }
         question.setLeaderRole(leaderRole);
         question.setOtherRoles(otherRoles);
-        question.setTransferRole(null);
+//        question.setTransferRole(null);
         question.setStatus(Status.UNSOLVED);
         question.setDdl(ddl);
         question.setInstruction(instruction);
@@ -131,6 +177,8 @@ public class QuestionService {
             return false;
         }
     }
+
+
 
     public List<Question> getQuestionForRelatedRole(Role role) {
         return questionRepository.findByLeaderRoleOrOtherRolesContains(role, role);
@@ -166,6 +214,7 @@ public class QuestionService {
         question.setDelayReason(delayReason);
         question.setDelayDays(delayDays);
         question.setTransferRole(tuan);
+        question.setStatus(Status.DELAY);
         try {
             questionRepository.save(question);
             return true;
