@@ -55,7 +55,11 @@ public class QuestionDetailController {
         model.addAttribute("status", statusStr);
 
         String leaderRoleName = "待分配";
-        if(question.getLeaderRole() != null)
+        if(question.getTransferRole() != null)
+        {
+            leaderRoleName = question.getTransferRole().getDisplayName();
+        }
+        else if(question.getLeaderRole() != null)
         {
             leaderRoleName = question.getLeaderRole().getDisplayName();
         }
@@ -64,7 +68,6 @@ public class QuestionDetailController {
         model.addAttribute("question", question);
 
         Long userId = (Long) session.getAttribute("userId");
-        userId = new Long(1);
         TUser TUser = userRepository.findById(userId);
 
         List<UserResponse> userResponses = new ArrayList<>();
