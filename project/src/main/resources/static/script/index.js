@@ -78,7 +78,7 @@ const questions = {
             return display_status[status];
         },
         question_for_main: function(status) {
-            return (status == 0 && this.is_xiaoban) || (status == 1 && this.is_zongban);
+            return (status == 0 && this.is_xiaoban) || (status == 1 && this.is_main);
         },
         question_for_related: function(status) {
             return ([2, 3, 4, 5, 6].indexOf(status) != -1);
@@ -206,6 +206,9 @@ const questions = {
             this.$http.post('/questions/main/response/' + localStorage.token, handle_req(temp)).then(this._update_questions);
         },
         question_classify: function(id) {
+            var index = this.selected_ones.indexOf(this.selected_leader);
+            if (index != -1)
+                this.selected_ones.splice(index, 1);
             var temp = {
                 question_id: id,
                 leader_role: this.selected_leader,

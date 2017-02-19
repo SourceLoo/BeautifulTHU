@@ -371,7 +371,7 @@ public class SchoolPartController {
    //    send: {'question_id':'', 'agree':bool}
    //    receive: {'success':bool, 'msg':''}
    */
-    @RequestMapping(value = "/quesitons/main/reclassify/{token:.+}",method = RequestMethod.POST)
+    @RequestMapping(value = "/questions/main/reclassify/{token:.+}",method = RequestMethod.POST)
     public String MainReclassify(@RequestParam("question_id") String q_id,@RequestParam("agree") boolean agree,@PathVariable String token)
     {
         if(!CheckToken(token))

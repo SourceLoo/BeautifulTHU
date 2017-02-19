@@ -120,7 +120,6 @@ public class QuestionService {
         if(!agree){
             question.setStatus(Status.UNSOLVED);
             question.setTransferRole(null);
-            question.setTransferRole(null);
         }else{
             question.setStatus(Status.UNCLASSIFIED);
             question.setLeaderRole(null);
@@ -166,7 +165,7 @@ public class QuestionService {
         }
         question.setLeaderRole(leaderRole);
         question.setOtherRoles(otherRoles);
-//        question.setTransferRole(null);
+        question.setTransferRole(null);
         question.setStatus(Status.UNSOLVED);
         question.setDdl(ddl);
         question.setInstruction(instruction);
@@ -440,21 +439,21 @@ public class QuestionService {
         }
     }
 
-    @Transactional
-    public boolean mergeDelay(Long questionId) {
-        Question question = findById(questionId);
-        if (question == null || question.getDdl() == null || question.getDelayDays() == null) {
-            return false;
-        }
-        question.setDdl(question.getDdl().plusDays(question.getDelayDays()));
-        question.setDelayDays(0);
-        try {
-            questionRepository.save(question);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+    //@Transactional
+    //public boolean mergeDelay(Long questionId) {
+        //Question question = findById(questionId);
+        //if (question == null || question.getDdl() == null || question.getDelayDays() == null) {
+            //return false;
+        //}
+        //question.setDdl(question.getDdl().plusDays(question.getDelayDays()));
+        //question.setDelayDays(0);
+        //try {
+            //questionRepository.save(question);
+            //return true;
+        //} catch (Exception e) {
+            //return false;
+        //}
+    //}
 
     @Transactional
     public boolean updateTimestamp(Long questionId, LocalDateTime timestamp1, LocalDateTime timestamp2, LocalDateTime timestamp3) {
