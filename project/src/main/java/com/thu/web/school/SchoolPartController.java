@@ -1,5 +1,6 @@
 package com.thu.web.school;//school;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.thu.domain.*;
 import com.thu.service.*;
 import net.sf.json.JSONArray;
@@ -299,8 +300,9 @@ public class SchoolPartController {
             return Erro_Response;
         //将回复插入到问题中
         Boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);      //questionRepository.responsebyMain(qid,respon,respon.getRespondTime());
+//        Boolean updateReceivedNumber=
         if(insertResponse) {
-            Boolean updateRole= roleService.updateNumber(xiaoban,null,null,null,Long.parseLong("1"));
+            Boolean updateRole= roleService.updateNumber(xiaoban,Long.parseLong("1"),Long.parseLong("1"),null,Long.parseLong("1"));
             if(!updateRole)
                 return Erro_Role;
 
@@ -326,6 +328,9 @@ public class SchoolPartController {
         String content = "问题未通过审核";
         Boolean reject_ok=   questionService.responsibleDeptReject(qid,content);                      //questionRepository.rejectbyMain(qid,content,new Date());
         if(reject_ok) {
+            Boolean updateRole= roleService.updateNumber(xiaoban,Long.parseLong("1"),null,null,null);
+            if(!updateRole)
+                return Erro_Role;
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main reject ok\"}";
         }
@@ -651,7 +656,7 @@ public class SchoolPartController {
     //相关部门的回复（包括追加回复）
 //    {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/related/response/{token:.+}",method = RequestMethod.POST)
-    public String RalaResponse(@RequestParam("question_id") String q_id,@RequestParam("response_content") String r_content,@PathVariable String token){
+    public String RelaResponse(@RequestParam("question_id") String q_id,@RequestParam("response_content") String r_content,@PathVariable String token){
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
