@@ -304,6 +304,7 @@ public class SchoolPartController {
             if(!updateRole)
                 return Erro_Role;
 
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main response ok\"}";
         }
         else
@@ -324,8 +325,10 @@ public class SchoolPartController {
         }
         String content = "问题未通过审核";
         Boolean reject_ok=   questionService.responsibleDeptReject(qid,content);                      //questionRepository.rejectbyMain(qid,content,new Date());
-        if(reject_ok)
+        if(reject_ok) {
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main reject ok\"}";
+        }
         else
             return "{\"success\":false, \"msg\":\"main reject failure\"}";
     }
@@ -361,6 +364,7 @@ public class SchoolPartController {
                 return Erro_Role;
             }
 
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main transfer ok\"}";
         }
         else
@@ -390,6 +394,7 @@ public class SchoolPartController {
         Role forword_role=   roleService.findByRole(xiaoban);
         Boolean reclassify_ok=  questionService.ReclassifyQuestion(qid,agree,forword_role);
         if(reclassify_ok) {
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main agree/refuse reclassify ok\"}";
         }
         else
@@ -422,6 +427,7 @@ public class SchoolPartController {
             return Erro_Role;
         Boolean delay_ok=  questionService.DelayQuestion(qid,agree);
         if(delay_ok) {
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main agree/refuse delay ok\"}";
         }
         else
@@ -516,6 +522,7 @@ public class SchoolPartController {
             Boolean updateRole= roleService.updateNumber(lead_role,Long.parseLong("1"),null,null,null); //roleReposiroty.updateReceivedNumber(lead_role,Long.parseLong("1"));
             if(!updateRole)
                 return Erro_Role;
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main classify ok\"}";
         }
         else
@@ -629,6 +636,7 @@ public class SchoolPartController {
             Boolean updateRole =  roleService.updateNumber(cur_role,Long.parseLong("-1"),null,null,null);  //roleReposiroty.updateReceivedNumber(cur_role, Long.parseLong("-1"));
             if (!updateRole)
                 return Erro_Role;
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"require have been send successfully\"}";
         }
         else
@@ -688,6 +696,7 @@ public class SchoolPartController {
                 }
 
             }
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"respond successfully\"}";
         }
         else
@@ -718,8 +727,10 @@ public class SchoolPartController {
         }
 
         Boolean modify_ok=  responseService.editResponse(rid,r_content);      //responseRepository.modifyResponse(rid,r_content,new Date());
-        if(modify_ok)
+        if(modify_ok) {
+            questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"modify response successfully\"}";
+        }
         else
             return "{\"success\":false, \"msg\":\"modify response unsuccessfully\"}";
 

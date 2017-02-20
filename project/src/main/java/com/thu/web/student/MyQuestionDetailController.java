@@ -47,7 +47,7 @@ public class MyQuestionDetailController {
         model.addAttribute("question", question);
 
         // 用户点击某个问题，将这个问题从未读列表中删除
-        questionService.modifyUnreadQuestions(userRepository.findById(userId), quetionId, false);
+        questionService.modifyUnreadQuestions(quetionId, false);
 
 
         String leaderRoleName = "待分配";

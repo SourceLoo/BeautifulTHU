@@ -433,6 +433,7 @@ public class SchoolController{
         }
         Role tuan= roleService.findByRole(roleXB);
         boolean success = questionService.setDelay(Long.parseLong(question_id),delay_reason,delay_days,tuan);
+        questionService.modifyUnreadQuestions(Long.parseLong(question_id), true);
         if (success){
             return successMsg;
         } else{

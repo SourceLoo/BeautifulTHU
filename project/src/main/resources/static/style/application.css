@@ -1537,6 +1537,7 @@ html body.thu-body.thu-single-tiddler-window {
     transform: scaleY(.5)
 }
 
+/*
 .thu-tiddler-body .thu-pic-grids:after,
 .thu-tiddler-body .thu-pic-grids:before {
     content: " ";
@@ -1545,6 +1546,7 @@ html body.thu-body.thu-single-tiddler-window {
     top: 0;
     color: #d9d9d9
 }
+*/
 
 .thu-tiddler-body .thu-pic-grids:after {
     width: 1px;

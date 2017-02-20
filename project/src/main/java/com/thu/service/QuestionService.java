@@ -413,12 +413,13 @@ public class QuestionService {
 
     // add by luyq 当op为真，增加user未读的question
     @Transactional
-    public boolean modifyUnreadQuestions(TUser TUser, Long questionId, boolean op)
+    public boolean modifyUnreadQuestions(Long questionId, boolean op)
     {
         Question question = findById(questionId);
         if (question == null) {
             return false;
         }
+        TUser TUser = question.getTUser();
         if (op) {
             if (TUser.getUnreadQuestions().contains(question)) {
                 return false;

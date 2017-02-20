@@ -103,20 +103,21 @@ const questions = {
         },
         question_count_down: function(question) {
             var ddl;
-            if ([0].indexOf(question.status)) {
+            if ([0].indexOf(question.status) != -1) {
                 ddl = new Date(question.created_time);
-                ddl.setHours(ddl.getHours() + 2);
-                ddl = Math.trunc(ddl.getTime() / 1000);
+                ddl.setHours(ddl.getHours() - 8 + 2);
             }
-            if ([1,4,5].indexOf(question.status)) {
+            if ([1,4,5].indexOf(question.status) != -1) {
                 ddl = new Date(question.timestamp);
-                ddl.setHours(ddl.getHours() + 2);
-                ddl = Math.trunc(ddl.getTime() / 1000);
+                ddl.setHours(ddl.getHours() - 8 + 2);
             }
             if (question.status == 2) {
                 ddl = new Date(question.deadline);
-                ddl = Math.trunc(ddl.getTime() / 1000);
+                ddl.setHours(ddl.getHours() - 8);
             }
+            if (ddl < new Date())
+                return "已过期";
+            ddl = Math.trunc(ddl.getTime() / 1000);
             //console.log(ddl);
             //console.log(this.curr.time);
             return this._days(ddl) + this._hours(ddl) + this._minutes(ddl) + this._seconds(ddl);
