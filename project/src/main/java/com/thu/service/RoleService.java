@@ -87,7 +87,7 @@ public class RoleService {
 
     public List<Role> findFellowRole(Role role) {
         if (role.equals(xiaoban)) {
-            return findRelated();
+            return roleRepository.findAll();
         }
         else if (role.equals(zongban)) {
             return roleRepository.findByByZongban(true);
