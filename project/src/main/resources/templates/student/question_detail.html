@@ -154,7 +154,7 @@
                                         <ul class="weui-media-box__info">
                                             <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${userResponse.response.responseId}"></li>
                                             <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(userResponse.response.respondTime, 'yyyy-MM-dd')}"></li>
-                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.uname}"></li>
+                                            <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.role.displayName}"></li>
                                             <li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
                                             <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum" th:text="${userResponse.response.likes}"></li>
                                         </ul>

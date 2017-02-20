@@ -39,6 +39,8 @@ public class MyQuestionDetailController {
         Question question = questionRepository.findByQuestionId(quetionId);
 
         Long userId = (Long) session.getAttribute("userId");
+        System.out.println("userId" + userId.toString());
+        System.out.println("quesUserId" + question.getTUser().getId().toString());
         if(question == null || question.getTUser().getId() != userId)
         {
             return "redirect:/student/home";
