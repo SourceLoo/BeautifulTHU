@@ -33,8 +33,8 @@ public class Question {
     private LocalDateTime timestamp1;
     private LocalDateTime timestamp2;
     private LocalDateTime timestamp3;
-    private Boolean isCommon;
-    private Boolean isCommonTop;
+    private Boolean isCommon = false;
+    private Boolean isCommonTop = false;
 
     private Integer delayDays;
     private String delayReason;

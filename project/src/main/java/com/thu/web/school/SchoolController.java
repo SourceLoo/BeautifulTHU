@@ -306,7 +306,7 @@ public class SchoolController{
     * return [{role, uname, resp_person, fixed_phone, mobile_phone},{}]
     * */
 
-   @RequestMapping(value = "/contact/get/{token:.+}", method = RequestMethod.POST)
+    @RequestMapping(value = "/contact/get/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
     public String getContact(@PathVariable String token) throws JSONException{
         // By chenzhenhuan 2017.2.17
@@ -334,6 +334,29 @@ public class SchoolController{
         return result;
     }
 
+    @RequestMapping(value = "/contact/get", method = RequestMethod.POST)
+    @ResponseBody
+    public String getContact() throws JSONException{
+        List<TUser> userList = userService.findAll();
+        String result = "[";
+        boolean flag = true;
+        for (TUser usr:userList) {
+            if (usr.getRole().getRole().equals("student")) continue;
+            JSONObject mem = new JSONObject();
+            mem.put("display_name", usr.getRole().getDisplayName());
+            mem.put("resp_person", usr.getRole().getRespPerson());
+            mem.put("fixed_phone", usr.getFixedNumber());
+            mem.put("mobile_phone", usr.getMobileNumber());
+            if (flag) {
+                flag = false;
+                result = result + mem.toString();
+            }else{
+                result = result + ',' + mem.toString();
+            }
+        }
+        result = result + "]";
+        return result;
+    }
 
     /*  done
     * only xiaoban set contact
@@ -375,7 +398,7 @@ public class SchoolController{
     * only xiaoban can set
     * param question_id
     * return {success, msg}
-    * */
+    *
     @RequestMapping(value = "/questions/main/delay/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
     public String setDelay(@PathVariable String token,
@@ -389,7 +412,7 @@ public class SchoolController{
             return errorMsg;
         }
     }
-
+*/
 
     /*
     * only related department can set delay
@@ -410,6 +433,7 @@ public class SchoolController{
         }
         Role tuan= roleService.findByRole(roleXB);
         boolean success = questionService.setDelay(Long.parseLong(question_id),delay_reason,delay_days,tuan);
+        questionService.modifyUnreadQuestions(Long.parseLong(question_id), true);
         if (success){
             return successMsg;
         } else{
