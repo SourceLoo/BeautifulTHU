@@ -275,7 +275,7 @@
                         <a class="thu-image-star-filled thu-image-button" width="22pt" height="22pt" viewBox="0 0 128 128">
                             <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
                         </a>
-                        <span>倒计时：{{question_count_down(question.created_time)}}</span>
+                        <span>倒计时：{{question_count_down(question)}}</span>
                     </div>
                     <div class="thu-subtitle">
                         <span>时间：{{question.created_time}}</span>
@@ -302,7 +302,9 @@
                 <div class="thu-tiddler-body">
                     <p> {{question.content}} </p>
                     <div class="thu-pic-grids">
-                        <img class="thu-pic-grid" v-for="path in question.pic_path" :src="path">
+                        <div class="thu-pic-grid" v-for="path in question.pic_path">
+                            <img :src="path">
+                        </div>
                     </div>
                     <div class="thu-edit-fields">
                         <table class="thu-edit-fields">

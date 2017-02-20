@@ -315,6 +315,9 @@ const error = {
     name: 'error',
     template: '#error',
 };
+window.setInterval(function() {
+    app.curr.time = Math.trunc((new Date()).getTime() / 1000);
+}, 1000);
 //Vue.prototype.$http = axios;
 Vue.prototype.$http = $;
 var router = new VueRouter({
@@ -402,11 +405,6 @@ var app = new Vue({
             console.log('get_displayname: ', res);
             this.data.display_name = handle_res(res);
         });
-    },
-    ready: function() {
-        window.setInterval(() => {
-            this.curr.time = Math.trunc((new Date()).getTime() / 1000);
-        }, 1000);
     },
     router: router,
     component: {
