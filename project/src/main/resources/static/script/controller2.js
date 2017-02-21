@@ -125,7 +125,7 @@ $(function(){
                         }
                         var dots = ""
                         if (q.unread == 1) {
-                            dots = '<span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>'
+                            dots = '<span class="weui-badge weui-badge_dot" style="position: absolute;top: 25px;right: 20px;"></span>'
                         }
                         result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
                                 '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
