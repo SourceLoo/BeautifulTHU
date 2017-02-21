@@ -1,7 +1,5 @@
 package com.thu.domain;
 
-import sun.rmi.runtime.Log;
-
 import javax.persistence.*;
 
 /**
@@ -24,8 +22,8 @@ public class Role {
     private Long ontimeNumber = 0L;
     private Long overtimeNumber = 0L;
     private Long directRespondNumber = 0L;
-    private Long goodRate = 0L;
-    private Long badRate = 0L;
+    private Long goodNumber = 0L;
+    private Long badNumber = 0L;
     private Boolean byZongban = false;
 
     protected Role() {}
@@ -148,20 +146,20 @@ public class Role {
         this.directRespondNumber = directRespondNumber;
     }
 
-    public Float getGoodRate() {
-        return goodRate;
+    public Long getGoodNumber() {
+        return goodNumber;
     }
 
-    public void setGoodRate(Float goodRate) {
-        this.goodRate = goodRate;
+    public void setGoodNumber(Long goodNumber) {
+        this.goodNumber = goodNumber;
     }
 
-    public Float getBadRate() {
-        return badRate;
+    public Long getBadNumber() {
+        return badNumber;
     }
 
-    public void setBadRate(Float badRate) {
-        this.badRate = badRate;
+    public void setBadNumber(Long badNumber) {
+        this.badNumber = badNumber;
     }
 
     public Boolean getByZongban() {
