@@ -1,5 +1,7 @@
 package com.thu.domain;
 
+import sun.rmi.runtime.Log;
+
 import javax.persistence.*;
 
 /**
@@ -22,8 +24,8 @@ public class Role {
     private Long ontimeNumber = 0L;
     private Long overtimeNumber = 0L;
     private Long directRespondNumber = 0L;
-    private Float goodRate = 0f;
-    private Float badRate = 0f;
+    private Long goodRate = 0L;
+    private Long badRate = 0L;
     private Boolean byZongban = false;
 
     protected Role() {}
