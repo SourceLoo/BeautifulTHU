@@ -35,7 +35,7 @@
     <script>
         function clicklike(ele){
             var liked
-            var response_id = $("#response_id").text()
+            var response_id = $(ele).parent("li").parent("ul").children("#response_id").text()
             if ($(ele).text() == "已赞") {
                 liked = false
             } else {
@@ -117,7 +117,7 @@
     padding-bottom: 5px;
     padding-left: 5px;
     padding-right: 5px;
-    height: 185px;
+    height: 133px;
 " class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
                         </div>
 
