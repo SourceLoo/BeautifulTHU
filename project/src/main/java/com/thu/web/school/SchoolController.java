@@ -6,6 +6,7 @@ import com.thu.domain.UserRepository;
 import io.jsonwebtoken.Claims;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -146,6 +147,7 @@ public class SchoolController{
             ) throws JSONException{
         //System.out.println(uname);
         //String passwd = "111";
+        uname = StringEscapeUtils.escapeHtml(uname);
         if (uname.equals("") || ! userService.containsUname(uname))
             return loginErrorMsg;
         TUser usr = userService.findUser(uname);
@@ -185,11 +187,12 @@ public class SchoolController{
     @RequestMapping(value="/auth/logout/{token:.+}",method =RequestMethod.POST)
     @ResponseBody
     public String logout(@PathVariable String token)throws JSONException{
-        System.out.println(token);
+        //System.out.println(token);
+        token = StringEscapeUtils.escapeHtml(token);
         if (!checkPermissionWithoutName(token, roleALL)){
             return invalidTokenMsg;
         }
-        System.out.println("token");
+        //System.out.println("token");
         String tokenName;
         try{
             Claims claims = jwtService.parseToken(token);
@@ -198,7 +201,7 @@ public class SchoolController{
         catch (Exception e){
             return invalidTokenMsg;
         }
-        System.out.println(tokenName);
+        //System.out.println(tokenName);
         boolean success = tokenMap.removeUname(tokenName);
         if (success){
             JSONObject result = new JSONObject();
@@ -216,6 +219,7 @@ public class SchoolController{
     @RequestMapping(value ="/info/get/{token:.+}", method = RequestMethod.POST)
     @ResponseBody
     public String getInfo(@PathVariable String token) throws JSONException{
+        token = StringEscapeUtils.escapeHtml(token);
         String tokenName , tokenRole;
         if (!checkPermissionWithoutName(token, roleALL)){
             return invalidTokenMsg;
@@ -260,7 +264,7 @@ public class SchoolController{
         if (null == rol){
             return invalidInputMsg;
         }
-        System.out.println(resp_person);
+        //System.out.println(resp_person);
         boolean success = roleService.updateRole(rol.getRole(),resp_person, rol.getDisplayName());
         if (!success){
             return invalidInputMsg;
