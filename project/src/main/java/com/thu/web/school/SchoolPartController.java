@@ -3,18 +3,31 @@ package com.thu.web.school;//school;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.thu.domain.*;
 import com.thu.service.*;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.security.MessageDigest;
 import java.util.*;
 import io.jsonwebtoken.Claims;
+
+import static com.thu.domain.QResponse.response;
 
 /**
  * Created by hetor on 16/12/2.
@@ -58,6 +71,7 @@ public class SchoolPartController {
     public static final String Erro_TIMESTAMP2="{\"success\":false,\"msg\":\"Invalid TIMESTAMP2\"}";
     public static final String Erro_TIMESTAMP3="{\"success\":false,\"msg\":\"Invalid TIMESTAMP3\"}";
     public static final String Erro_Status="{\"success\":false,\"msg\":\"Wrong Question Status\"}";
+    public static final String Erro_Zongban="{\"success\":false,\"msg\":\"Wrong Zongban interface\"}";
 
     //判断是否是主责部分
     private boolean checkMain(String role){
@@ -393,7 +407,71 @@ public class SchoolPartController {
                 //TODO: 调用后勤部门接口
                 //http://wx.93001.cn/services/wsActionPort.jws?wsdl
                 //{"sign":"69CE72B0563413496361234E3FE4D137","img_url":["http://www.baidu.com/1.jpg","http://www.baidu.com/2.jpg","http://www.baidu.com/3.jpg"],"content":"荷塘月色很漂亮","id":12345,"person":"史蒂夫","title":"美丽清华开发测试","contact":"13487452376","deadLine":"2017-03-10 10:10:10"}
-                //sign = MD5(KEY + id + KEY);
+
+                String sign = MD5(KEY + qid + KEY);
+                JSONObject jsonObject=new JSONObject();
+                jsonObject.put("sign",sign);
+                jsonObject.put("id",qid);
+                Question question=questionService.findById(qid);
+                if(question==null)
+                    return Erro_Zongban;
+                TUser user_stu=question.getTUser();
+                jsonObject.put("title",question.getTitle());
+                jsonObject.put("content",question.getContent());
+                List<Pic> pictures=question.getPics();
+                List<String> pic_url=new ArrayList<>();
+                if(pictures==null)
+                    return Erro_Zongban;
+                for(Pic pic:pictures){
+                    pic_url.add(pic.getPath());
+                }
+
+                jsonObject.put("img_url",pic_url);
+                jsonObject.put("person",user_stu.getUname());
+                jsonObject.put("contact",user_stu.getFixedNumber());
+                jsonObject.put("deadLine",this.Convert(question.getDdl()));
+                String url="http://wx.93001.cn/services/wsActionPort.jws?wsdl";
+                //实例化httpclient 与 post方法
+                CloseableHttpClient httpclient = HttpClients.createDefault();
+//                HttpGet httpget = new HttpGet(ticketUrl);
+                HttpPost httpPost=new HttpPost(url);
+                List <NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("sign",jsonObject.getString("sign")));
+                params.add(new BasicNameValuePair("id",jsonObject.getString("id")));
+                params.add(new BasicNameValuePair("title",jsonObject.getString("title")));
+                params.add(new BasicNameValuePair("content",jsonObject.getString("content")));
+                params.add(new BasicNameValuePair("img_url",jsonObject.getString("img_url")));
+                params.add(new BasicNameValuePair("person",jsonObject.getString("person")));
+                params.add(new BasicNameValuePair("contact",jsonObject.getString("contact")));
+                params.add(new BasicNameValuePair("deadLine",jsonObject.getString("deadLine")));
+
+
+                //请求结果
+                CloseableHttpResponse response = null;
+                String content = "";
+                try
+                {
+                    //执行get方法
+                    response = httpclient.execute(httpPost);
+                    if (response.getStatusLine().getStatusCode() == 200) {
+                        content = EntityUtils.toString(response.getEntity(), "utf-8");
+
+                    }else{
+                        return Erro_Zongban;
+                    }
+                }
+                catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                    return Erro_Zongban;
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                    return Erro_Zongban;
+                }
+                LocalDateTime localDateTime=LocalDateTime.now().plusDays(3);
+                questionService.modifyDDL(qid,localDateTime);
+
+//                String time=localDateTime.getYear()+"-"+localDateTime.get
             }
 
             questionService.modifyUnreadQuestions(qid, true);
@@ -408,7 +486,8 @@ public class SchoolPartController {
             @RequestParam("id") String q_id,
             @RequestParam("role") String lead_role,
             @RequestParam("content") String r_content,
-            @RequestParam("sign") String sign
+            @RequestParam("sign") String sign,
+            @RequestParam("deptname") String deptname
     ) {
         //TODO:后勤部门结果回复
         //1. MainClassify()
@@ -417,9 +496,52 @@ public class SchoolPartController {
         //@RequestParam("other_roles") String other_roles, 无
         //@RequestParam("deadline") String ddl, 无，在MainForward分给总办时设为默认的三天
         //@RequestParam("opinion") String opinion, 无
-        //2. RelaResponse()
-        //@RequestParam("response_content") String r_content
-        return "success";
+//        String pp=MD5(KEY+Long.parseLong(q_id)+KEY);
+        Long qid=Long.parseLong("-1");
+        try{
+            qid= Long.parseLong(q_id);
+        }catch (Exception e){
+            return Erro_Parse;
+        }
+        Question question=questionService.findById(qid);
+        if(question==null)
+            return "failure";
+        String pp=MD5(KEY+qid+KEY);
+        Role leader= roleService.findByRole(lead_role);         //roleReposiroty.findRole(lead_role);
+        if(leader==null)
+            return "failure";
+//        Role leader=roleService
+        if(pp.equals(sign)) {
+//            String re1 = MainClassify(q_id, lead_role, null, null, null, null);
+            //2. RelaResponse()
+            //@RequestParam("response_content") String r_content
+            boolean re1=questionService.classifyQuestion(qid,leader,null,question.getDdl(),question.getInstruction());
+
+
+            TUser responder=  userService.findUser(deptname);     //userRepository.findUserbyName(username);
+            if(responder==null)
+            {
+                return "failure";
+            }
+
+            if(r_content==null||r_content.equals(""))
+                return "failure";
+            Response respon= responseService.respond(r_content,responder);           //responseRepository.insertResponse(r_content,responder,new Date());
+            if(respon==null)
+                return "failure";
+            //将回复插入到问题中
+            boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);     //questionRepository.responsebyRela(qid,respon);
+
+//            boolean re2=questionService.responsibleDeptRespond(qid,r_content);
+            if(re1&&insertResponse)
+                return "success";
+            else
+                return "failure";
+
+        }
+        else {
+            return "failure";
+        }
     }
 
 
@@ -501,6 +623,7 @@ public class SchoolPartController {
                                @RequestParam("deadline") String ddl,
                                @RequestParam("opinion") String opinion,@PathVariable String token)
 	{
+
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -516,7 +639,7 @@ public class SchoolPartController {
         if(leader==null)
             return Erro_Role;
         List<Role> others = new ArrayList<>();
-        if (other_roles != "") {
+        if (other_roles!=null&&other_roles != "") {
             String[] _other_roles = other_roles.split(",");
             for(String role_str:_other_roles){
                 Role oth= roleService.findByRole(role_str) ;   //.findRole(role_str);
@@ -532,28 +655,33 @@ public class SchoolPartController {
 //        } catch (ParseException e) {
 //            return Erro_DDL;
 //        }
-        String[] timeArray=ddl.split("-");
-        int[] times=new int[6];
-        if(timeArray.length<3||timeArray.length>6)
-            return Erro_DDL;
-        else{
-            for(int i=0;i<6;i++){
-                if(i<timeArray.length){
-                    try {
-                        times[i] = Integer.parseInt(timeArray[i]);
-                    }catch (Exception e){
-                        return Erro_Parse;
-                    }
-                }else
-                    times[i]=0;
+        LocalDateTime ldt = LocalDateTime.now();
+        if(ddl!=null) {
+            String[] timeArray = ddl.split("-");
+            int[] times = new int[6];
+            if (timeArray.length < 3 || timeArray.length > 6)
+                return Erro_DDL;
+            else {
+                for (int i = 0; i < 6; i++) {
+                    if (i < timeArray.length) {
+                        try {
+                            times[i] = Integer.parseInt(timeArray[i]);
+                        } catch (Exception e) {
+                            return Erro_Parse;
+                        }
+                    } else
+                        times[i] = 0;
+                }
             }
-        }
 
-        LocalDateTime ldt= LocalDateTime.now();
-        try {
-           ldt= LocalDateTime.of(times[0], times[1], times[2], times[3], times[4], times[5]);
-        }catch (Exception e){
-            return Erro_DDL+";"+Erro_Parse;
+
+            try {
+                ldt = LocalDateTime.of(times[0], times[1], times[2], times[3], times[4], times[5]);
+            } catch (Exception e) {
+                return Erro_DDL + ";" + Erro_Parse;
+            }
+        }else{
+            ldt=questionService.findById(qid).getDdl();
         }
 
         Boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,ldt,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
