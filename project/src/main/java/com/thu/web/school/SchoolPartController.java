@@ -5,6 +5,7 @@ import com.thu.domain.*;
 import com.thu.service.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -145,6 +146,7 @@ public class SchoolPartController {
 //        if(true)
 //            return "ok";
 //        token_role.containsKey()
+
         if(!CheckToken(token))
             return Error_Msg;
         String role=getRole(token);
@@ -160,6 +162,10 @@ public class SchoolPartController {
 //            return Erro_Role;
         }
         JSONArray ja=new JSONArray();
+
+        if(start<0||number<0||questions==null){
+            return Error_Msg;
+        }
 
         for(int i=start;i<start+number&&i<questions.size();i++){
             Question question=questions.get(i);
@@ -275,6 +281,8 @@ public class SchoolPartController {
     // {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/main/response/{token:.+}",method = RequestMethod.POST)
     public String MainResponse(@RequestParam(name = "question_id") String q_id,@RequestParam("response_content") String content,@PathVariable String token){
+        content=StringEscapeUtils.escapeHtml(content);
+        token=StringEscapeUtils.escapeHtml(token);
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -295,6 +303,8 @@ public class SchoolPartController {
         TUser responder= userService.findUser(username);           //userRepository.findUserbyName(username);
         if(responder==null)
             return Erro_Responder;
+        if(content==null||content.equals(""))
+            return Erro_Response;
         Response respon= responseService.respond(content,responder);//                 responseRepository.insertResponse(content,responder,new Date());
         if(respon==null)
             return Erro_Response;
@@ -552,6 +562,9 @@ public class SchoolPartController {
         List<Question> questions=questionService.getQuestionForRelatedRole(rela_role);         //questionRepository.getQuestionbyRela(rela_role);
 
         JSONArray ja=new JSONArray();
+        if(start<0||number<0||questions==null){
+            return Error_Msg;
+        }
 
         for(int i=start;i<start+number&&i<questions.size();i++){
             Question question=questions.get(i);
@@ -657,6 +670,8 @@ public class SchoolPartController {
 //    {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/related/response/{token:.+}",method = RequestMethod.POST)
     public String RelaResponse(@RequestParam("question_id") String q_id,@RequestParam("response_content") String r_content,@PathVariable String token){
+        r_content= StringEscapeUtils.escapeHtml(r_content);
+        token=StringEscapeUtils.escapeHtml(token);
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -682,6 +697,9 @@ public class SchoolPartController {
         TUser responder=  userService.findUser(username);     //userRepository.findUserbyName(username);
         if(responder==null)
             return Erro_Responder;
+
+        if(r_content==null||r_content.equals(""))
+            return Erro_Response;
         Response respon= responseService.respond(r_content,responder);           //responseRepository.insertResponse(r_content,responder,new Date());
         if(respon==null)
             return Erro_Response;
@@ -712,6 +730,7 @@ public class SchoolPartController {
 //    {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/related/modify_response/{token:.+}",method = RequestMethod.POST)
     public String ModifyResponse(@RequestParam("question_id") String q_id,@RequestParam("response_id") String r_id,@RequestParam("response_content") String r_content,@PathVariable String token){
+        r_content=StringEscapeUtils.escapeHtml(r_content);
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
