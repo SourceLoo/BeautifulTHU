@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.security.MessageDigest;
 import java.util.*;
 import io.jsonwebtoken.Claims;
 
@@ -41,6 +42,8 @@ public class SchoolPartController {
     private final String roleZB = "zongban";
     private final String roleXB = "xiaoban";
     private final String roleALL = "all";
+    //TODO: 后勤部门约定KEY
+    private final String KEY = "KEY";
 //    @RequestMapping(value = "/test/login",method = RequestMethod.POST)
 //    public  String Login(@RequestBody)
 
@@ -65,8 +68,27 @@ public class SchoolPartController {
             return false;
     }
 
-
-
+    //后勤部门MD5验证
+    private static String MD5(String sourceStr) {
+        String result = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(sourceStr.getBytes("utf-8"));
+            byte b[] = md.digest();
+            int i;
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    buf.append("0");
+                buf.append(Integer.toHexString(i));
+            }
+            result = buf.toString();
+        } catch (Exception e) {}
+        return result.toUpperCase();
+    }
 
     private  boolean checkPermission(String token){
         String tokenRole, tokenName;
@@ -193,18 +215,6 @@ public class SchoolPartController {
             List<String> role_role=new ArrayList<>();
             List<String> role_res_name=new ArrayList<>();
 
-            //TODO:修改判定逻辑，使用transferRole
-//            if(question.getTransferRole()==null||question.getStatus() ==Status.UNAPPROVED||(question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
-//            {
-//                role_role.add(xiaoban);
-//                role_res_name.add(roleService.findByRole(xiaoban).getDisplayName());
-//            }else if ((role.equals(zongban)||role.equals(xiaoban))&&question.getStatus()==Status.UNCLASSIFIED){
-//                Role forward_role=question.getTransferRole();
-//                if(forward_role.getRole().equals(role)) {
-//                    role_res_name.add(forward_role.getDisplayName());
-//                    role_role.add(forward_role.getRole());
-//                }
-//            }
             Role transferRole = question.getTransferRole();
             if(transferRole != null)
             {
@@ -379,12 +389,39 @@ public class SchoolPartController {
                 return Erro_Role;
             }
 
+            if (forword_role.equals(zongban)) {
+                //TODO: 调用后勤部门接口
+                //http://wx.93001.cn/services/wsActionPort.jws?wsdl
+                //{"sign":"69CE72B0563413496361234E3FE4D137","img_url":["http://www.baidu.com/1.jpg","http://www.baidu.com/2.jpg","http://www.baidu.com/3.jpg"],"content":"荷塘月色很漂亮","id":12345,"person":"史蒂夫","title":"美丽清华开发测试","contact":"13487452376","deadLine":"2017-03-10 10:10:10"}
+                //sign = MD5(KEY + id + KEY);
+            }
+
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main transfer ok\"}";
         }
         else
             return "{\"success\":false, \"msg\":\"main transfer failure\"}";
     }
+
+    @RequestMapping(value = "/questions/zongban/response",method = RequestMethod.POST)
+    public String ZBResponse(
+            @RequestParam("id") String q_id,
+            @RequestParam("role") String lead_role,
+            @RequestParam("content") String r_content,
+            @RequestParam("sign") String sign
+    ) {
+        //TODO:后勤部门结果回复
+        //1. MainClassify()
+        //@RequestParam("question_id") String q_id,
+        //@RequestParam("leader_role") String lead_role,
+        //@RequestParam("other_roles") String other_roles, 无
+        //@RequestParam("deadline") String ddl, 无，在MainForward分给总办时设为默认的三天
+        //@RequestParam("opinion") String opinion, 无
+        //2. RelaResponse()
+        //@RequestParam("response_content") String r_content
+        return "success";
+    }
+
 
     /*    /quesitons/main/reclassify
    //    send: {'question_id':'', 'agree':bool}
