@@ -6,6 +6,9 @@ import com.thu.service.*;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.encoding.XMLType;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -26,6 +29,8 @@ import java.time.LocalDateTime;
 import java.security.MessageDigest;
 import java.util.*;
 import io.jsonwebtoken.Claims;
+
+import javax.xml.rpc.ServiceException;
 
 import static com.thu.domain.QResponse.response;
 
@@ -56,7 +61,7 @@ public class SchoolPartController {
     private final String roleXB = "xiaoban";
     private final String roleALL = "all";
     //TODO: 后勤部门约定KEY
-    private final String KEY = "KEY";
+    private final static String KEY = "sdf!2l12@#2dsfDFSDF";
 //    @RequestMapping(value = "/test/login",method = RequestMethod.POST)
 //    public  String Login(@RequestBody)
 
@@ -83,7 +88,7 @@ public class SchoolPartController {
     }
 
     //后勤部门MD5验证
-    private static String MD5(String sourceStr) {
+    public static String MD5(String sourceStr) {
         String result = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -432,39 +437,74 @@ public class SchoolPartController {
                 jsonObject.put("deadLine",this.Convert(question.getDdl()));
                 String url="http://wx.93001.cn/services/wsActionPort.jws?wsdl";
                 //实例化httpclient 与 post方法
-                CloseableHttpClient httpclient = HttpClients.createDefault();
-//                HttpGet httpget = new HttpGet(ticketUrl);
-                HttpPost httpPost=new HttpPost(url);
-                List <NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("sign",jsonObject.getString("sign")));
-                params.add(new BasicNameValuePair("id",jsonObject.getString("id")));
-                params.add(new BasicNameValuePair("title",jsonObject.getString("title")));
-                params.add(new BasicNameValuePair("content",jsonObject.getString("content")));
-                params.add(new BasicNameValuePair("img_url",jsonObject.getString("img_url")));
-                params.add(new BasicNameValuePair("person",jsonObject.getString("person")));
-                params.add(new BasicNameValuePair("contact",jsonObject.getString("contact")));
-                params.add(new BasicNameValuePair("deadLine",jsonObject.getString("deadLine")));
-
-
-                //请求结果
-                CloseableHttpResponse response = null;
-                String content = "";
-                try
-                {
-                    //执行get方法
-                    response = httpclient.execute(httpPost);
-                    if (response.getStatusLine().getStatusCode() == 200) {
-                        content = EntityUtils.toString(response.getEntity(), "utf-8");
-
-                    }else{
+//                CloseableHttpClient httpclient = HttpClients.createDefault();
+////                HttpGet httpget = new HttpGet(ticketUrl);
+//                HttpPost httpPost=new HttpPost(url);
+//                List <NameValuePair> params = new ArrayList<NameValuePair>();
+//                params.add(new BasicNameValuePair("sign",jsonObject.getString("sign")));
+//                params.add(new BasicNameValuePair("id",jsonObject.getString("id")));
+//                params.add(new BasicNameValuePair("title",jsonObject.getString("title")));
+//                params.add(new BasicNameValuePair("content",jsonObject.getString("content")));
+//                params.add(new BasicNameValuePair("img_url",jsonObject.getString("img_url")));
+//                params.add(new BasicNameValuePair("person",jsonObject.getString("person")));
+//                params.add(new BasicNameValuePair("contact",jsonObject.getString("contact")));
+//                params.add(new BasicNameValuePair("deadLine",jsonObject.getString("deadLine")));
+//
+//
+//                //请求结果
+//                CloseableHttpResponse response = null;
+//                String content = "";
+//                try
+//                {
+//                    //执行get方法
+//                    response = httpclient.execute(httpPost);
+//                    if (response.getStatusLine().getStatusCode() == 200) {
+//                        content = EntityUtils.toString(response.getEntity(), "utf-8");
+//
+//                    }else{
+//                        return Erro_Zongban;
+//                    }
+//                }
+//                catch (ClientProtocolException e) {
+//                    e.printStackTrace();
+//                    return Erro_Zongban;
+//                }
+//                catch (IOException e) {
+//                    e.printStackTrace();
+//                    return Erro_Zongban;
+//                }
+                try {
+//            in = SoapUtil.class.getClassLoader().getResourceAsStream("soapRequest.xml");
+//            bf = new BufferedReader(new InputStreamReader(in));
+//            String line = "";
+//            while ((line = bf.readLine()) != null) {
+//                sb.append(line).append("\n");
+//            }
+                    //输入请求
+//                    System.out.println(jsonObject.toString());
+//                    System.out.println("------------------------------------------");
+                    //返回请求
+//            System.out.println(invokeSrv(endpoint, jsonObject.toString()));
+                    Service service = new Service();
+                    Call call = null;
+                    try {
+                        call=(Call) service.createCall();
+                    } catch (ServiceException e) {
                         return Erro_Zongban;
                     }
-                }
-                catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                    return Erro_Zongban;
-                }
-                catch (IOException e) {
+                    call.setTargetEndpointAddress(url);
+                    call.setOperationName("receive");//WSDL里面描述的接口名称
+                    call.addParameter("json", XMLType.XSD_STRING,
+                            javax.xml.rpc.ParameterMode.IN);//接口的参数
+                    call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);//设置返回类型
+                    String temp = jsonObject.toString();
+                    String result = (String)call.invoke(new Object[]{temp});
+                    //给方法传递参数，并且调用方法
+//                    System.out.println("result is "+result);
+                    if(!result.equals("success")){
+                        return Erro_Zongban;
+                    }
+                } catch (IOException e) {
                     e.printStackTrace();
                     return Erro_Zongban;
                 }
