@@ -10,21 +10,10 @@ import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.security.MessageDigest;
 import java.util.*;
@@ -438,55 +427,7 @@ public class SchoolPartController {
                 jsonObject.put("contact",user_stu.getFixedNumber());
                 jsonObject.put("deadLine",this.Convert(question.getDdl()));
                 String url="http://wx.93001.cn/services/wsActionPort.jws?wsdl";
-                //实例化httpclient 与 post方法
-//                CloseableHttpClient httpclient = HttpClients.createDefault();
-////                HttpGet httpget = new HttpGet(ticketUrl);
-//                HttpPost httpPost=new HttpPost(url);
-//                List <NameValuePair> params = new ArrayList<NameValuePair>();
-//                params.add(new BasicNameValuePair("sign",jsonObject.getString("sign")));
-//                params.add(new BasicNameValuePair("id",jsonObject.getString("id")));
-//                params.add(new BasicNameValuePair("title",jsonObject.getString("title")));
-//                params.add(new BasicNameValuePair("content",jsonObject.getString("content")));
-//                params.add(new BasicNameValuePair("img_url",jsonObject.getString("img_url")));
-//                params.add(new BasicNameValuePair("person",jsonObject.getString("person")));
-//                params.add(new BasicNameValuePair("contact",jsonObject.getString("contact")));
-//                params.add(new BasicNameValuePair("deadLine",jsonObject.getString("deadLine")));
-//
-//
-//                //请求结果
-//                CloseableHttpResponse response = null;
-//                String content = "";
-//                try
-//                {
-//                    //执行get方法
-//                    response = httpclient.execute(httpPost);
-//                    if (response.getStatusLine().getStatusCode() == 200) {
-//                        content = EntityUtils.toString(response.getEntity(), "utf-8");
-//
-//                    }else{
-//                        return Erro_Zongban;
-//                    }
-//                }
-//                catch (ClientProtocolException e) {
-//                    e.printStackTrace();
-//                    return Erro_Zongban;
-//                }
-//                catch (IOException e) {
-//                    e.printStackTrace();
-//                    return Erro_Zongban;
-//                }
                 try {
-//            in = SoapUtil.class.getClassLoader().getResourceAsStream("soapRequest.xml");
-//            bf = new BufferedReader(new InputStreamReader(in));
-//            String line = "";
-//            while ((line = bf.readLine()) != null) {
-//                sb.append(line).append("\n");
-//            }
-                    //输入请求
-//                    System.out.println(jsonObject.toString());
-//                    System.out.println("------------------------------------------");
-                    //返回请求
-//            System.out.println(invokeSrv(endpoint, jsonObject.toString()));
                     Service service = new Service();
                     Call call = null;
                     try {
@@ -528,8 +469,7 @@ public class SchoolPartController {
             @RequestParam("id") String q_id,
             @RequestParam("role") String lead_role,
             @RequestParam("content") String r_content,
-            @RequestParam("sign") String sign,
-            @RequestParam("deptname") String deptname
+            @RequestParam("sign") String sign
     ) {
         //TODO:后勤部门结果回复
         //1. MainClassify()
@@ -560,7 +500,7 @@ public class SchoolPartController {
             boolean re1=questionService.classifyQuestion(qid,leader,null,question.getDdl(),question.getInstruction());
 
 
-            TUser responder=  userService.findUser(deptname);     //userRepository.findUserbyName(username);
+            TUser responder=  userService.findUser(lead_role);     //userRepository.findUserbyName(username);
             if(responder==null)
             {
                 return "failure";
@@ -608,7 +548,7 @@ public class SchoolPartController {
             return Erro_Role;
         //
         Role forword_role=   roleService.findByRole(xiaoban);
-        Boolean reclassify_ok=  questionService.ReclassifyQuestion(qid,agree,forword_role);
+        boolean reclassify_ok=  questionService.ReclassifyQuestion(qid,agree,forword_role);
         if(reclassify_ok) {
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main agree/refuse reclassify ok\"}";
@@ -641,7 +581,7 @@ public class SchoolPartController {
         String role = getRole(token);
         if (role == null)
             return Erro_Role;
-        Boolean delay_ok=  questionService.DelayQuestion(qid,agree);
+        boolean delay_ok=  questionService.DelayQuestion(qid,agree);
         if(delay_ok) {
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main agree/refuse delay ok\"}";
@@ -726,8 +666,8 @@ public class SchoolPartController {
             ldt=questionService.findById(qid).getDdl();
         }
 
-        Boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,ldt,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
-        Boolean setTimeStamp=Boolean.FALSE;
+        boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,ldt,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
+        boolean setTimeStamp=false;
         if(role.equals(xiaoban)){
             setTimeStamp=questionService.updateTimestamp(qid,LocalDateTime.now(),null,null);
             if(!setTimeStamp)
@@ -741,7 +681,7 @@ public class SchoolPartController {
         }
 
         if(classfy_ok && setTimeStamp) {
-            Boolean updateRole= roleService.updateNumber(lead_role,Long.parseLong("1"),null,null,null); //roleReposiroty.updateReceivedNumber(lead_role,Long.parseLong("1"));
+            boolean updateRole= roleService.updateNumber(lead_role,Long.parseLong("1"),null,null,null); //roleReposiroty.updateReceivedNumber(lead_role,Long.parseLong("1"));
             if(!updateRole)
                 return Erro_Role;
             questionService.modifyUnreadQuestions(qid, true);
@@ -856,9 +796,9 @@ public class SchoolPartController {
             return Erro_Role;
         if(null==tuan)
             return Erro_Role;
-        Boolean require_reclassify= questionService.applyReclassifyQuestion(qid,reason,tuan);  //questionRepository.reclassifybyRela(qid,reason,tuan);
+        boolean require_reclassify= questionService.applyReclassifyQuestion(qid,reason,tuan);  //questionRepository.reclassifybyRela(qid,reason,tuan);
         if(require_reclassify) {
-            Boolean updateRole =  roleService.updateNumber(cur_role,Long.parseLong("-1"),null,null,null);  //roleReposiroty.updateReceivedNumber(cur_role, Long.parseLong("-1"));
+            boolean updateRole =  roleService.updateNumber(cur_role,Long.parseLong("-1"),null,null,null);  //roleReposiroty.updateReceivedNumber(cur_role, Long.parseLong("-1"));
             if (!updateRole)
                 return Erro_Role;
             questionService.modifyUnreadQuestions(qid, true);
@@ -911,16 +851,16 @@ public class SchoolPartController {
         if(respon==null)
             return Erro_Response;
         //将回复插入到问题中
-        Boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);     //questionRepository.responsebyRela(qid,respon);
+        boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);     //questionRepository.responsebyRela(qid,respon);
         if(insertResponse) {
             if(has_responses.size()==0) {
                 if(respon.getRespondTime().compareTo(ddl)>0)
                 {
-                    Boolean updateRole = roleService.updateNumber(role,null,null,Long.parseLong("1"),null); //roleReposiroty.updateOvertimeNumber(role, Long.parseLong("1"));
+                    boolean updateRole = roleService.updateNumber(role,null,null,Long.parseLong("1"),null); //roleReposiroty.updateOvertimeNumber(role, Long.parseLong("1"));
                     if (!updateRole)
                         return Erro_Role;
                 }else{
-                    Boolean updateRole = roleService.updateNumber(role,null,Long.parseLong("1"),null,null);
+                    boolean updateRole = roleService.updateNumber(role,null,Long.parseLong("1"),null,null);
                     if (!updateRole)
                         return Erro_Role;
                 }
@@ -957,7 +897,7 @@ public class SchoolPartController {
             return Erro_Status;
         }
 
-        Boolean modify_ok=  responseService.editResponse(rid,r_content);      //responseRepository.modifyResponse(rid,r_content,new Date());
+        boolean modify_ok=  responseService.editResponse(rid,r_content);      //responseRepository.modifyResponse(rid,r_content,new Date());
         if(modify_ok) {
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"modify response successfully\"}";
