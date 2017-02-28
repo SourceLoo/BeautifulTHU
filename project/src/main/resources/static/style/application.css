@@ -803,7 +803,7 @@ table tfoot tr td {
 .thu-tiddler-frame embed,
 .thu-tiddler-frame iframe {
     max-width: 100%;
-    position: absolute;
+    /*position: absolute;*/
     top: 0;
     bottom: 0;
     left: 0;
@@ -1521,10 +1521,10 @@ html body.thu-body.thu-single-tiddler-window {
 }
 
 .thu-tiddler-body .thu-pic-grids {
-
-}
-.thu-tiddler-body .thu-pic-grids {
-    overflow: hidden
+    width: 510px;
+    max-width: 100%;
+    overflow: hidden;
+    margin: auto;
 }
 
 .thu-tiddler-body .thu-pic-grids:before {
@@ -1560,38 +1560,18 @@ html body.thu-body.thu-single-tiddler-window {
 
 .thu-pic-grid {
     width: 33%;
-    padding-bottom: 33%;
     position: relative;
     overflow: hidden;
     float: left;
 }
 
-.thu-pic-grid:before {
-    top: 0;
-    width: 1px;
-    border-right: 1px solid #d9d9d9;
-    -webkit-transform-origin: 100% 0;
-    transform-origin: 100% 0;
-    -webkit-transform: scaleX(.5);
-    transform: scaleX(.5)
-}
-
-.thu-pic-grid:after,.thu-pic-grid:before {
-    content: " ";
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    color: #d9d9d9
-}
-
-.thu-pic-grid:after {
-    left: 0;
-    height: 1px;
-    border-bottom: 1px solid #d9d9d9;
-    -webkit-transform-origin: 0 100%;
-    transform-origin: 0 100%;
-    -webkit-transform: scaleY(.5);
-    transform: scaleY(.5)
+.thu-pic-grid img {
+    width: 170px;
+    height: 170px;
+    padding: 8px;
+    margin: auto;
+    background: no-repeat center center;
+    background-size: cover;
 }
 
 .thu-pic-grid:active {
