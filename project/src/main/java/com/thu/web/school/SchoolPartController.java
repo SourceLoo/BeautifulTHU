@@ -90,7 +90,7 @@ public class SchoolPartController {
     }
 
     //后勤部门MD5验证
-    public static String MD5(String sourceStr) {
+    private static String MD5(String sourceStr) {
         String result = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
