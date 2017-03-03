@@ -57,6 +57,16 @@ student/auth
 
 
 
+流程：
+
+1. 用户点击student/auth 登录
+   - 有token，直接session.setAttribute，成功登录
+   - 没有token，则跳转id，是redirect。
+2. id的Controller处理这个get，再redirect到ticket。
+3. 我们的Controller响应这个get，发送服务端-服务端的请求，成功返回用户信息。存储
+
+
+
 
 
 done
