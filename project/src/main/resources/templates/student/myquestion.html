@@ -80,6 +80,35 @@
                                     {问题内容}
                                 </p>
 
+                                <div class="weui-gallery" id="gallery">
+                                    <span class="weui-gallery__img" id="galleryImg"></span>
+                                </div>
+                                <div class="weui-grids">
+                                    <img href="javascript:;" style="
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+" class="weui-grid" th:src="${pic.path}" th:each="pic: ${question.pics}"/>
+                                </div>
+
+                                <script type="text/javascript" class="uploader js_show">
+                                    $(function(){
+                                        $galleryImg = $("#galleryImg")
+                                        $gallery = $("#gallery")
+                                        //$galleryImg.attr("style", this.getAttribute("style"));
+                                        $('img').click(function(){
+                                            $gallery.fadeIn(100);
+                                            $galleryImg.append('<img style="height:100%;width:100%" src='+$(this).attr("src")+'/>')
+                                        });
+
+                                        $gallery.on("click", function(){
+                                            $galleryImg.children().remove()
+                                            $gallery.fadeOut(100);
+                                        });
+
+                                    });</script>
+
                                 <!--<span th:text="${question.status}">{状态}</span>-->
                             </div>
 
