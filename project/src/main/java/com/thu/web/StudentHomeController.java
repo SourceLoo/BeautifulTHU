@@ -13,6 +13,6 @@ public class StudentHomeController {
     @GetMapping(value = "/")
     public String getMyTest()
     {
-        return "redirect:/student/question/list";
+        return "redirect:/student/init";
     }
 }

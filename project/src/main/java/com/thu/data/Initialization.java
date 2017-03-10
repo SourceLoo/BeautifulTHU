@@ -46,39 +46,39 @@ public class Initialization implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
 
-        roleRepository.save(new Role("student", "学生", "studentResp"));
-        roleRepository.save(new Role("xiaoban", "校办", "老师"));
-        roleRepository.save(new Role("zongban", "总办", "老师"));
-        roleRepository.save(new Role("houqindangwei", "后勤党委", "老师"));
-        roleRepository.save(new Role("houqinzonghefuwupingtai", "后勤综合服务平台", "老师"));
-        roleRepository.save(new Role("jijianguihuachu", "基建规划处", "老师"));
-        roleRepository.save(new Role("jiedaifuwuzhongxin", "接待服务中心", "老师"));
-        roleRepository.save(new Role("jiedaobanshichu", "街道办事处", "老师"));
-        roleRepository.save(new Role("lvsedaxuebangongshi", "绿色大学办公室", "老师"));
-        roleRepository.save(new Role("lvsedaxuejianshebangongshi", "绿色大学建设办公室", "老师"));
-        roleRepository.save(new Role("wuyeguanlizhongxin", "物业管理中心", "老师"));
-        roleRepository.save(new Role("xiaoyiyuan", "校医院", "老师"));
-        roleRepository.save(new Role("xiushanxiaoyuanguanlizhongxin", "修缮校园管理中心", "老师"));
-        roleRepository.save(new Role("yinshifuwuzhongxin", "饮食服务中心", "老师"));
-        roleRepository.save(new Role("zhengdashangmaogongsi", "正大商贸公司", "老师"));
-        // add this line to update display_names
-        roleService.init();
+        //roleRepository.save(new Role("student", "学生", "studentResp"));
+        //roleRepository.save(new Role("xiaoban", "校办", "老师"));
+        //roleRepository.save(new Role("zongban", "总办", "老师"));
+        //roleRepository.save(new Role("houqindangwei", "后勤党委", "老师"));
+        //roleRepository.save(new Role("houqinzonghefuwupingtai", "后勤综合服务平台", "老师"));
+        //roleRepository.save(new Role("jijianguihuachu", "基建规划处", "老师"));
+        //roleRepository.save(new Role("jiedaifuwuzhongxin", "接待服务中心", "老师"));
+        //roleRepository.save(new Role("jiedaobanshichu", "街道办事处", "老师"));
+        //roleRepository.save(new Role("lvsedaxuebangongshi", "绿色大学办公室", "老师"));
+        //roleRepository.save(new Role("lvsedaxuejianshebangongshi", "绿色大学建设办公室", "老师"));
+        //roleRepository.save(new Role("wuyeguanlizhongxin", "物业管理中心", "老师"));
+        //roleRepository.save(new Role("xiaoyiyuan", "校医院", "老师"));
+        //roleRepository.save(new Role("xiushanxiaoyuanguanlizhongxin", "修缮校园管理中心", "老师"));
+        //roleRepository.save(new Role("yinshifuwuzhongxin", "饮食服务中心", "老师"));
+        //roleRepository.save(new Role("zhengdashangmaogongsi", "正大商贸公司", "老师"));
+        //// add this line to update display_names
+        //roleService.init();
 
         //userService.insertUser("tuanwei", "mobile", "fix", "000", "000@qq.com", roleService.findByRole("tuanwei"), "passwd");
-        userService.insertUser("xiaoban", "mobile", "fix", "001", "001@qq.com", roleService.findByRole("xiaoban"), "passwd");
-        userService.insertUser("zongban", "mobile", "fix", "002", "002@qq.com", roleService.findByRole("zongban"), "passwd");
-        userService.insertUser("houqindangwei", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("houqindangwei"), "passwd");
-        userService.insertUser("houqinzonghefuwupingtai", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("houqinzonghefuwupingtai"), "passwd");
-        userService.insertUser("jijianguihuachu", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("jijianguihuachu"), "passwd");
-        userService.insertUser("jiedaifuwuzhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("jiedaifuwuzhongxin"), "passwd");
-        userService.insertUser("jiedaobanshichu", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("jiedaobanshichu"), "passwd");
-        userService.insertUser("lvsedaxuebangongshi", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("lvsedaxuebangongshi"), "passwd");
-        userService.insertUser("lvsedaxuejianshebangongshi", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("lvsedaxuejianshebangongshi"), "passwd");
-        userService.insertUser("wuyeguanlizhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("wuyeguanlizhongxin"), "passwd");
-        userService.insertUser("xiaoyiyuan", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("xiaoyiyuan"), "passwd");
-        userService.insertUser("xiushanxiaoyuanguanlizhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("xiushanxiaoyuanguanlizhongxin"), "passwd");
-        userService.insertUser("yinshifuwuzhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("yinshifuwuzhongxin"), "passwd");
-        userService.insertUser("zhengdashangmaogongsi", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("zhengdashangmaogongsi"), "passwd");
+        //userService.insertUser("xiaoban", "mobile", "fix", "001", "001@qq.com", roleService.findByRole("xiaoban"), "passwd");
+        //userService.insertUser("zongban", "mobile", "fix", "002", "002@qq.com", roleService.findByRole("zongban"), "passwd");
+        //userService.insertUser("houqindangwei", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("houqindangwei"), "passwd");
+        //userService.insertUser("houqinzonghefuwupingtai", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("houqinzonghefuwupingtai"), "passwd");
+        //userService.insertUser("jijianguihuachu", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("jijianguihuachu"), "passwd");
+        //userService.insertUser("jiedaifuwuzhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("jiedaifuwuzhongxin"), "passwd");
+        //userService.insertUser("jiedaobanshichu", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("jiedaobanshichu"), "passwd");
+        //userService.insertUser("lvsedaxuebangongshi", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("lvsedaxuebangongshi"), "passwd");
+        //userService.insertUser("lvsedaxuejianshebangongshi", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("lvsedaxuejianshebangongshi"), "passwd");
+        //userService.insertUser("wuyeguanlizhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("wuyeguanlizhongxin"), "passwd");
+        //userService.insertUser("xiaoyiyuan", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("xiaoyiyuan"), "passwd");
+        //userService.insertUser("xiushanxiaoyuanguanlizhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("xiushanxiaoyuanguanlizhongxin"), "passwd");
+        //userService.insertUser("yinshifuwuzhongxin", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("yinshifuwuzhongxin"), "passwd");
+        //userService.insertUser("zhengdashangmaogongsi", "mobile", "fix", "003", "003@qq.com", roleService.findByRole("zhengdashangmaogongsi"), "passwd");
 
 //        TUser s1 = userRepository.findById(1L);
 //        TUser s2 = userRepository.findById(2L);

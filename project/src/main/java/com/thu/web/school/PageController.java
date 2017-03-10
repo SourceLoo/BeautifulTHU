@@ -1,4 +1,4 @@
-package com.thu.web.student;
+package com.thu.web.school;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
