@@ -15,13 +15,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-
+import java.security.MessageDigest;
 /**
  * Created by source on 1/8/17.
  */
@@ -51,8 +52,36 @@ public class LoginController {
 
     private final String errorMsg = "{\"success\":false,\"msg\":\"用户名密码不正确\"}";
 
+    //后勤部门MD5验证
+    private static String MD5(String sourceStr) {
+        String result = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(sourceStr.getBytes("utf-8"));
+            byte b[] = md.digest();
+            int i;
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    buf.append("0");
+                buf.append(Integer.toHexString(i));
+            }
+            result = buf.toString();
+        } catch (Exception e) {}
+        return result;
+    }
 
-    @GetMapping(value = "auth")
+    @GetMapping(value = "init")
+    public Object initAuth()
+    {
+        return "student/init";
+    }
+
+    @RequestMapping(value = "auth",method = RequestMethod.POST)
+    @ResponseBody
     public Object doAuth(@RequestParam(name = "token", required = false, defaultValue = "") String token)
     {
         Long userId = jwtService.getUserId(token);
@@ -61,20 +90,19 @@ public class LoginController {
         {
             session.setAttribute("userId", userId);
             System.out.println(session.getAttribute("userId"));
-            return "redirect:/student/question/list";
+            return "{\"success\":true}";
         }
         else // 没有则跳转idTsinghua 重新认证
         {
             String authUrl = env.getProperty("login.authurl")
-                    + "/" + env.getProperty("login.AppID") + "/" + env.getProperty("login.seq");
-            return "redirect:" + authUrl;
+                    + "/" + MD5(env.getProperty("login.AppID")) + "/" + env.getProperty("login.seq") + "?/student/login";
+            return "{\"success\":false, \"path\":\"" + authUrl + "\"}";
         }
 
         //return "redirect:https://www.baidu.com/";D
     }
 
     @GetMapping(value = "login")
-    @ResponseBody
     public Object saveToken(@RequestParam(name = "ticket") String ticket)
     {
 
@@ -115,7 +143,7 @@ public class LoginController {
         String idNumber = "";
 
 
-        content = "code=0:zjh=2011980001:yhm=stu:xm=test_stu:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
+        //content = "code=0:zjh=2011980001:yhm=stu:xm=test_stu:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
         String [] arr = content.split(":");
         for(String pairs : arr)
         {
@@ -148,19 +176,16 @@ public class LoginController {
 
         userService.saveStudent(uname, token, role, email, idNumber);
 
-        JSONObject result = new JSONObject();
-        result.put("token", token);
-
         // 登录成功
         Long userId = jwtService.getUserId(token);
         session.setAttribute("userId", userId);
 
         System.out.println("login: userId=" + userId);
 
-        String info = "登录成功，获得token" + result.toString() +
-                "<h1>您是第" +  userId.toString() + "位用户<h1/>" +
-                "<h1><a href='/'>进入主页</a></h1>";
+        //String info = "登录成功，获得token" + result.toString() +
+                //"<h1>您是第" +  userId.toString() + "位用户<h1/>" +
+                //"<h1><a href='/student/question'>进入主页</a></h1>";
 
-        return info;
+        return "redirect:/student/init?" + token;
     }
 }

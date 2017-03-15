@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,User-scalable=0">
+    <title>init</title>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+    $(document).ready(function(){
+        if (window.location.href.indexOf('?') != -1) {
+            var token = window.location.href.split('?')[1];
+            localStorage.setItem('stu_token', token);
+            window.location.pathname = "student/question/list";
+        } else {
+            if (localStorage.stu_token == undefined)
+                localStorage.setItem('stu_token', '');
+            $.post('/student/auth', JSON.stringify({'token':localStorage.stu_token})).then(function(res) {
+                res = JSON.parse(res);
+                if (res.success == true) {
+                    window.location.pathname = "student/question/list";
+                } else {
+                    localStorage.setItem('stu_token', '');
+                    window.location.replace(res.path);
+                }
+            });
+        }
+    });
+    </script>
+</head>
+</html>

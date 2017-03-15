@@ -23,10 +23,10 @@ public class TokenFilter extends OncePerRequestFilter {
 
         System.out.println("当前过滤的url是" + uri);
 
-        if(uri.contains("student/auth") || uri.contains("student/login")) //登陆页面不拦截
+        if(uri.contains("student/auth") || uri.contains("student/login") || uri.contains("student/init")) //登陆页面不拦截
         {
 
-            System.out.println("filter:student/auth|login");
+            System.out.println("filter:student/auth|login|init");
             filterChain.doFilter(httpServletRequest,httpServletResponse);
             return;
         }
@@ -38,7 +38,7 @@ public class TokenFilter extends OncePerRequestFilter {
 //            return;
 //        }
 
-        if(uri.contains("student/")) //其它admin页面拦截
+        if(uri.contains("student")) //其它admin页面拦截
         {
             System.out.println("filter:student/");
             Long userId = (Long) session.getAttribute("userId");
@@ -46,10 +46,10 @@ public class TokenFilter extends OncePerRequestFilter {
             if(null == userId)
             {
                 //这是学生端的登录
-                //httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/auth");
+                httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/init");
 
                 //这是直接login成功
-                httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/login?ticket=1024");
+                //httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/student/login?ticket=1024");
                 return;
             }
         }
