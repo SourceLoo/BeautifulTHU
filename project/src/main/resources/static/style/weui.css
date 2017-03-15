@@ -1495,10 +1495,11 @@ a.weui-media-box:active {
           transform: scaleX(0.5);
 }
 .weui-grid {
-  position: relative;
   float: left;
-  padding: 20px 10px;
   width: 33.33333333%;
+  height: 125px;
+  background: no-repeat center center;
+  background-size: cover;
   box-sizing: border-box;
 }
 .weui-grid:before {

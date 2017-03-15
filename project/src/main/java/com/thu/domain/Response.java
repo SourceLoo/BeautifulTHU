@@ -1,5 +1,7 @@
 package com.thu.domain;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -31,7 +33,7 @@ public class Response {
     }
 
     public String getResponseContent() {
-        return responseContent;
+        return StringEscapeUtils.unescapeHtml(responseContent);
     }
 
     public void setResponseContent(String responseContent) {

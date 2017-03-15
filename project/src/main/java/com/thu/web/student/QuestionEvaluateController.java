@@ -1,8 +1,11 @@
 package com.thu.web.student;
 
 import com.thu.domain.EvaluationType;
+import com.thu.domain.Role;
+import com.thu.domain.RoleRepository;
 import com.thu.domain.UserRepository;
 import com.thu.service.QuestionService;
+import com.thu.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,8 @@ public class QuestionEvaluateController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private RoleRepository roleRepository;
 
     @PostMapping(value = "/question/evaluate")
     @ResponseBody
@@ -36,11 +41,22 @@ public class QuestionEvaluateController {
             HttpServletRequest request)
     {
         EvaluationType evaluationType = null;
+
+        Role role = questionService.findById(questionId).getLeaderRole();
+
         switch (evaluation)
         {
             case "无评价": evaluationType = EvaluationType.NOEVALUATION; break;
-            case "满意": evaluationType = EvaluationType.SATISFIED; break;
-            case "不满意": evaluationType = EvaluationType.UNSATISFIED; break;
+
+            case "满意":
+                evaluationType = EvaluationType.SATISFIED;
+                role.setGoodNumber(role.getGoodNumber() + 1);
+                break;
+            case "不满意":
+                evaluationType = EvaluationType.UNSATISFIED;
+                role.setBadNumber(role.getBadNumber() + 1);
+                break;
+
             default: evaluationType = null;
         }
 
@@ -48,6 +64,8 @@ public class QuestionEvaluateController {
         {
             return errorMsg;
         }
+
+        roleRepository.save(role);
 
         if(questionService.saveStudentResponse(questionId, evaluationType, detail) == false)
         {

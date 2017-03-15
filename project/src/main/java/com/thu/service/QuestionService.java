@@ -178,6 +178,20 @@ public class QuestionService {
     }
 
 
+    @Transactional
+    public boolean modifyDDL(Long id,LocalDateTime ddl){
+        Question question = questionRepository.findByQuestionId(id);
+        if (question == null) {
+            return false;
+        }
+        question.setDdl(ddl);
+        try {
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public List<Question> getQuestionForRelatedRole(Role role) {
         return questionRepository.findByLeaderRoleOrOtherRolesContains(role, role);

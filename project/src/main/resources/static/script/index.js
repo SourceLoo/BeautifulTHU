@@ -108,7 +108,7 @@ const questions = {
                 ddl.setHours(ddl.getHours() - 8 + 2);
             }
             if ([1,4,5].indexOf(question.status) != -1) {
-                ddl = new Date(question.timestamp);
+                ddl = new Date(question.timestamp1);
                 ddl.setHours(ddl.getHours() - 8 + 2);
             }
             if (question.status == 2) {

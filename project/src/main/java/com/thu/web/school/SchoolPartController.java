@@ -3,16 +3,27 @@ package com.thu.web.school;//school;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.thu.domain.*;
 import com.thu.service.*;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.encoding.XMLType;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.security.MessageDigest;
 import java.util.*;
 import io.jsonwebtoken.Claims;
+
+
+import javax.xml.rpc.ServiceException;
+
+
+import static com.thu.domain.QResponse.response;
 
 /**
  * Created by hetor on 16/12/2.
@@ -40,6 +51,8 @@ public class SchoolPartController {
     private final String roleZB = "zongban";
     private final String roleXB = "xiaoban";
     private final String roleALL = "all";
+    //TODO: 后勤部门约定KEY
+    private final static String KEY = "sdf!2l12@#2dsfDFSDF";
 //    @RequestMapping(value = "/test/login",method = RequestMethod.POST)
 //    public  String Login(@RequestBody)
 
@@ -54,6 +67,7 @@ public class SchoolPartController {
     public static final String Erro_TIMESTAMP2="{\"success\":false,\"msg\":\"Invalid TIMESTAMP2\"}";
     public static final String Erro_TIMESTAMP3="{\"success\":false,\"msg\":\"Invalid TIMESTAMP3\"}";
     public static final String Erro_Status="{\"success\":false,\"msg\":\"Wrong Question Status\"}";
+    public static final String Erro_Zongban="{\"success\":false,\"msg\":\"Wrong Zongban interface\"}";
 
     //判断是否是主责部分
     private boolean checkMain(String role){
@@ -64,8 +78,27 @@ public class SchoolPartController {
             return false;
     }
 
-
-
+    //后勤部门MD5验证
+    private static String MD5(String sourceStr) {
+        String result = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(sourceStr.getBytes("utf-8"));
+            byte b[] = md.digest();
+            int i;
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    buf.append("0");
+                buf.append(Integer.toHexString(i));
+            }
+            result = buf.toString();
+        } catch (Exception e) {}
+        return result.toUpperCase();
+    }
 
     private  boolean checkPermission(String token){
         String tokenRole, tokenName;
@@ -145,6 +178,7 @@ public class SchoolPartController {
 //        if(true)
 //            return "ok";
 //        token_role.containsKey()
+
         if(!CheckToken(token))
             return Error_Msg;
         String role=getRole(token);
@@ -160,6 +194,10 @@ public class SchoolPartController {
 //            return Erro_Role;
         }
         JSONArray ja=new JSONArray();
+
+        if(start<0||number<0||questions==null){
+            return Error_Msg;
+        }
 
         for(int i=start;i<start+number&&i<questions.size();i++){
             Question question=questions.get(i);
@@ -187,18 +225,6 @@ public class SchoolPartController {
             List<String> role_role=new ArrayList<>();
             List<String> role_res_name=new ArrayList<>();
 
-            //TODO:修改判定逻辑，使用transferRole
-//            if(question.getTransferRole()==null||question.getStatus() ==Status.UNAPPROVED||(question.getDelayDays()!=null &&question.getDelayDays()>0 && question.getStatus() ==Status.DELAY)||question.getStatus()==Status.RECLASSIFY)
-//            {
-//                role_role.add(xiaoban);
-//                role_res_name.add(roleService.findByRole(xiaoban).getDisplayName());
-//            }else if ((role.equals(zongban)||role.equals(xiaoban))&&question.getStatus()==Status.UNCLASSIFIED){
-//                Role forward_role=question.getTransferRole();
-//                if(forward_role.getRole().equals(role)) {
-//                    role_res_name.add(forward_role.getDisplayName());
-//                    role_role.add(forward_role.getRole());
-//                }
-//            }
             Role transferRole = question.getTransferRole();
             if(transferRole != null)
             {
@@ -275,6 +301,8 @@ public class SchoolPartController {
     // {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/main/response/{token:.+}",method = RequestMethod.POST)
     public String MainResponse(@RequestParam(name = "question_id") String q_id,@RequestParam("response_content") String content,@PathVariable String token){
+        content=StringEscapeUtils.escapeHtml(content);
+        token=StringEscapeUtils.escapeHtml(token);
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -295,6 +323,8 @@ public class SchoolPartController {
         TUser responder= userService.findUser(username);           //userRepository.findUserbyName(username);
         if(responder==null)
             return Erro_Responder;
+        if(content==null||content.equals(""))
+            return Erro_Response;
         Response respon= responseService.respond(content,responder);//                 responseRepository.insertResponse(content,responder,new Date());
         if(respon==null)
             return Erro_Response;
@@ -369,12 +399,133 @@ public class SchoolPartController {
                 return Erro_Role;
             }
 
+            if (forword_role.equals(zongban)) {
+                //TODO: 调用后勤部门接口
+                //http://wx.93001.cn/services/wsActionPort.jws?wsdl
+                //{"sign":"69CE72B0563413496361234E3FE4D137","img_url":["http://www.baidu.com/1.jpg","http://www.baidu.com/2.jpg","http://www.baidu.com/3.jpg"],"content":"荷塘月色很漂亮","id":12345,"person":"史蒂夫","title":"美丽清华开发测试","contact":"13487452376","deadLine":"2017-03-10 10:10:10"}
+
+                String sign = MD5(KEY + qid + KEY);
+                JSONObject jsonObject=new JSONObject();
+                jsonObject.put("sign",sign);
+                jsonObject.put("id",qid);
+                Question question=questionService.findById(qid);
+                if(question==null)
+                    return Erro_Zongban;
+                TUser user_stu=question.getTUser();
+                jsonObject.put("title",question.getTitle());
+                jsonObject.put("content",question.getContent());
+                List<Pic> pictures=question.getPics();
+                List<String> pic_url=new ArrayList<>();
+                if(pictures==null)
+                    return Erro_Zongban;
+                for(Pic pic:pictures){
+                    pic_url.add(pic.getPath());
+                }
+
+                jsonObject.put("img_url",pic_url);
+                jsonObject.put("person",user_stu.getUname());
+                jsonObject.put("contact",user_stu.getFixedNumber());
+                jsonObject.put("deadLine",this.Convert(question.getDdl()));
+                String url="http://wx.93001.cn/services/wsActionPort.jws?wsdl";
+                try {
+                    Service service = new Service();
+                    Call call = null;
+                    try {
+                        call=(Call) service.createCall();
+                    } catch (ServiceException e) {
+                        return Erro_Zongban;
+                    }
+                    call.setTargetEndpointAddress(url);
+                    call.setOperationName("receive");//WSDL里面描述的接口名称
+                    call.addParameter("json", XMLType.XSD_STRING,
+                            javax.xml.rpc.ParameterMode.IN);//接口的参数
+                    call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);//设置返回类型
+                    String temp = jsonObject.toString();
+                    String result = (String)call.invoke(new Object[]{temp});
+                    //给方法传递参数，并且调用方法
+//                    System.out.println("result is "+result);
+                    if(!result.equals("success")){
+                        return Erro_Zongban;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return Erro_Zongban;
+                }
+                LocalDateTime localDateTime=LocalDateTime.now().plusDays(3);
+                questionService.modifyDDL(qid,localDateTime);
+
+//                String time=localDateTime.getYear()+"-"+localDateTime.get
+            }
+
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main transfer ok\"}";
         }
         else
             return "{\"success\":false, \"msg\":\"main transfer failure\"}";
     }
+
+    @RequestMapping(value = "/questions/zongban/response",method = RequestMethod.POST)
+    public String ZBResponse(
+            @RequestParam("id") String q_id,
+            @RequestParam("role") String lead_role,
+            @RequestParam("content") String r_content,
+            @RequestParam("sign") String sign
+    ) {
+        //TODO:后勤部门结果回复
+        //1. MainClassify()
+        //@RequestParam("question_id") String q_id,
+        //@RequestParam("leader_role") String lead_role,
+        //@RequestParam("other_roles") String other_roles, 无
+        //@RequestParam("deadline") String ddl, 无，在MainForward分给总办时设为默认的三天
+        //@RequestParam("opinion") String opinion, 无
+//        String pp=MD5(KEY+Long.parseLong(q_id)+KEY);
+        Long qid=Long.parseLong("-1");
+        try{
+            qid= Long.parseLong(q_id);
+        }catch (Exception e){
+            return Erro_Parse;
+        }
+        Question question=questionService.findById(qid);
+        if(question==null)
+            return "failure";
+        String pp=MD5(KEY+qid+KEY);
+        Role leader= roleService.findByRole(lead_role);         //roleReposiroty.findRole(lead_role);
+        if(leader==null)
+            return "failure";
+//        Role leader=roleService
+        if(pp.equals(sign)) {
+//            String re1 = MainClassify(q_id, lead_role, null, null, null, null);
+            //2. RelaResponse()
+            //@RequestParam("response_content") String r_content
+            boolean re1=questionService.classifyQuestion(qid,leader,null,question.getDdl(),question.getInstruction());
+
+
+            TUser responder=  userService.findUser(lead_role);     //userRepository.findUserbyName(username);
+            if(responder==null)
+            {
+                return "failure";
+            }
+
+            if(r_content==null||r_content.equals(""))
+                return "failure";
+            Response respon= responseService.respond(r_content,responder);           //responseRepository.insertResponse(r_content,responder,new Date());
+            if(respon==null)
+                return "failure";
+            //将回复插入到问题中
+            boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);     //questionRepository.responsebyRela(qid,respon);
+
+//            boolean re2=questionService.responsibleDeptRespond(qid,r_content);
+            if(re1&&insertResponse)
+                return "success";
+            else
+                return "failure";
+
+        }
+        else {
+            return "failure";
+        }
+    }
+
 
     /*    /quesitons/main/reclassify
    //    send: {'question_id':'', 'agree':bool}
@@ -397,7 +548,7 @@ public class SchoolPartController {
             return Erro_Role;
         //
         Role forword_role=   roleService.findByRole(xiaoban);
-        Boolean reclassify_ok=  questionService.ReclassifyQuestion(qid,agree,forword_role);
+        boolean reclassify_ok=  questionService.ReclassifyQuestion(qid,agree,forword_role);
         if(reclassify_ok) {
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main agree/refuse reclassify ok\"}";
@@ -430,7 +581,7 @@ public class SchoolPartController {
         String role = getRole(token);
         if (role == null)
             return Erro_Role;
-        Boolean delay_ok=  questionService.DelayQuestion(qid,agree);
+        boolean delay_ok=  questionService.DelayQuestion(qid,agree);
         if(delay_ok) {
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"main agree/refuse delay ok\"}";
@@ -454,6 +605,7 @@ public class SchoolPartController {
                                @RequestParam("deadline") String ddl,
                                @RequestParam("opinion") String opinion,@PathVariable String token)
 	{
+
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -469,7 +621,7 @@ public class SchoolPartController {
         if(leader==null)
             return Erro_Role;
         List<Role> others = new ArrayList<>();
-        if (other_roles != "") {
+        if (other_roles!=null&&other_roles != "") {
             String[] _other_roles = other_roles.split(",");
             for(String role_str:_other_roles){
                 Role oth= roleService.findByRole(role_str) ;   //.findRole(role_str);
@@ -485,32 +637,37 @@ public class SchoolPartController {
 //        } catch (ParseException e) {
 //            return Erro_DDL;
 //        }
-        String[] timeArray=ddl.split("-");
-        int[] times=new int[6];
-        if(timeArray.length<3||timeArray.length>6)
-            return Erro_DDL;
-        else{
-            for(int i=0;i<6;i++){
-                if(i<timeArray.length){
-                    try {
-                        times[i] = Integer.parseInt(timeArray[i]);
-                    }catch (Exception e){
-                        return Erro_Parse;
-                    }
-                }else
-                    times[i]=0;
+        LocalDateTime ldt = LocalDateTime.now();
+        if(ddl!=null) {
+            String[] timeArray = ddl.split("-");
+            int[] times = new int[6];
+            if (timeArray.length < 3 || timeArray.length > 6)
+                return Erro_DDL;
+            else {
+                for (int i = 0; i < 6; i++) {
+                    if (i < timeArray.length) {
+                        try {
+                            times[i] = Integer.parseInt(timeArray[i]);
+                        } catch (Exception e) {
+                            return Erro_Parse;
+                        }
+                    } else
+                        times[i] = 0;
+                }
             }
+
+
+            try {
+                ldt = LocalDateTime.of(times[0], times[1], times[2], times[3], times[4], times[5]);
+            } catch (Exception e) {
+                return Erro_DDL + ";" + Erro_Parse;
+            }
+        }else{
+            ldt=questionService.findById(qid).getDdl();
         }
 
-        LocalDateTime ldt= LocalDateTime.now();
-        try {
-           ldt= LocalDateTime.of(times[0], times[1], times[2], times[3], times[4], times[5]);
-        }catch (Exception e){
-            return Erro_DDL+";"+Erro_Parse;
-        }
-
-        Boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,ldt,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
-        Boolean setTimeStamp=Boolean.FALSE;
+        boolean classfy_ok=  questionService.classifyQuestion(qid,leader,others,ldt,opinion);     // (qid,leader,others,date,opinion,role);           //questionRepository.classifybyMain(qid,leader,others,date,opinion,role,new Date());
+        boolean setTimeStamp=false;
         if(role.equals(xiaoban)){
             setTimeStamp=questionService.updateTimestamp(qid,LocalDateTime.now(),null,null);
             if(!setTimeStamp)
@@ -524,7 +681,7 @@ public class SchoolPartController {
         }
 
         if(classfy_ok && setTimeStamp) {
-            Boolean updateRole= roleService.updateNumber(lead_role,Long.parseLong("1"),null,null,null); //roleReposiroty.updateReceivedNumber(lead_role,Long.parseLong("1"));
+            boolean updateRole= roleService.updateNumber(lead_role,Long.parseLong("1"),null,null,null); //roleReposiroty.updateReceivedNumber(lead_role,Long.parseLong("1"));
             if(!updateRole)
                 return Erro_Role;
             questionService.modifyUnreadQuestions(qid, true);
@@ -552,6 +709,9 @@ public class SchoolPartController {
         List<Question> questions=questionService.getQuestionForRelatedRole(rela_role);         //questionRepository.getQuestionbyRela(rela_role);
 
         JSONArray ja=new JSONArray();
+        if(start<0||number<0||questions==null){
+            return Error_Msg;
+        }
 
         for(int i=start;i<start+number&&i<questions.size();i++){
             Question question=questions.get(i);
@@ -636,9 +796,9 @@ public class SchoolPartController {
             return Erro_Role;
         if(null==tuan)
             return Erro_Role;
-        Boolean require_reclassify= questionService.applyReclassifyQuestion(qid,reason,tuan);  //questionRepository.reclassifybyRela(qid,reason,tuan);
+        boolean require_reclassify= questionService.applyReclassifyQuestion(qid,reason,tuan);  //questionRepository.reclassifybyRela(qid,reason,tuan);
         if(require_reclassify) {
-            Boolean updateRole =  roleService.updateNumber(cur_role,Long.parseLong("-1"),null,null,null);  //roleReposiroty.updateReceivedNumber(cur_role, Long.parseLong("-1"));
+            boolean updateRole =  roleService.updateNumber(cur_role,Long.parseLong("-1"),null,null,null);  //roleReposiroty.updateReceivedNumber(cur_role, Long.parseLong("-1"));
             if (!updateRole)
                 return Erro_Role;
             questionService.modifyUnreadQuestions(qid, true);
@@ -657,6 +817,8 @@ public class SchoolPartController {
 //    {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/related/response/{token:.+}",method = RequestMethod.POST)
     public String RelaResponse(@RequestParam("question_id") String q_id,@RequestParam("response_content") String r_content,@PathVariable String token){
+        r_content= StringEscapeUtils.escapeHtml(r_content);
+        token=StringEscapeUtils.escapeHtml(token);
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -682,20 +844,23 @@ public class SchoolPartController {
         TUser responder=  userService.findUser(username);     //userRepository.findUserbyName(username);
         if(responder==null)
             return Erro_Responder;
+
+        if(r_content==null||r_content.equals(""))
+            return Erro_Response;
         Response respon= responseService.respond(r_content,responder);           //responseRepository.insertResponse(r_content,responder,new Date());
         if(respon==null)
             return Erro_Response;
         //将回复插入到问题中
-        Boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);     //questionRepository.responsebyRela(qid,respon);
+        boolean insertResponse= questionService.responsibleDeptRespond(qid,respon);     //questionRepository.responsebyRela(qid,respon);
         if(insertResponse) {
             if(has_responses.size()==0) {
                 if(respon.getRespondTime().compareTo(ddl)>0)
                 {
-                    Boolean updateRole = roleService.updateNumber(role,null,null,Long.parseLong("1"),null); //roleReposiroty.updateOvertimeNumber(role, Long.parseLong("1"));
+                    boolean updateRole = roleService.updateNumber(role,null,null,Long.parseLong("1"),null); //roleReposiroty.updateOvertimeNumber(role, Long.parseLong("1"));
                     if (!updateRole)
                         return Erro_Role;
                 }else{
-                    Boolean updateRole = roleService.updateNumber(role,null,Long.parseLong("1"),null,null);
+                    boolean updateRole = roleService.updateNumber(role,null,Long.parseLong("1"),null,null);
                     if (!updateRole)
                         return Erro_Role;
                 }
@@ -712,6 +877,7 @@ public class SchoolPartController {
 //    {'success':bool, 'msg':''}
     @RequestMapping(value = "/questions/related/modify_response/{token:.+}",method = RequestMethod.POST)
     public String ModifyResponse(@RequestParam("question_id") String q_id,@RequestParam("response_id") String r_id,@RequestParam("response_content") String r_content,@PathVariable String token){
+        r_content=StringEscapeUtils.escapeHtml(r_content);
         if(!CheckToken(token))
             return Error_Msg;
         Long qid=Long.parseLong("-1");
@@ -731,7 +897,7 @@ public class SchoolPartController {
             return Erro_Status;
         }
 
-        Boolean modify_ok=  responseService.editResponse(rid,r_content);      //responseRepository.modifyResponse(rid,r_content,new Date());
+        boolean modify_ok=  responseService.editResponse(rid,r_content);      //responseRepository.modifyResponse(rid,r_content,new Date());
         if(modify_ok) {
             questionService.modifyUnreadQuestions(qid, true);
             return "{\"success\":true, \"msg\":\"modify response successfully\"}";
