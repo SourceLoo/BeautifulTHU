@@ -156,11 +156,6 @@ public class LoginController {
             }
         }
 
-        String random = String.valueOf(System.currentTimeMillis());
-        idNumber = random;
-        uname = uname + "_" +  random;
-        email = email + "_" +  random;
-
         try {
             token = jwtService.creatToken(idNumber);
         } catch (Exception e) {
