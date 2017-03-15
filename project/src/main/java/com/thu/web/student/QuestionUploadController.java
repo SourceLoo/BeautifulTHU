@@ -57,6 +57,14 @@ public class QuestionUploadController {
             try
             {
                 String directory = env.getProperty("image.localpath");
+                File file = new File(directory);
+                if(!file.exists()) {
+                    //如果目标文件所在的目录不存在，则创建父目录
+                    if(!file.mkdirs()) {
+                        System.out.println("创建目标文件所在目录失败！");
+                        return errorMsg;
+                    }
+                }
                 String originalFilename = uploadfile.getOriginalFilename();
                 String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + Math.abs(new Random().nextInt())+originalFilename.substring(originalFilename.lastIndexOf("."));
 

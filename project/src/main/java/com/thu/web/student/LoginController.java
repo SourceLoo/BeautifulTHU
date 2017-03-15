@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -79,7 +80,8 @@ public class LoginController {
         return "student/init";
     }
 
-    @GetMapping(value = "auth", method = RequestMethod.POST)
+    @RequestMapping(value = "auth",method = RequestMethod.POST)
+    @ResponseBody
     public Object doAuth(@RequestParam(name = "token", required = false, defaultValue = "") String token)
     {
         Long userId = jwtService.getUserId(token);
@@ -101,7 +103,6 @@ public class LoginController {
     }
 
     @GetMapping(value = "login")
-    @ResponseBody
     public Object saveToken(@RequestParam(name = "ticket") String ticket)
     {
 
@@ -175,9 +176,6 @@ public class LoginController {
 
         userService.saveStudent(uname, token, role, email, idNumber);
 
-        JSONObject result = new JSONObject();
-        result.put("token", token);
-
         // 登录成功
         Long userId = jwtService.getUserId(token);
         session.setAttribute("userId", userId);
@@ -188,6 +186,6 @@ public class LoginController {
                 //"<h1>您是第" +  userId.toString() + "位用户<h1/>" +
                 //"<h1><a href='/student/question'>进入主页</a></h1>";
 
-        return "redirect:/student/init?" + result.toString();
+        return "redirect:/student/init?" + token;
     }
 }
