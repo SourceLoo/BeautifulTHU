@@ -161,17 +161,13 @@
                 <div class="thu-tiddler-title">
                     <div class="thu-titlebar">
                         <div class="thu-tiddler-controls">
-                            <a href="javascript:;" @click="question_filter(1)" class="small" :class="question_filter_used(1)">
+                            <a href="javascript:;" @click="question_filter(0)" class="small" :class="question_filter_used(0)">
                                 <i class="fa fa-filter" aria-hidden="true"></i>
-                                <span>未分类</span>
+                                <span>未审批</span>
                             </a>
                             <a href="javascript:;" @click="question_filter(2)" class="small" :class="question_filter_used(2)">
                                 <i class="fa fa-filter" aria-hidden="true"></i>
                                 <span>未答复</span>
-                            </a>
-                            <a href="javascript:;" @click="question_filter(3)" class="small" :class="question_filter_used(3)">
-                                <i class="fa fa-filter" aria-hidden="true"></i>
-                                <span>已答复</span>
                             </a>
                             <a href="javascript:;" @click="question_filter(4)" class="small" :class="question_filter_used(4)">
                                 <i class="fa fa-filter" aria-hidden="true"></i>
@@ -300,12 +296,12 @@
                 </div>
 
                 <div class="thu-tiddler-body">
-                    <p> {{question.content}} </p>
-                    <div class="thu-pic-grids">
+                    <div class="thu-pic-grids" :stype="question.pic_path.length==1?'width:170px;':'width:340px;'">
                         <div class="thu-pic-grid" v-for="path in question.pic_path">
                             <a :href="path" target="_blank"><img :src="path"></a>
                         </div>
                     </div>
+                    <p> {{question.content}} </p>
                     <div class="thu-edit-fields">
                         <table class="thu-edit-fields">
                             <tbody>
@@ -570,9 +566,6 @@
             <div class="thu-topbar thu-topbar-left" v-else>
                 <router-link to="/school/manage_console/info"><i class="fa fa-address-card fa-fw" aria-hidden="true"></i>个人信息</router-link>
                 <a href="javascript:;" @click="logout()"><i class="fa fa-external-link-square fa-fw" aria-hidden="true"></i>注销</a>
-            </div>
-            <div class="thu-topbar thu-topbar-right">
-                <a href="javascript:;"> <i aria-hidden="true" class="fa fa-angle-double-right fa-2x"></i> </a>
             </div>
         </div>
         <div class="thu-sidebar-scrollable" style="overflow: auto;">

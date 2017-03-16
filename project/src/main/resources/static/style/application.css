@@ -1521,10 +1521,12 @@ html body.thu-body.thu-single-tiddler-window {
 }
 
 .thu-tiddler-body .thu-pic-grids {
-    width: 510px;
-    max-width: 100%;
+    min-width: 170px;
+    max-width: 340px;
     overflow: hidden;
-    margin: auto;
+    background: #f0f0f0;
+    float: right;
+    margin-bottom: 15px;
 }
 
 .thu-tiddler-body .thu-pic-grids:before {
@@ -1559,7 +1561,7 @@ html body.thu-body.thu-single-tiddler-window {
 }
 
 .thu-pic-grid {
-    width: 33%;
+    width: 170px;
     position: relative;
     overflow: hidden;
     float: left;
@@ -1593,9 +1595,8 @@ html body.thu-body.thu-single-tiddler-window {
     color: #333;
     border-radius: 4px;
     padding: 3px;
-    width: 32%;
+    width: 49.4%;
     text-align: center;
-    margin: 0 2px;
 }
 
 .thu-editor-toolbar a.thu-text-editor-toolbar-item-adjunct {

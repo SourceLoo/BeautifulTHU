@@ -133,6 +133,9 @@ public class QuestionListController {
         JSONObject jsonObject = new JSONObject();
         Long userId = (Long) session.getAttribute("userId");
         TUser TUser = userRepository.findById(userId);
+        if (TUser == null) {
+            System.out.println("userId not found!");
+        }
 
         jsonObject.put("unread", TUser.getUnreadQuestions().isEmpty() ? 0 : 1);
         System.out.println(jsonObject.toString());
