@@ -1,6 +1,8 @@
 package com.thu.web.student;
 
 import com.thu.domain.Role;
+import com.thu.domain.TUser;
+import com.thu.domain.UserRepository;
 import com.thu.service.RoleService;
 import com.thu.service.UserService;
 import org.apache.http.client.ClientProtocolException;
@@ -46,6 +48,9 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private JWTService jwtService;
@@ -143,7 +148,7 @@ public class LoginController {
         String idNumber = "";
 
 
-        //content = "code=0:zjh=2011980001:yhm=stu:xm=test_stu:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
+        //content = "code=0:zjh=2011980001:yhm=stu:xm=源泉:yhlb=J0000:dw=计算中心:email=lqx@mail.com";
         String [] arr = content.split(":");
         for(String pairs : arr)
         {
@@ -151,13 +156,26 @@ public class LoginController {
             switch (strings[0])
             {
                 case "zjh": idNumber = strings[1]; break;
-                case "xm": uname = strings[1]; break;
+                case "yhm": uname = strings[1]; break;
                 case "email": email = strings[1]; break;
             }
         }
 
+        TUser tuser = null;
         try {
-            token = jwtService.creatToken(idNumber);
+
+            tuser = userRepository.findByIdNumber(idNumber);
+            if ( tuser == null) // 没有token，创建user
+            {
+                token = jwtService.creatToken(idNumber);
+                tuser = new TUser(uname, token, role, email, idNumber);
+                userService.saveStudent(tuser);
+            }
+            else
+            {
+                token = tuser.getPasswd(); // 有 token，拿 token
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return errorMsg;
@@ -169,10 +187,9 @@ public class LoginController {
         System.out.println(email);
         System.out.println(idNumber);
 
-        userService.saveStudent(uname, token, role, email, idNumber);
 
         // 登录成功
-        Long userId = jwtService.getUserId(token);
+        Long userId = tuser.getId();
         session.setAttribute("userId", userId);
 
         System.out.println("login: userId=" + userId);

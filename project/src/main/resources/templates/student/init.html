@@ -10,7 +10,7 @@
         if (window.location.href.indexOf('?') != -1) {
             var token = window.location.href.split('?')[1];
             localStorage.setItem('stu_token', token);
-            window.location.pathname = "student/question/list";
+            window.location.href = window.location.origin + "/student/question/list";
         } else {
             if (localStorage.stu_token == undefined)
                 localStorage.setItem('stu_token', '');

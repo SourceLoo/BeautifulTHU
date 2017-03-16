@@ -33,16 +33,15 @@ public class UserService {
     }
 
     // add by luyq
-    public boolean saveStudent(String uname, String passwd, Role role, String email, String idNumber)
+    public boolean saveStudent(TUser tUser)
     {
-        TUser TUser = new TUser(uname, passwd, role, email, idNumber);
         try {
-            // 会自动更新passwd
-            userRepository.save(TUser);
+            userRepository.save(tUser);
             return true;
         } catch (Exception e) {
             return false;
         }
+
     }
 
     public boolean insertUser(String uname, String mobileNumber, String fixedNumber, String idNumber, String email, Role role, String passwd) {

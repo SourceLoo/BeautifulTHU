@@ -44,8 +44,11 @@ public class JWTService {
         catch (Exception e){
             return null;
         }
+        System.out.println("token 解析得到的idNumber：" + idNumber);
         TUser TUser = userRepository.findByIdNumber(idNumber);
-        if(TUser != null && TUser.getPasswd().equals(token))
+        // 验证标准： 能顺利解析 得到idNumber  并且 idNumber在数据库中
+
+        if(TUser != null)
         {
             return TUser.getId();
         }
