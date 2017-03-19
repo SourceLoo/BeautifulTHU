@@ -68,7 +68,7 @@ $(function(){
 //                                  '<ul class="weui-media-box__info">' +
 //                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
 //                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">点赞数: ' + q.like_num + '</li>' +
-//                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'">'+dots+'点此查看详情</a></li>' +
+//                                  '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'">'+dots+'详情</a></li>' +
 //                                  '</ul>' +
 //                                  '</div>'
 //                    }
@@ -119,22 +119,24 @@ $(function(){
                         q = data.question_list[i]
                         var liked
                         if (q.liked == "1") {
-                            liked = "已赞"
+                            liked = "<i class='material-icons md-12' style='color:#990099'>thumb_up</i>"
                         } else {
-                            liked = "赞"
+                            liked = "<i class='material-icons md-12' style='color:#FFB3FF'>thumb_up</i>"
                         }
                         var dots = ""
                         if (q.unread == 1) {
                             dots = '<span class="weui-badge weui-badge_dot" style="position: absolute;top: 25px;right: 20px;"></span>'
                         }
+
                         result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
                                 '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
                                 '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
+                                '<ul class="weui-media-box__info"><a href="/student/home/question/?question_id='+q.question_id+'" style="color: #990099">'+dots+'查看详情</a></ul>' +
                                 '<ul class="weui-media-box__info">' +
                                 '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
+                                '</ul><ul class="weui-media-box__info">' +
                                 '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
-                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">点赞数: ' + q.like_num + '</li>' +
-                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'">'+dots+'点此查看详情</a></li>' +
+                                '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">' + q.like_num + '</li>' +
                                 '</ul>' +
                                 '</div>'
                     }

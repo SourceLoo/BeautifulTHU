@@ -9,6 +9,8 @@
 
     <script src="/script/zepto.min.js"></script>
     <script src="/script/updown.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
     <script>
     $(document).ready(function(){
         $.ajax({
@@ -78,15 +80,16 @@
                     question_id : question_id,
                     liked : liked
                 },
+
                 success: function(data) {
                     if (liked == true) {
                         $(ele).attr("state", "1")
-                        $(ele).text("已赞")
-                        $(ele).parent('li').parent('ul').children('#likenum').text("点赞数: "+data.likenum)
+                        $(ele).children('i').attr('style', 'color: #990099')
+                        $(ele).parent('li').parent('ul').children('#likenum').text(data.likenum)
                     } else {
                         $(ele).attr("state", "0")
-                        $(ele).text("赞")
-                        $(ele).parent('li').parent('ul').children('#likenum').text("点赞数: "+data.likenum)
+                        $(ele).children('i').attr('style', 'color: #FFB3FF')
+                        $(ele).parent('li').parent('ul').children('#likenum').text(data.likenum)
                     }
                 },
                 error: function(xhr, type){

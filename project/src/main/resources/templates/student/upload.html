@@ -142,6 +142,11 @@
                         <!--<img src="./images/logo.png" alt="WeUI" height="21px">-->
                     <!--</h1>-->
                 <!--</div>-->
+                <div class="weui-progress" style="width:100%; position:fixed" id="progress">
+                    <div class="weui-progress__bar">
+                        <div class="weui-progress__inner-bar js_progress" id="progress-bar"></div>
+                    </div>
+                </div>
                 <div class="page__bd">
                     <div class="weui-cells weui-cells_form">
                         <div class="weui-cell">
@@ -297,6 +302,7 @@
             } else if (content.length == 0) {
                 alert("请输入问题内容");
             } else {
+                $('#progress').removeAttr('style')
                 fd.append("title", title)
                 fd.append("content", content)
                 fd.append("location", position)
@@ -318,7 +324,7 @@
         function uploadProgress(e) {
             if (e.lengthComputable) {
                 var percentComplete = Math.round(e.loaded * 100 / e.total);
-                $('.js_progress').css('width',percentComplete.toString() + '%');
+                $('#progress-bar').attr('style','width: '+percentComplete.toString() + '%');
             } else {
                 return false
             }
