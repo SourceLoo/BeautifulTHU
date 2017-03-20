@@ -393,7 +393,7 @@ input.weui-btn_plain-default {
   margin-bottom: .3em;
   padding-left: 15px;
   padding-right: 15px;
-  color: #999999;
+  color: #222;
   font-size: 14px;
 }
 .weui-cells__title + .weui-cells {
@@ -1138,6 +1138,17 @@ button.weui-vcode-btn {
 }
 .weui-article p {
   margin: 0 0 .8em;
+}
+.title {
+  color: #990099;
+  font-size: 18px!important;
+  font-family: 楷体, KaiTi;
+}
+.content {
+  line-height: 1.7!important;
+}
+.others {
+  line-height: 1.7!important;
 }
 .weui-tabbar {
   display: -webkit-box;

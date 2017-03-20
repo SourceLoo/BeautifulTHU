@@ -115,22 +115,20 @@ $(function(){
                         q = data.question_list[i]
                         var liked
                         if (q.liked == "1") {
-                                                    liked = "<i class='material-icons md-12' style='color:#990099'>thumb_up</i>"
-                                                } else {
-                                                    liked = "<i class='material-icons md-12' style='color:#FFB3FF'>thumb_up</i>"
-                                                }
+                            liked = "<i class='material-icons md-12' style='color:#990099'>thumb_up</i>"
+                        } else {
+                            liked = "<i class='material-icons md-12' style='color:#FFB3FF'>thumb_up</i>"
+                        }
                         result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
-                                                                            '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
-                                                                            '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
-
-                                                                            '<ul class="weui-media-box__info"><a href="/student/question/?question_id='+q.question_id+'" style="color: #990099;">查看详情</a></ul>' +
-                                                                            '<ul class="weui-media-box__info">' +
-                                                                            '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
-                                                                            '</ul>' + '<ul class="weui-media-box__info">' +
-                                                                            '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
-                                                                            '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">' + q.like_num + '</li>' +
-                                                                            '</ul>' +
-                                                                            '</div>'
+                        '<h1 class="title weui-media-box__title ">' + q.question_title + '</h4>' +
+                        '<p class="content weui-media-box__desc ">' + q.question_content + '</p>' +
+                        '<ul class="others weui-media-box__info ">' +
+                        '<li class="weui-media-box__info__meta"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
+                        q.like_num + '</li>' +
+                        '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'" style="color: #990099">详情</a></li>' +
+                        '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">' + q.question_location + '</li>' +
+                        '</ul>' +
+                        '</div>'
                     }
                     // alert(result)
                     if(data.question_list.length == 0) {
@@ -188,22 +186,20 @@ $(function(){
                     var q = data.question_list[i]
                     var liked
                     if (q.liked == "1") {
-                                                liked = "<i class='material-icons md-12' style='color:#990099'>thumb_up</i>"
-                                            } else {
-                                                liked = "<i class='material-icons md-12' style='color:#FFB3FF'>thumb_up</i>"
-                                            }
+                        liked = "<i class='material-icons md-12' style='color:#990099'>thumb_up</i>"
+                    } else {
+                        liked = "<i class='material-icons md-12' style='color:#FFB3FF'>thumb_up</i>"
+                    }
                     result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
-                                                    '<h4 class="weui-media-box__title">' + q.question_title + '</h4>' +
-                                                    '<p class="weui-media-box__desc">' + q.question_content + '</p>' +
-
-                                                    '<ul class="weui-media-box__info"><a href="/student/question/?question_id='+q.question_id+'" style="color: #990099;">查看详情</a></ul>' +
-                                                    '<ul class="weui-media-box__info">' +
-                                                    '<li class="weui-media-box__info__meta">' + q.question_location + '</li>' +
-                                                    '</ul>' + '<ul class="weui-media-box__info">' +
-                                                    '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
-                                                    '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum">' + q.like_num + '</li>' +
-                                                    '</ul>' +
-                                                    '</div>'
+                    '<h1 class="title weui-media-box__title ">' + q.question_title + '</h4>' +
+                    '<p class="content weui-media-box__desc ">' + q.question_content + '</p>' +
+                    '<ul class="others weui-media-box__info ">' +
+                    '<li class="weui-media-box__info__meta"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
+                    q.like_num + '</li>' +
+                    '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'" style="color: #990099">详情</a></li>' +
+                    '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">' + q.question_location + '</li>' +
+                    '</ul>' +
+                    '</div>'
                 }
                 // 为了测试，延迟1秒加载
                 // alert("success")
