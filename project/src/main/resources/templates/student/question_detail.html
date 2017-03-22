@@ -10,6 +10,7 @@
     <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
     <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
     <!-- <script src="https://weui.io/weui.min.js"></script> -->
     <!-- <script src="https://weui.io/example.js"></script> -->
@@ -91,15 +92,15 @@
                     <div class="page__bd page__bd_spacing">
                         <article class="weui-article">
                             <h1 class="title weui-media-box__title" th:text="${question.title}">问题详情：{问题标题}</h1>
-                            <p class="content" th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                            <p class="content weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( question.content ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
                                 {问题内容}
                             </p>
                             <div class="others">
                                 <ul class="weui-media-box__info">
-                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.TUser.uname}"></li>
+                                    <li class="weui-media-box__info__meta" th:text="${question.TUser.uname}"></li>
                                     <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
+                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${'点赞数'+question.likes}"></li>
                                     <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
-                                    <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>
                                 </ul>
                             </div>
                         </article>
@@ -143,16 +144,16 @@
                             <h1 class="title weui-media-box__title">回复内容</h1>
                                 <!--开始循环-->
                             <section th:each="userResponse: ${userResponses}">
-                                <p class="content" th:utext="${#strings.replace( #strings.escapeXml( userResponse.response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
+                                <p class="content weui-media-box__desc" th:utext="${#strings.replace( #strings.escapeXml( userResponse.response.responseContent ),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}" >
                                     {回复内容}
                                 </p>
                                 <div class="others">
                                     <ul class="weui-media-box__info">
-                                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="response_id" th:text="${userResponse.response.responseId}"></li>
+                                        <li class="weui-media-box__info__meta" th:text="${userResponse.response.responder.role.displayName}"></li>
+                                        <li class="weui-media-box__info__meta" id="response_id" th:text="${userResponse.response.responseId}" style="display:none"></li>
                                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(userResponse.response.respondTime, 'yyyy-MM-dd')}"></li>
-                                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${userResponse.response.responder.role.displayName}"></li>
                                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="javascript:void(0);" onclick="clicklike(this)" th:text="${userResponse.liked}">{已赞/赞}</a></li>
-                                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" id="likenum" th:text="${userResponse.response.likes}"></li>
+                                        <li class="weui-media-box__info__meta" id="likenum" th:text="${userResponse.response.likes}"></li>
                                     </ul>
                                 </div>
 

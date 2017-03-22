@@ -443,7 +443,7 @@ public class SchoolPartController {
                     String temp = jsonObject.toString();
                     String result = (String)call.invoke(new Object[]{temp});
                     //给方法传递参数，并且调用方法
-//                    System.out.println("result is "+result);
+                    System.out.println("forward result is "+result);
                     if(!result.equals("success")){
                         return Erro_Zongban;
                     }

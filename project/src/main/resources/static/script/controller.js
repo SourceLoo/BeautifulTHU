@@ -115,17 +115,18 @@ $(function(){
                         q = data.question_list[i]
                         var liked
                         if (q.liked == "1") {
-                            liked = "<i class='material-icons md-12' style='color:#990099'>thumb_up</i>"
+                            liked = "<i class='fa fa-thumbs-up' style='color:#990099'></i>"
                         } else {
-                            liked = "<i class='material-icons md-12' style='color:#FFB3FF'>thumb_up</i>"
+                            liked = "<i class='fa fa-thumbs-up' style='color:#FFB3FF'></i>"
                         }
                         result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
                         '<h1 class="title weui-media-box__title ">' + q.question_title + '</h4>' +
                         '<p class="content weui-media-box__desc ">' + q.question_content + '</p>' +
                         '<ul class="others weui-media-box__info ">' +
-                        '<li class="weui-media-box__info__meta"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
+                        '<li class="weui-media-box__info__meta"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a></li>' +
+                        '<li class="weui-media-box__info__meta" id="likenum">'+q.like_num+'</li>' +
                         q.like_num + '</li>' +
-                        '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'" style="color: #990099">详情</a></li>' +
+                        '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'" style="color: #990099">详情</a></li>' +
                         '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">' + q.question_location + '</li>' +
                         '</ul>' +
                         '</div>'
@@ -186,17 +187,17 @@ $(function(){
                     var q = data.question_list[i]
                     var liked
                     if (q.liked == "1") {
-                        liked = "<i class='material-icons md-12' style='color:#990099'>thumb_up</i>"
+                        liked = "<i class='fa fa-thumbs-up' style='color:#990099'></i>"
                     } else {
-                        liked = "<i class='material-icons md-12' style='color:#FFB3FF'>thumb_up</i>"
+                        liked = "<i class='fa fa-thumbs-up' style='color:#FFB3FF'></i>"
                     }
                     result += '<div id="question" class="weui-media-box weui-media-box_text" question_id="' + q.question_id + '">' +
                     '<h1 class="title weui-media-box__title ">' + q.question_title + '</h4>' +
                     '<p class="content weui-media-box__desc ">' + q.question_content + '</p>' +
                     '<ul class="others weui-media-box__info ">' +
-                    '<li class="weui-media-box__info__meta"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a>' +
-                    q.like_num + '</li>' +
-                    '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/home/question/?question_id='+q.question_id+'" style="color: #990099">详情</a></li>' +
+                    '<li class="weui-media-box__info__meta"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a></li>' +
+                    '<li class="weui-media-box__info__meta" id="likenum">'+q.like_num+'</li>' +
+                    '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'" style="color: #990099">详情</a></li>' +
                     '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">' + q.question_location + '</li>' +
                     '</ul>' +
                     '</div>'

@@ -10,6 +10,7 @@
     <!--<link rel="stylesheet" href="https://weui.io/weui.css">-->
     <!--<link rel="stylesheet" href="https://weui.io/example.css">-->
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script> -->
     <!-- <script src="https://weui.io/weui.min.js"></script> -->
     <!-- <script src="https://weui.io/example.js"></script> -->
@@ -72,8 +73,8 @@
                                     <ul class="weui-media-box__info">
                                         <li class="weui-media-box__info__meta" th:text="${question.TUser.uname}"></li>
                                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${#temporals.format(question.createdTime, 'yyyy-MM-dd')}"></li>
+                                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${'点赞数'+question.likes}"></li>
                                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.createdLocation}"></li>
-                                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="${question.likes}"></li>
                                     </ul>
                                 </div>
 
@@ -122,7 +123,7 @@
                                     <ul class="weui-media-box__info">
                                         <li class="weui-media-box__info__meta" th:text="*{responder.role.displayName}"></li>
                                         <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{#temporals.format(respondTime, 'yyyy-MM-dd')}"></li>
-                                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{likes}"></li>
+                                        <li class="weui-media-box__info__meta weui-media-box__info__meta_extra" th:text="*{'点赞数'+likes}"></li>
                                     </ul>
                                 </div>
                                 <br/>
@@ -175,24 +176,6 @@
                                 </div>
                                 <div class="weui-btn-area">
                                     <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
-                                </div>
-                            </div>
-                            <div th:if="${#strings.toString(question.status) != 'SOLVING'}">
-                                <div class="weui-cells">
-                                    <div class="weui-cell weui-cell_select weui-cell_select-after">
-                                        <div class="weui-cell__hd">
-
-                                        </div>
-                                        <div class="weui-cell__bd">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="weui-cells weui-cells_form">
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
