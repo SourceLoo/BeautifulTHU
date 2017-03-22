@@ -14,7 +14,7 @@
         } else {
             if (localStorage.stu_token == undefined)
                 localStorage.setItem('stu_token', '');
-            $.post('/student/auth', JSON.stringify({'token':localStorage.stu_token})).then(function(res) {
+            $.post('/student/auth', {'token':localStorage.stu_token}).then(function(res) {
                 res = JSON.parse(res);
                 if (res.success == true) {
                     window.location.pathname = "student/question/list";
