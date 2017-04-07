@@ -125,7 +125,6 @@ $(function(){
                         '<ul class="others weui-media-box__info ">' +
                         '<li class="weui-media-box__info__meta"><a href="javascript:" onclick="clicklike(this)" id="like" question_id="'+q.question_id+'" state='+q.liked+'>'+liked+' </a></li>' +
                         '<li class="weui-media-box__info__meta" id="likenum">'+q.like_num+'</li>' +
-                        q.like_num + '</li>' +
                         '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra"><a href="/student/question/?question_id='+q.question_id+'" style="color: #990099">详情</a></li>' +
                         '<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">' + q.question_location + '</li>' +
                         '</ul>' +

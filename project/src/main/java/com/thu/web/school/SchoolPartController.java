@@ -399,11 +399,11 @@ public class SchoolPartController {
                 return Erro_Role;
             }
 
-            if (forword_role.equals(zongban)) {
+            if (for_role.equals(zongban)) {
                 //TODO: 调用后勤部门接口
                 //http://wx.93001.cn/services/wsActionPort.jws?wsdl
                 //{"sign":"69CE72B0563413496361234E3FE4D137","img_url":["http://www.baidu.com/1.jpg","http://www.baidu.com/2.jpg","http://www.baidu.com/3.jpg"],"content":"荷塘月色很漂亮","id":12345,"person":"史蒂夫","title":"美丽清华开发测试","contact":"13487452376","deadLine":"2017-03-10 10:10:10"}
-
+                System.out.println("start forward to zongban!");
                 String sign = MD5(KEY + qid + KEY);
                 JSONObject jsonObject=new JSONObject();
                 jsonObject.put("sign",sign);
@@ -424,8 +424,10 @@ public class SchoolPartController {
 
                 jsonObject.put("img_url",pic_url);
                 jsonObject.put("person",user_stu.getUname());
-                jsonObject.put("contact",user_stu.getFixedNumber());
-                jsonObject.put("deadLine",this.Convert(question.getDdl()));
+                jsonObject.put("contact", "unknown");
+                LocalDateTime localDateTime=LocalDateTime.now().plusDays(3);
+                questionService.modifyDDL(qid,localDateTime);
+                jsonObject.put("deadLine",this.Convert(localDateTime));
                 String url="http://wx.93001.cn/services/wsActionPort.jws?wsdl";
                 try {
                     Service service = new Service();
@@ -441,6 +443,7 @@ public class SchoolPartController {
                             javax.xml.rpc.ParameterMode.IN);//接口的参数
                     call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);//设置返回类型
                     String temp = jsonObject.toString();
+                    System.out.println(temp);
                     String result = (String)call.invoke(new Object[]{temp});
                     //给方法传递参数，并且调用方法
                     System.out.println("forward result is "+result);
@@ -451,8 +454,6 @@ public class SchoolPartController {
                     e.printStackTrace();
                     return Erro_Zongban;
                 }
-                LocalDateTime localDateTime=LocalDateTime.now().plusDays(3);
-                questionService.modifyDDL(qid,localDateTime);
 
 //                String time=localDateTime.getYear()+"-"+localDateTime.get
             }

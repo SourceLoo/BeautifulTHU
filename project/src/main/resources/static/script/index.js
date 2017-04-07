@@ -78,7 +78,7 @@ const questions = {
             return display_status[status];
         },
         question_for_main: function(status) {
-            return (status == 0 && this.is_xiaoban) || (status == 1 && this.is_main);
+            return (status == 0 && this.is_xiaoban) || (status == 1 && this.is_zongban);
         },
         question_for_related: function(status) {
             return ([2, 3, 4, 5, 6].indexOf(status) != -1);

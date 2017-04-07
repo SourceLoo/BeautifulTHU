@@ -36,14 +36,14 @@ public class MyQuestionDetailController {
     @GetMapping(value = "/question")
     public String getHomeQuestion(@RequestParam(value = "question_id") Long quetionId, Model model)
     {
+        System.out.println(">>> myquestiondetail");
         Question question = questionRepository.findByQuestionId(quetionId);
-
         Long userId = (Long) session.getAttribute("userId");
         System.out.println("userId" + userId.toString());
         System.out.println("quesUserId" + question.getTUser().getId().toString());
         if (question == null) System.out.println("question is null");
-        if (question.getTUser().getId() != userId) System.out.println("id doesn't match");
-        if(question == null || question.getTUser().getId() != userId)
+        if (!question.getTUser().getId().equals(userId)) System.out.println("id doesn't match");
+        if(question == null || !question.getTUser().getId().equals(userId))
         {
             return "redirect:/student/home";
         }
